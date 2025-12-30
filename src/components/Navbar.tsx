@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/cailico-logo.png";
+import logo from "@/assets/cailico-logo-white-border.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,8 +42,8 @@ const Navbar = () => {
             <img 
               src={logo} 
               alt="Cailico" 
-              className={`transition-all duration-300 rounded-md ring-2 ring-white/80 ${
-                isScrolled ? "h-6 md:h-8" : "h-8 md:h-10"
+              className={`transition-all duration-300 ${
+                isScrolled ? "h-8 md:h-10" : "h-10 md:h-12"
               }`} 
             />
           </a>
