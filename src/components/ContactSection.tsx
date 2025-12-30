@@ -54,8 +54,8 @@ const ContactSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary-foreground mb-4">
-            ¿Listo para transformar tu institución educativa?
+          <h2 className="text-3xl md:text-4xl font-bold text-secondary-foreground mb-4 uppercase">
+            ¿Listo Para Transformar Tu Institución Educativa?
           </h2>
           <p className="text-lg text-secondary-foreground/90 max-w-2xl mx-auto">
             Agenda una demo gratuita y descubre cómo Cailico puede revolucionar

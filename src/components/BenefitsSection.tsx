@@ -22,7 +22,7 @@ const BenefitsSection = () => {
   ];
 
   return (
-    <section className="py-20 md:py-32 bg-muted/30" ref={ref}>
+    <section className="py-20 md:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.div
           className="text-center mb-16"
@@ -30,8 +30,8 @@ const BenefitsSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Beneficios para <span className="text-secondary">Todos</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 uppercase">
+            Beneficios Para <span className="text-secondary">Todos</span>
           </h2>
         </motion.div>
 

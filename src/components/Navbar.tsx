@@ -34,27 +34,32 @@ const Navbar = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className={`flex items-center justify-between transition-all duration-300 ${
+          isScrolled ? "h-12 md:h-14" : "h-16 md:h-20"
+        }`}>
           {/* Logo */}
           <a href="#hero" className="flex items-center">
-            <img src={logo} alt="Cailico" className="h-8 md:h-10" />
+            <img 
+              src={logo} 
+              alt="Cailico" 
+              className={`transition-all duration-300 rounded-md ring-2 ring-white/80 ${
+                isScrolled ? "h-6 md:h-8" : "h-8 md:h-10"
+              }`} 
+            />
           </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation - aligned right */}
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-sm font-semibold text-white hover:text-secondary transition-colors tracking-wide"
+                className="text-xs lg:text-sm font-semibold text-white hover:text-secondary transition-colors tracking-wide"
               >
                 {item.label}
               </a>
             ))}
-          </div>
-
-          {/* CTA Button */}
-          <div className="hidden md:block">
+            {/* CTA Button inline with nav */}
             <Button variant="hero" size="sm" asChild>
               <a href="#contact">Solicitar Demo</a>
             </Button>
