@@ -24,18 +24,26 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <span className="relative inline-flex items-center gap-3 px-6 py-2.5 text-secondary text-sm font-bold tracking-wider uppercase">
-              {/* Left decorative line */}
-              <span className="absolute left-0 top-0 h-full w-1 bg-secondary" />
-              <span className="absolute left-0 top-0 h-1 w-8 bg-secondary" />
-              <span className="absolute left-0 bottom-0 h-1 w-8 bg-secondary" />
+            <span className="group relative inline-flex items-center px-8 py-3 text-secondary text-sm font-bold tracking-wider uppercase cursor-pointer">
+              {/* Left L bracket - top */}
+              <span className="absolute left-0 top-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
+              <span className="absolute left-0 top-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
               
-              Sistema de Administración Integral
+              {/* Left L bracket - bottom */}
+              <span className="absolute left-0 bottom-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
+              <span className="absolute left-0 bottom-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
               
-              {/* Right decorative line */}
-              <span className="absolute right-0 top-0 h-full w-1 bg-secondary" />
-              <span className="absolute right-0 top-0 h-1 w-8 bg-secondary" />
-              <span className="absolute right-0 bottom-0 h-1 w-8 bg-secondary" />
+              <span className="transition-opacity duration-300 group-hover:opacity-0 group-hover:delay-0 delay-150">
+                IA para Instituciones Educativas
+              </span>
+              
+              {/* Right L bracket - top */}
+              <span className="absolute right-0 top-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
+              <span className="absolute right-0 top-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
+              
+              {/* Right L bracket - bottom */}
+              <span className="absolute right-0 bottom-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
+              <span className="absolute right-0 bottom-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
             </span>
           </motion.div>
 
