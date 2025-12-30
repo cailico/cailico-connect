@@ -48,7 +48,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="py-20 md:py-32 bg-muted/30" ref={ref}>
+    <section id="features" className="py-20 md:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.div
           className="text-center mb-16"
@@ -56,7 +56,7 @@ const FeaturesSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 uppercase">
             Características <span className="text-secondary">Principales</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
