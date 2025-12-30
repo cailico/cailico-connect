@@ -22,10 +22,20 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            className="mb-8"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-medium mb-6">
-              <span className="w-2 h-2 rounded-full bg-leaf animate-pulse" />
-              IA para Instituciones Educativas
+            <span className="relative inline-flex items-center gap-3 px-6 py-2.5 text-secondary text-sm font-bold tracking-wider uppercase">
+              {/* Left decorative line */}
+              <span className="absolute left-0 top-0 h-full w-1 bg-secondary" />
+              <span className="absolute left-0 top-0 h-1 w-8 bg-secondary" />
+              <span className="absolute left-0 bottom-0 h-1 w-8 bg-secondary" />
+              
+              Sistema de Administración Integral
+              
+              {/* Right decorative line */}
+              <span className="absolute right-0 top-0 h-full w-1 bg-secondary" />
+              <span className="absolute right-0 top-0 h-1 w-8 bg-secondary" />
+              <span className="absolute right-0 bottom-0 h-1 w-8 bg-secondary" />
             </span>
           </motion.div>
 
@@ -37,7 +47,7 @@ const HeroSection = () => {
           >
             <span className="block text-white whitespace-nowrap">TRANSFORMA LA</span>
             <span className="block bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent whitespace-nowrap">COMUNICACIÓN DE TU</span>
-            <span className="block text-secondary whitespace-nowrap">INSTITUCIÓN CON IA</span>
+            <span className="block text-secondary whitespace-nowrap">ESCUELA CON IA</span>
           </motion.h1>
 
           <motion.p
@@ -46,8 +56,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Agentes inteligentes que conectan colegios, universidades, profesores,
-            estudiantes y padres de familia a través de WhatsApp
+            Diseñamos infraestructuras inteligentes para integrar la comunicación entre directivos, profesores, estudiantes y padres de familia. ¡Lleva tu institución a la nueva era!
           </motion.p>
 
           <motion.div
