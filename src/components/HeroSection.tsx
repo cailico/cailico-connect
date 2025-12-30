@@ -13,7 +13,7 @@ const HeroSection = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
       />
-      <div className="absolute inset-0 bg-navy/85" />
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 relative z-10">
@@ -30,13 +30,14 @@ const HeroSection = () => {
           </motion.div>
 
           <motion.h1
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight mb-6"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Transformamos la Comunicación Educativa con{" "}
-            <span className="text-secondary">Inteligencia Artificial</span>
+            <span className="block text-white">TRANSFORMA LA</span>
+            <span className="block bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent">COMUNICACIÓN DE TU</span>
+            <span className="block text-secondary">INSTITUCIÓN CON IA</span>
           </motion.h1>
 
           <motion.p
