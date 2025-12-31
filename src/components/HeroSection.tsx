@@ -18,6 +18,10 @@ const HeroSection = () => {
   
   const defaultOffset = defaultTextWidth / 2 + 6;
   const altOffset = altTextWidth / 2 + 6;
+  
+  // Constante de seguridad: distancia máxima que los corchetes pueden moverse hacia el centro
+  // (nunca deben cruzarse, así que el máximo es llegar justo al centro - 5px de margen)
+  const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
@@ -41,7 +45,9 @@ const HeroSection = () => {
   const currentOffset = showAltText ? altOffset : defaultOffset;
   
   // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
-  const animatedOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
+  // IMPORTANTE: Limitamos con maxSafeOffset para que los corchetes NUNCA puedan cruzarse
+  const rawOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
+  const animatedOffset = Math.min(rawOffset, maxSafeOffset);
 
   // Ejecutar animación cuando cambia el objetivo
   useEffect(() => {
@@ -150,8 +156,8 @@ const HeroSection = () => {
                 </motion.div>
 
                 {/* Texto */}
-                <div className="px-1.5 py-1">
-                  <span className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex ${textColor}`}>
+                <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
+                  <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
                     {currentText.split('').map((letter, index) => (
                       <span
                         key={`${showAltText}-${index}`}
