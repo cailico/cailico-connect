@@ -9,18 +9,19 @@ const HeroSection = () => {
 
   const handleMouseEnter = () => {
     setIsHovered(true);
-    // Después de que los corchetes se cierran (300ms), cambiar el texto
+    // Cambiar el texto cuando los corchetes están cerrados (400ms)
     setTimeout(() => {
       setShowAltText(true);
-    }, 300);
+    }, 400);
   };
 
   const handleMouseLeave = () => {
+    // Primero cerrar los corchetes
     setIsHovered(false);
-    // Después de que los corchetes se cierran (300ms), cambiar el texto de vuelta
+    // Cambiar el texto cuando los corchetes están cerrados
     setTimeout(() => {
       setShowAltText(false);
-    }, 300);
+    }, 400);
   };
 
   return (
@@ -44,80 +45,59 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            {/* Badge con corchetes animados */}
+            {/* Badge con corchetes animados - efecto puertas corredizas */}
             <div 
-              className="relative inline-flex items-center justify-center px-8 py-3 cursor-pointer"
+              className="relative inline-flex items-center justify-center h-12 cursor-pointer"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              {/* Corchete izquierdo */}
+              {/* Corchete izquierdo - L invertida (línea arriba) */}
               <motion.div
-                className="absolute left-0 top-0 bottom-0 flex flex-col justify-between"
+                className="absolute left-0 top-0 h-full z-20 bg-black/50"
+                style={{ width: 'calc(50% - 180px)' }}
                 animate={{ 
-                  x: isHovered ? "calc(50% - 4px)" : 0,
-                  left: isHovered ? "50%" : 0
+                  x: isHovered ? 'calc(100% + 180px)' : 0
                 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                {/* Top L */}
-                <div className="relative">
-                  <span className="block w-4 h-[2px] bg-secondary rounded-tl-[4px]" />
-                  <span className="absolute left-0 top-0 w-[2px] h-4 bg-secondary rounded-tl-[4px]" />
-                </div>
-                {/* Bottom L */}
-                <div className="relative">
-                  <span className="block w-4 h-[2px] bg-secondary rounded-bl-[4px]" />
-                  <span className="absolute left-0 bottom-0 w-[2px] h-4 bg-secondary rounded-bl-[4px]" />
+                <div className="absolute right-0 top-0 bottom-0 w-6">
+                  {/* Línea vertical */}
+                  <span className="absolute right-0 top-0 bottom-0 w-[2px] bg-secondary" />
+                  {/* Línea horizontal arriba */}
+                  <span className="absolute right-0 top-0 w-6 h-[2px] bg-secondary" />
                 </div>
               </motion.div>
 
-              {/* Corchete derecho */}
+              {/* Corchete derecho - L (línea abajo) */}
               <motion.div
-                className="absolute right-0 top-0 bottom-0 flex flex-col justify-between"
+                className="absolute right-0 top-0 h-full z-20 bg-black/50"
+                style={{ width: 'calc(50% - 180px)' }}
                 animate={{ 
-                  x: isHovered ? "calc(-50% + 4px)" : 0,
-                  right: isHovered ? "50%" : 0
+                  x: isHovered ? 'calc(-100% - 180px)' : 0
                 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                {/* Top L invertida */}
-                <div className="relative">
-                  <span className="block w-4 h-[2px] bg-secondary rounded-tr-[4px] ml-auto" />
-                  <span className="absolute right-0 top-0 w-[2px] h-4 bg-secondary rounded-tr-[4px]" />
-                </div>
-                {/* Bottom L invertida */}
-                <div className="relative">
-                  <span className="block w-4 h-[2px] bg-secondary rounded-br-[4px] ml-auto" />
-                  <span className="absolute right-0 bottom-0 w-[2px] h-4 bg-secondary rounded-br-[4px]" />
+                <div className="absolute left-0 top-0 bottom-0 w-6">
+                  {/* Línea vertical */}
+                  <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-secondary" />
+                  {/* Línea horizontal abajo */}
+                  <span className="absolute left-0 bottom-0 w-6 h-[2px] bg-secondary" />
                 </div>
               </motion.div>
 
-              {/* Texto */}
-              <AnimatePresence mode="wait">
-                {!showAltText ? (
-                  <motion.span
-                    key="original"
-                    className="text-secondary text-sm font-bold tracking-wider uppercase px-5"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: isHovered ? 0 : 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    IA para Instituciones Educativas
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="alternate"
-                    className="text-white text-sm font-bold tracking-wider uppercase px-5"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: !isHovered ? 0 : 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2, delay: 0.1 }}
-                  >
-                    Reportes, notas al instante, ¡y mucho más!
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              {/* Contenedor de texto con padding para los corchetes */}
+              <div className="px-8 flex items-center justify-center min-w-[360px]">
+                <span 
+                  className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap transition-colors duration-0 ${
+                    showAltText ? 'text-white' : 'text-secondary'
+                  }`}
+                >
+                  {showAltText 
+                    ? "Reportes, notas al instante, ¡y mucho más!" 
+                    : "IA para Instituciones Educativas"
+                  }
+                </span>
+              </div>
             </div>
           </motion.div>
 
