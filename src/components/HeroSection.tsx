@@ -8,9 +8,9 @@ const HeroSection = () => {
   const [showAltText, setShowAltText] = useState(false);
   const [lettersVisible, setLettersVisible] = useState(true);
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
-  const [animatedOffset, setAnimatedOffset] = useState(0);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
+  const closingOffsetRef = useRef(0);
   
   // Pre-calcular anchos para ambos textos (medidos manualmente)
   const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
@@ -25,9 +25,9 @@ const HeroSection = () => {
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
 
-  // Inicializar offset
+  // Inicializar el ref
   useEffect(() => {
-    setAnimatedOffset(defaultOffset);
+    closingOffsetRef.current = defaultOffset;
   }, []);
 
   // Limpiar timeouts
@@ -36,6 +36,12 @@ const HeroSection = () => {
       if (animationRef.current) clearTimeout(animationRef.current);
     };
   }, []);
+
+  // Calcular el offset actual basado en el texto mostrado (solo cuando está abierto)
+  const currentOffset = showAltText ? altOffset : defaultOffset;
+  
+  // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
+  const animatedOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
 
   // Ejecutar animación cuando cambia el objetivo
   useEffect(() => {
@@ -48,6 +54,9 @@ const HeroSection = () => {
     
     if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
 
+    // Congelar el offset actual para la animación de cierre
+    closingOffsetRef.current = showAltText ? altOffset : defaultOffset;
+
     // Fase 1: Ocultar letras (afuera hacia adentro)
     setLettersVisible(false);
 
@@ -55,16 +64,15 @@ const HeroSection = () => {
     animationRef.current = setTimeout(() => {
       setBracketsClosed(true);
       
-      // Fase 3: Cambiar texto Y offset cuando los corchetes están completamente cerrados
+      // Fase 3: Cuando los corchetes están completamente cerrados, cambiar texto
       animationRef.current = setTimeout(() => {
         const currentTarget = isHoveredRef.current ? 'alt' : 'default';
         const newShowAlt = currentTarget === 'alt';
         
-        // Actualizar el offset ANTES de cambiar el texto y abrir los corchetes
-        setAnimatedOffset(newShowAlt ? altOffset : defaultOffset);
+        // Cambiar el texto mientras los corchetes están cerrados
         setShowAltText(newShowAlt);
         
-        // Fase 4: Abrir corchetes inmediatamente después del cambio
+        // Fase 4: Abrir corchetes (el nuevo offset se usará automáticamente cuando bracketsClosed sea false)
         setBracketsClosed(false);
         
         // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
