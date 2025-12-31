@@ -8,20 +8,11 @@ const HeroSection = () => {
   const [showAltText, setShowAltText] = useState(false);
   const [lettersVisible, setLettersVisible] = useState(true);
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
+  const [textWidth, setTextWidth] = useState(0);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
   const closingOffsetRef = useRef(0);
-  
-  // Pre-calcular anchos para ambos textos (medidos manualmente)
-  const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
-  const altTextWidth = 380; // "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!"
-  
-  const defaultOffset = defaultTextWidth / 2 + 6;
-  const altOffset = altTextWidth / 2 + 6;
-  
-  // Constante de seguridad: distancia máxima que los corchetes pueden moverse hacia el centro
-  // (nunca deben cruzarse, así que el máximo es llegar justo al centro - 5px de margen)
-  const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
+  const textRef = useRef<HTMLSpanElement>(null);
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
@@ -29,10 +20,16 @@ const HeroSection = () => {
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
 
-  // Inicializar el ref
+  // Medir el ancho del texto después de renderizarse
   useEffect(() => {
-    closingOffsetRef.current = defaultOffset;
-  }, []);
+    if (textRef.current) {
+      const width = textRef.current.offsetWidth;
+      setTextWidth(width);
+      if (!bracketsClosed) {
+        closingOffsetRef.current = width / 2 + 6;
+      }
+    }
+  }, [currentText, showAltText]);
 
   // Limpiar timeouts
   useEffect(() => {
@@ -41,13 +38,11 @@ const HeroSection = () => {
     };
   }, []);
 
-  // Calcular el offset actual basado en el texto mostrado (solo cuando está abierto)
-  const currentOffset = showAltText ? altOffset : defaultOffset;
+  // El offset se calcula dinámicamente basado en el ancho real del texto
+  const currentOffset = textWidth / 2 + 6;
   
-  // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
-  // IMPORTANTE: Limitamos con maxSafeOffset para que los corchetes NUNCA puedan cruzarse
-  const rawOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
-  const animatedOffset = Math.min(rawOffset, maxSafeOffset);
+  // Cuando está cerrado usa el valor congelado, cuando está abierto usa 0 (posición natural)
+  const animatedOffset = bracketsClosed ? closingOffsetRef.current : 0;
 
   // Ejecutar animación cuando cambia el objetivo
   useEffect(() => {
@@ -60,8 +55,8 @@ const HeroSection = () => {
     
     if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
 
-    // Congelar el offset actual para la animación de cierre
-    closingOffsetRef.current = showAltText ? altOffset : defaultOffset;
+    // Congelar el offset actual para la animación de cierre (usar el ancho actual medido)
+    closingOffsetRef.current = textWidth / 2 + 6;
 
     // Fase 1: Ocultar letras (afuera hacia adentro)
     setLettersVisible(false);
@@ -78,7 +73,7 @@ const HeroSection = () => {
         // Cambiar el texto mientras los corchetes están cerrados
         setShowAltText(newShowAlt);
         
-        // Fase 4: Abrir corchetes (el nuevo offset se usará automáticamente cuando bracketsClosed sea false)
+        // Fase 4: Abrir corchetes (cuando bracketsClosed es false, animatedOffset = 0)
         setBracketsClosed(false);
         
         // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
@@ -87,7 +82,7 @@ const HeroSection = () => {
         }, 150);
       }, 300);
     }, 150);
-  }, [targetText]);
+  }, [targetText, textWidth]);
 
   const handleMouseEnter = () => {
     isHoveredRef.current = true;
@@ -156,8 +151,11 @@ const HeroSection = () => {
                 </motion.div>
 
                 {/* Texto */}
-                <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
-                  <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
+                <div className="px-2 py-1">
+                  <span 
+                    ref={textRef}
+                    className={`text-[clamp(0.75rem,3.5vw,0.875rem)] font-bold tracking-wider uppercase whitespace-nowrap inline-flex ${textColor}`}
+                  >
                     {currentText.split('').map((letter, index) => (
                       <span
                         key={`${showAltText}-${index}`}
