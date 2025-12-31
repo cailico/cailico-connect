@@ -6,18 +6,25 @@ import heroImage from "@/assets/hero-classroom.png";
 const HeroSection = () => {
   const [bracketsClosed, setBracketsClosed] = useState(false);
   const [showAltText, setShowAltText] = useState(false);
+  const [lettersVisible, setLettersVisible] = useState(true);
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [textWidth, setTextWidth] = useState(0);
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
-  // Ancho fijo para evitar saltos (basado en el texto más largo)
-  const containerWidth = 380;
-  
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
+
+  // Medir el ancho del texto actual
+  useEffect(() => {
+    if (textRef.current) {
+      setTextWidth(textRef.current.offsetWidth);
+    }
+  }, [currentText]);
 
   // Limpiar timeouts
   useEffect(() => {
@@ -28,7 +35,6 @@ const HeroSection = () => {
 
   // Ejecutar animación cuando cambia el objetivo
   useEffect(() => {
-    // Limpiar timeout anterior
     if (animationRef.current) {
       clearTimeout(animationRef.current);
       animationRef.current = null;
@@ -36,19 +42,31 @@ const HeroSection = () => {
 
     const shouldShowAlt = targetText === 'alt';
     
-    // Si ya estamos en el estado correcto, no hacer nada
-    if (showAltText === shouldShowAlt && !bracketsClosed) return;
+    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
 
-    // Cerrar corchetes
-    setBracketsClosed(true);
+    // Fase 1: Ocultar letras (afuera hacia adentro)
+    setLettersVisible(false);
 
-    // Después de cerrar, cambiar texto y abrir
+    // Fase 2: Cerrar corchetes después de que las letras empiecen a desaparecer
     animationRef.current = setTimeout(() => {
-      // Verificar si todavía queremos este estado
-      const currentTarget = isHoveredRef.current ? 'alt' : 'default';
-      setShowAltText(currentTarget === 'alt');
-      setBracketsClosed(false);
-    }, 350);
+      setBracketsClosed(true);
+      
+      // Fase 3: Cambiar texto cuando los corchetes están cerrados
+      animationRef.current = setTimeout(() => {
+        const currentTarget = isHoveredRef.current ? 'alt' : 'default';
+        setShowAltText(currentTarget === 'alt');
+        
+        // Fase 4: Abrir corchetes
+        animationRef.current = setTimeout(() => {
+          setBracketsClosed(false);
+          
+          // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
+          animationRef.current = setTimeout(() => {
+            setLettersVisible(true);
+          }, 100);
+        }, 50);
+      }, 250);
+    }, 150);
   }, [targetText]);
 
   const handleMouseEnter = () => {
@@ -63,18 +81,21 @@ const HeroSection = () => {
 
   // Animación de letras
   const getLetterStyle = (index: number, total: number) => {
-    const center = (total - 1) / 2;
     const distanceFromEdge = Math.min(index, total - 1 - index);
     const maxDistance = Math.floor(total / 2);
     
-    const closingDelay = distanceFromEdge * 0.006;
-    const openingDelay = (maxDistance - distanceFromEdge) * 0.006;
+    // Cuando se ocultan: de afuera hacia adentro (los extremos primero)
+    const hidingDelay = distanceFromEdge * 0.008;
+    // Cuando aparecen: del centro hacia afuera (el centro primero)
+    const showingDelay = (maxDistance - distanceFromEdge) * 0.008;
     
     return {
-      opacity: bracketsClosed ? 0 : 1,
-      transition: `opacity 0.1s ease ${bracketsClosed ? closingDelay : openingDelay}s`
+      opacity: lettersVisible ? 1 : 0,
+      transition: `opacity 0.12s ease ${lettersVisible ? showingDelay : hidingDelay}s`
     };
   };
+
+  const bracketOffset = textWidth / 2 + 6;
 
   return (
     <section
@@ -103,11 +124,11 @@ const HeroSection = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <div className="flex items-center">
+              <div className="flex items-center justify-center">
                 {/* Corchete IZQUIERDO ┌ */}
                 <motion.div
                   className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? containerWidth / 2 : 0 }}
+                  animate={{ x: bracketsClosed ? bracketOffset : 0 }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   style={{ zIndex: 10 }}
                 >
@@ -116,12 +137,12 @@ const HeroSection = () => {
                   </svg>
                 </motion.div>
 
-                {/* Texto con ancho fijo */}
-                <div 
-                  className="px-1.5 py-1 flex justify-center"
-                  style={{ width: containerWidth }}
-                >
-                  <span className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex ${textColor}`}>
+                {/* Texto */}
+                <div className="px-1.5 py-1">
+                  <span 
+                    ref={textRef}
+                    className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex ${textColor}`}
+                  >
                     {currentText.split('').map((letter, index) => (
                       <span
                         key={`${showAltText}-${index}`}
@@ -136,7 +157,7 @@ const HeroSection = () => {
                 {/* Corchete DERECHO ┘ */}
                 <motion.div
                   className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? -containerWidth / 2 : 0 }}
+                  animate={{ x: bracketsClosed ? -bracketOffset : 0 }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   style={{ zIndex: 10 }}
                 >
