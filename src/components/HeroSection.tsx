@@ -8,10 +8,11 @@ const HeroSection = () => {
   const [showAltText, setShowAltText] = useState(false);
   const [lettersVisible, setLettersVisible] = useState(true);
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
+  const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
   const textRef = useRef<HTMLSpanElement>(null);
-  const [textWidth, setTextWidth] = useState(0);
+  const [bracketOffset, setBracketOffset] = useState(0);
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
@@ -19,12 +20,12 @@ const HeroSection = () => {
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
 
-  // Medir el ancho del texto actual
+  // Medir y actualizar el offset solo cuando NO estamos animando
   useEffect(() => {
-    if (textRef.current) {
-      setTextWidth(textRef.current.offsetWidth);
+    if (!isAnimating && textRef.current) {
+      setBracketOffset(textRef.current.offsetWidth / 2 + 6);
     }
-  }, [currentText]);
+  }, [currentText, isAnimating]);
 
   // Limpiar timeouts
   useEffect(() => {
@@ -42,7 +43,10 @@ const HeroSection = () => {
 
     const shouldShowAlt = targetText === 'alt';
     
-    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
+    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible && !isAnimating) return;
+
+    // Marcar que estamos animando para congelar el offset
+    setIsAnimating(true);
 
     // Fase 1: Ocultar letras (afuera hacia adentro)
     setLettersVisible(false);
@@ -63,6 +67,8 @@ const HeroSection = () => {
           // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
           animationRef.current = setTimeout(() => {
             setLettersVisible(true);
+            // Animación completa, permitir actualización del offset
+            setIsAnimating(false);
           }, 100);
         }, 50);
       }, 250);
@@ -94,8 +100,6 @@ const HeroSection = () => {
       transition: `opacity 0.12s ease ${lettersVisible ? showingDelay : hidingDelay}s`
     };
   };
-
-  const bracketOffset = textWidth / 2 + 6;
 
   return (
     <section
