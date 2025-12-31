@@ -8,16 +8,10 @@ const HeroSection = () => {
   const [showAltText, setShowAltText] = useState(false);
   const [lettersVisible, setLettersVisible] = useState(true);
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
+  const [leftBracketX, setLeftBracketX] = useState(0);
+  const [rightBracketX, setRightBracketX] = useState(0);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
-  const closingOffsetRef = useRef(0);
-  
-  // Pre-calcular anchos para ambos textos (medidos manualmente)
-  const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
-  const altTextWidth = 380; // "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!"
-  
-  const defaultOffset = defaultTextWidth / 2 + 6;
-  const altOffset = altTextWidth / 2 + 6;
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
@@ -25,23 +19,12 @@ const HeroSection = () => {
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
 
-  // Inicializar el ref
-  useEffect(() => {
-    closingOffsetRef.current = defaultOffset;
-  }, []);
-
   // Limpiar timeouts
   useEffect(() => {
     return () => {
       if (animationRef.current) clearTimeout(animationRef.current);
     };
   }, []);
-
-  // Calcular el offset actual basado en el texto mostrado (solo cuando está abierto)
-  const currentOffset = showAltText ? altOffset : defaultOffset;
-  
-  // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
-  const animatedOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
 
   // Ejecutar animación cuando cambia el objetivo
   useEffect(() => {
@@ -54,17 +37,19 @@ const HeroSection = () => {
     
     if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
 
-    // Congelar el offset actual para la animación de cierre
-    closingOffsetRef.current = showAltText ? altOffset : defaultOffset;
-
     // Fase 1: Ocultar letras (afuera hacia adentro)
     setLettersVisible(false);
 
-    // Fase 2: Cerrar corchetes después de que las letras empiecen a desaparecer
+    // Fase 2: Cerrar corchetes - mover ambos hacia el centro (posición 0)
     animationRef.current = setTimeout(() => {
       setBracketsClosed(true);
+      // CLAVE: Ambos corchetes se mueven hacia el centro (x=0 relativo a su posición natural)
+      // El izquierdo NO puede ir más a la derecha que su posición natural
+      // El derecho NO puede ir más a la izquierda que su posición natural
+      setLeftBracketX(0);
+      setRightBracketX(0);
       
-      // Fase 3: Cuando los corchetes están completamente cerrados, cambiar texto
+      // Fase 3: Cuando los corchetes están cerrados, cambiar texto
       animationRef.current = setTimeout(() => {
         const currentTarget = isHoveredRef.current ? 'alt' : 'default';
         const newShowAlt = currentTarget === 'alt';
@@ -72,10 +57,10 @@ const HeroSection = () => {
         // Cambiar el texto mientras los corchetes están cerrados
         setShowAltText(newShowAlt);
         
-        // Fase 4: Abrir corchetes (el nuevo offset se usará automáticamente cuando bracketsClosed sea false)
+        // Fase 4: Abrir corchetes - volver a sus posiciones naturales (0)
         setBracketsClosed(false);
         
-        // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
+        // Fase 5: Mostrar letras
         animationRef.current = setTimeout(() => {
           setLettersVisible(true);
         }, 150);
@@ -98,9 +83,7 @@ const HeroSection = () => {
     const distanceFromEdge = Math.min(index, total - 1 - index);
     const maxDistance = Math.floor(total / 2);
     
-    // Cuando se ocultan: de afuera hacia adentro (los extremos primero)
     const hidingDelay = distanceFromEdge * 0.008;
-    // Cuando aparecen: del centro hacia afuera (el centro primero)
     const showingDelay = (maxDistance - distanceFromEdge) * 0.008;
     
     return {
@@ -130,50 +113,56 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            {/* Badge con corchetes animados */}
+            {/* Badge con corchetes animados - responsive */}
             <div 
-              className="relative inline-flex items-center justify-center cursor-pointer"
+              className="relative inline-flex items-center justify-center cursor-pointer max-w-full overflow-hidden px-2"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
               <div className="flex items-center justify-center">
-                {/* Corchete IZQUIERDO ┌ */}
-                <motion.div
+                {/* Corchete IZQUIERDO ┌ - siempre en su posición natural */}
+                <div
                   className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? animatedOffset : 0 }}
-                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   style={{ zIndex: 10 }}
                 >
                   <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
                     <path d="M1 1 L9 1 M1 1 L1 19" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
                   </svg>
-                </motion.div>
-
-                {/* Texto */}
-                <div className="px-1.5 py-1">
-                  <span className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex ${textColor}`}>
-                    {currentText.split('').map((letter, index) => (
-                      <span
-                        key={`${showAltText}-${index}`}
-                        style={getLetterStyle(index, currentText.length)}
-                      >
-                        {letter === ' ' ? '\u00A0' : letter}
-                      </span>
-                    ))}
-                  </span>
                 </div>
 
-                {/* Corchete DERECHO ┘ */}
-                <motion.div
-                  className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? -animatedOffset : 0 }}
+                {/* Texto - con animación de ancho */}
+                <motion.div 
+                  className="overflow-hidden"
+                  animate={{ 
+                    width: bracketsClosed ? 0 : 'auto',
+                    paddingLeft: bracketsClosed ? 0 : 6,
+                    paddingRight: bracketsClosed ? 0 : 6
+                  }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  <div className="py-1">
+                    <span className={`text-xs sm:text-sm font-bold tracking-wider uppercase flex ${textColor}`}>
+                      {currentText.split('').map((letter, index) => (
+                        <span
+                          key={`${showAltText}-${index}`}
+                          style={getLetterStyle(index, currentText.length)}
+                        >
+                          {letter === ' ' ? '\u00A0' : letter}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* Corchete DERECHO ┘ - siempre en su posición natural */}
+                <div
+                  className="flex-shrink-0"
                   style={{ zIndex: 10 }}
                 >
                   <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
                     <path d="M9 19 L1 19 M9 19 L9 1" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
                   </svg>
-                </motion.div>
+                </div>
               </div>
             </div>
           </motion.div>
