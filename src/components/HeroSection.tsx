@@ -235,8 +235,8 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Bottom Gradient - starts lower to not cover buttons */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/60 to-transparent" />
+      {/* Bottom Gradient - minimal height to not cover content */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background via-background/40 to-transparent" />
     </section>
   );
 };
