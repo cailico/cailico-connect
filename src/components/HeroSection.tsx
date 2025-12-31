@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { MessageCircle, Bot } from "lucide-react";
 import heroImage from "@/assets/hero-classroom.png";
 
 const HeroSection = () => {
@@ -210,18 +211,32 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <Button variant="hero" size="lg" asChild>
-              <a href="#contact">Solicitar Demo</a>
+            <Button 
+              size="lg" 
+              className="bg-whatsapp hover:bg-whatsapp-dark text-white font-semibold rounded-full px-8"
+              asChild
+            >
+              <a href="#contact" className="flex items-center gap-2">
+                <MessageCircle className="w-5 h-5" />
+                Contáctanos
+              </a>
             </Button>
-            <Button variant="hero-outline" size="lg" asChild>
-              <a href="#how-it-works">Ver cómo funciona</a>
+            <Button 
+              size="lg" 
+              className="bg-secondary hover:bg-orange-dark text-white font-semibold rounded-full px-8"
+              asChild
+            >
+              <a href="#contact" className="flex items-center gap-2">
+                <Bot className="w-5 h-5" />
+                Chatea con la IA
+              </a>
             </Button>
           </motion.div>
         </div>
       </div>
 
-      {/* Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
+      {/* Bottom Gradient - starts lower to not cover buttons */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/60 to-transparent" />
     </section>
   );
 };

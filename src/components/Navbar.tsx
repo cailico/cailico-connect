@@ -18,8 +18,8 @@ const Navbar = () => {
 
   const navItems = [
     { label: "INICIO", href: "#hero" },
-    { label: "CARACTERÍSTICAS", href: "#features" },
-    { label: "CÓMO FUNCIONA", href: "#how-it-works" },
+    { label: "NOSOTROS", href: "#what-is" },
+    { label: "NUESTROS SERVICIOS", href: "#features" },
     { label: "CASOS DE USO", href: "#use-cases" },
     { label: "CONTACTO", href: "#contact" },
   ];
@@ -61,7 +61,7 @@ const Navbar = () => {
             ))}
             {/* CTA Button inline with nav */}
             <Button variant="hero" size="sm" asChild>
-              <a href="#contact">Solicitar Demo</a>
+              <a href="#contact">Agendar Reunión</a>
             </Button>
           </div>
 
@@ -98,7 +98,7 @@ const Navbar = () => {
               </a>
             ))}
             <Button variant="hero" size="sm" className="w-full mt-4" asChild>
-              <a href="#contact">SOLICITAR DEMO</a>
+              <a href="#contact">AGENDAR REUNIÓN</a>
             </Button>
           </motion.div>
         )}

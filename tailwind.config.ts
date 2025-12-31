@@ -74,6 +74,10 @@ export default {
           DEFAULT: "hsl(var(--leaf))",
           light: "hsl(var(--leaf-light))",
         },
+        whatsapp: {
+          DEFAULT: "hsl(var(--whatsapp))",
+          dark: "hsl(var(--whatsapp-dark))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
