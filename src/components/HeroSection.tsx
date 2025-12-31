@@ -10,29 +10,14 @@ const HeroSection = () => {
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
-  const closingOffsetRef = useRef(0);
   
-  // Pre-calcular anchos para ambos textos (medidos manualmente)
-  const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
-  const altTextWidth = 380; // "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!"
   
-  const defaultOffset = defaultTextWidth / 2 + 6;
-  const altOffset = altTextWidth / 2 + 6;
-  
-  // Constante de seguridad: distancia máxima que los corchetes pueden moverse hacia el centro
-  // (nunca deben cruzarse, así que el máximo es llegar justo al centro - 5px de margen)
-  const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
-
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
 
-  // Inicializar el ref
-  useEffect(() => {
-    closingOffsetRef.current = defaultOffset;
-  }, []);
 
   // Limpiar timeouts
   useEffect(() => {
@@ -41,13 +26,6 @@ const HeroSection = () => {
     };
   }, []);
 
-  // Calcular el offset actual basado en el texto mostrado (solo cuando está abierto)
-  const currentOffset = showAltText ? altOffset : defaultOffset;
-  
-  // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
-  // IMPORTANTE: Limitamos con maxSafeOffset para que los corchetes NUNCA puedan cruzarse
-  const rawOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
-  const animatedOffset = Math.min(rawOffset, maxSafeOffset);
 
   // Ejecutar animación cuando cambia el objetivo
   useEffect(() => {
@@ -60,8 +38,6 @@ const HeroSection = () => {
     
     if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
 
-    // Congelar el offset actual para la animación de cierre
-    closingOffsetRef.current = showAltText ? altOffset : defaultOffset;
 
     // Fase 1: Ocultar letras (afuera hacia adentro)
     setLettersVisible(false);
@@ -143,10 +119,13 @@ const HeroSection = () => {
               onMouseLeave={handleMouseLeave}
             >
               <div className="flex items-center justify-center">
-                {/* Corchete IZQUIERDO ┌ */}
+                {/* Corchete IZQUIERDO ┌ - se mueve a posición fija central cuando cerrado */}
                 <motion.div
                   className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? animatedOffset : 0 }}
+                  animate={{ 
+                    x: bracketsClosed ? "calc(50vw - 50% - 15px)" : 0,
+                    position: bracketsClosed ? "relative" : "relative"
+                  }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   style={{ zIndex: 10 }}
                 >
@@ -155,9 +134,17 @@ const HeroSection = () => {
                   </svg>
                 </motion.div>
 
-                {/* Texto */}
-                <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
-                  <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
+                {/* Texto - responsivo */}
+                <motion.div 
+                  className="px-1.5 py-1"
+                  animate={{ 
+                    width: bracketsClosed ? 0 : "auto",
+                    opacity: bracketsClosed ? 0 : 1
+                  }}
+                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <span className={`text-[clamp(0.55rem,2.2vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center whitespace-nowrap ${textColor}`}>
                     {currentText.split('').map((letter, index) => (
                       <span
                         key={`${showAltText}-${index}`}
@@ -167,12 +154,14 @@ const HeroSection = () => {
                       </span>
                     ))}
                   </span>
-                </div>
+                </motion.div>
 
-                {/* Corchete DERECHO ┘ */}
+                {/* Corchete DERECHO ┘ - se mueve a posición fija central cuando cerrado */}
                 <motion.div
                   className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? -animatedOffset : 0 }}
+                  animate={{ 
+                    x: bracketsClosed ? "calc(-50vw + 50% + 15px)" : 0
+                  }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   style={{ zIndex: 10 }}
                 >
