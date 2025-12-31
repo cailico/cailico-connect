@@ -8,6 +8,7 @@ const HeroSection = () => {
   const [showAltText, setShowAltText] = useState(false);
   const [lettersVisible, setLettersVisible] = useState(true);
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
+  const [animatedOffset, setAnimatedOffset] = useState(0);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
   
@@ -15,15 +16,19 @@ const HeroSection = () => {
   const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
   const altTextWidth = 380; // "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!"
   
-  // Usar el ancho del texto que se está mostrando actualmente
-  const currentTextWidth = showAltText ? altTextWidth : defaultTextWidth;
-  const bracketOffset = currentTextWidth / 2 + 6;
+  const defaultOffset = defaultTextWidth / 2 + 6;
+  const altOffset = altTextWidth / 2 + 6;
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
+
+  // Inicializar offset
+  useEffect(() => {
+    setAnimatedOffset(defaultOffset);
+  }, []);
 
   // Limpiar timeouts
   useEffect(() => {
@@ -50,12 +55,16 @@ const HeroSection = () => {
     animationRef.current = setTimeout(() => {
       setBracketsClosed(true);
       
-      // Fase 3: Cambiar texto cuando los corchetes están completamente cerrados
+      // Fase 3: Cambiar texto Y offset cuando los corchetes están completamente cerrados
       animationRef.current = setTimeout(() => {
         const currentTarget = isHoveredRef.current ? 'alt' : 'default';
-        setShowAltText(currentTarget === 'alt');
+        const newShowAlt = currentTarget === 'alt';
         
-        // Fase 4: Abrir corchetes inmediatamente después del cambio de texto
+        // Actualizar el offset ANTES de cambiar el texto y abrir los corchetes
+        setAnimatedOffset(newShowAlt ? altOffset : defaultOffset);
+        setShowAltText(newShowAlt);
+        
+        // Fase 4: Abrir corchetes inmediatamente después del cambio
         setBracketsClosed(false);
         
         // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
@@ -123,7 +132,7 @@ const HeroSection = () => {
                 {/* Corchete IZQUIERDO ┌ */}
                 <motion.div
                   className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? bracketOffset : 0 }}
+                  animate={{ x: bracketsClosed ? animatedOffset : 0 }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   style={{ zIndex: 10 }}
                 >
@@ -149,7 +158,7 @@ const HeroSection = () => {
                 {/* Corchete DERECHO ┘ */}
                 <motion.div
                   className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? -bracketOffset : 0 }}
+                  animate={{ x: bracketsClosed ? -animatedOffset : 0 }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   style={{ zIndex: 10 }}
                 >
