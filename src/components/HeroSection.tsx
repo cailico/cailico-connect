@@ -1,10 +1,119 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-classroom.png";
 
 const HeroSection = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [bracketsClosed, setBracketsClosed] = useState(false);
+  const [showAltText, setShowAltText] = useState(false);
+  const [lettersVisible, setLettersVisible] = useState(true);
+  const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
+  const animationRef = useRef<NodeJS.Timeout | null>(null);
+  const isHoveredRef = useRef(false);
+  const closingOffsetRef = useRef(0);
+  
+  // Pre-calcular anchos para ambos textos (medidos manualmente)
+  const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
+  const altTextWidth = 380; // "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!"
+  
+  const defaultOffset = defaultTextWidth / 2 + 6;
+  const altOffset = altTextWidth / 2 + 6;
+  
+  // Constante de seguridad: distancia máxima que los corchetes pueden moverse hacia el centro
+  // (nunca deben cruzarse, así que el máximo es llegar justo al centro - 5px de margen)
+  const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
+
+  const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
+  const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
+  
+  const currentText = showAltText ? altText : defaultText;
+  const textColor = showAltText ? "text-white" : "text-secondary";
+
+  // Inicializar el ref
+  useEffect(() => {
+    closingOffsetRef.current = defaultOffset;
+  }, []);
+
+  // Limpiar timeouts
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) clearTimeout(animationRef.current);
+    };
+  }, []);
+
+  // Calcular el offset actual basado en el texto mostrado (solo cuando está abierto)
+  const currentOffset = showAltText ? altOffset : defaultOffset;
+  
+  // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
+  // IMPORTANTE: Limitamos con maxSafeOffset para que los corchetes NUNCA puedan cruzarse
+  const rawOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
+  const animatedOffset = Math.min(rawOffset, maxSafeOffset);
+
+  // Ejecutar animación cuando cambia el objetivo
+  useEffect(() => {
+    if (animationRef.current) {
+      clearTimeout(animationRef.current);
+      animationRef.current = null;
+    }
+
+    const shouldShowAlt = targetText === 'alt';
+    
+    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
+
+    // Congelar el offset actual para la animación de cierre
+    closingOffsetRef.current = showAltText ? altOffset : defaultOffset;
+
+    // Fase 1: Ocultar letras (afuera hacia adentro)
+    setLettersVisible(false);
+
+    // Fase 2: Cerrar corchetes después de que las letras empiecen a desaparecer
+    animationRef.current = setTimeout(() => {
+      setBracketsClosed(true);
+      
+      // Fase 3: Cuando los corchetes están completamente cerrados, cambiar texto
+      animationRef.current = setTimeout(() => {
+        const currentTarget = isHoveredRef.current ? 'alt' : 'default';
+        const newShowAlt = currentTarget === 'alt';
+        
+        // Cambiar el texto mientras los corchetes están cerrados
+        setShowAltText(newShowAlt);
+        
+        // Fase 4: Abrir corchetes (el nuevo offset se usará automáticamente cuando bracketsClosed sea false)
+        setBracketsClosed(false);
+        
+        // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
+        animationRef.current = setTimeout(() => {
+          setLettersVisible(true);
+        }, 150);
+      }, 300);
+    }, 150);
+  }, [targetText]);
+
+  const handleMouseEnter = () => {
+    isHoveredRef.current = true;
+    setTargetText('alt');
+  };
+
+  const handleMouseLeave = () => {
+    isHoveredRef.current = false;
+    setTargetText('default');
+  };
+
+  // Animación de letras
+  const getLetterStyle = (index: number, total: number) => {
+    const distanceFromEdge = Math.min(index, total - 1 - index);
+    const maxDistance = Math.floor(total / 2);
+    
+    // Cuando se ocultan: de afuera hacia adentro (los extremos primero)
+    const hidingDelay = distanceFromEdge * 0.008;
+    // Cuando aparecen: del centro hacia afuera (el centro primero)
+    const showingDelay = (maxDistance - distanceFromEdge) * 0.008;
+    
+    return {
+      opacity: lettersVisible ? 1 : 0,
+      transition: `opacity 0.12s ease ${lettersVisible ? showingDelay : hidingDelay}s`
+    };
+  };
 
   return (
     <section
@@ -27,75 +136,50 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            {/* Badge con efecto de barra negra */}
+            {/* Badge con corchetes animados */}
             <div 
-              className="relative w-full py-4 px-4 cursor-pointer"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              className="relative inline-flex items-center justify-center cursor-pointer"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
-              <div className="relative flex items-center justify-center min-h-[48px] md:min-h-[56px]">
-                
-                {/* TEXTO INICIAL - SIEMPRE VISIBLE */}
-                <span className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-secondary text-center">
-                  IA PARA INSTITUCIONES EDUCATIVAS
-                </span>
+              <div className="flex items-center justify-center">
+                {/* Corchete IZQUIERDO ┌ */}
+                <motion.div
+                  className="flex-shrink-0"
+                  animate={{ x: bracketsClosed ? animatedOffset : 0 }}
+                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ zIndex: 10 }}
+                >
+                  <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
+                    <path d="M1 1 L9 1 M1 1 L1 19" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
+                  </svg>
+                </motion.div>
 
-                {/* CAPA DE HOVER - SE SOBREPONE AL TEXTO */}
-                <AnimatePresence>
-                  {isHovered && (
-                    <motion.div
-                      key="hover-layer"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 flex items-center justify-center"
-                    >
-                      {/* Cuadro verde izquierdo */}
-                      <motion.div
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute left-0 w-3 h-12 md:h-14 bg-[#2D7A3E]"
-                        style={{ zIndex: 20 }}
-                      />
-
-                      {/* Barra negra que cubre el texto */}
-                      <motion.div
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: 1 }}
-                        exit={{ scaleX: 0 }}
-                        transition={{ duration: 0.8, ease: "easeInOut" }}
-                        className="absolute inset-0 bg-black/90 origin-left flex items-center justify-center"
-                        style={{ 
-                          borderTop: "4px solid #2D7A3E", 
-                          borderBottom: "4px solid #2D7A3E",
-                          zIndex: 15
-                        }}
+                {/* Texto */}
+                <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
+                  <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
+                    {currentText.split('').map((letter, index) => (
+                      <span
+                        key={`${showAltText}-${index}`}
+                        style={getLetterStyle(index, currentText.length)}
                       >
-                        {/* Texto blanco dentro de la barra */}
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.4, duration: 0.3 }}
-                          className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-white text-center px-4"
-                        >
-                          REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!
-                        </motion.span>
-                      </motion.div>
+                        {letter === ' ' ? '\u00A0' : letter}
+                      </span>
+                    ))}
+                  </span>
+                </div>
 
-                      {/* Cuadro verde derecho */}
-                      <motion.div
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute right-0 w-3 h-12 md:h-14 bg-[#2D7A3E]"
-                        style={{ zIndex: 20 }}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* Corchete DERECHO ┘ */}
+                <motion.div
+                  className="flex-shrink-0"
+                  animate={{ x: bracketsClosed ? -animatedOffset : 0 }}
+                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ zIndex: 10 }}
+                >
+                  <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
+                    <path d="M9 19 L1 19 M9 19 L9 1" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
+                  </svg>
+                </motion.div>
               </div>
             </div>
           </motion.div>
