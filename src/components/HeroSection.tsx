@@ -6,7 +6,11 @@ import heroImage from "@/assets/hero-classroom.png";
 const HeroSection = () => {
   const [bracketsClosed, setBracketsClosed] = useState(false);
   const [showAltText, setShowAltText] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [lettersVisible, setLettersVisible] = useState(true);
+  const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
+  const animationRef = useRef<NodeJS.Timeout | null>(null);
+  const isHoveredRef = useRef(false);
+  const closingOffsetRef = useRef(0);
   
   // Pre-calcular anchos para ambos textos (medidos manualmente)
   const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
@@ -21,50 +25,89 @@ const HeroSection = () => {
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
 
-  // Offset basado en el texto actual
-  const animatedOffset = showAltText ? altOffset : defaultOffset;
-
-  // Animación simplificada basada en hover
+  // Inicializar el ref
   useEffect(() => {
-    if (isHovered) {
-      setBracketsClosed(true);
-      
-      const closeTimer = setTimeout(() => {
-        setShowAltText(true);
-        
-        const openTimer = setTimeout(() => {
-          setBracketsClosed(false);
-        }, 50);
-        
-        return () => clearTimeout(openTimer);
-      }, 400);
-      
-      return () => clearTimeout(closeTimer);
-    } else {
-      setBracketsClosed(true);
-      
-      const closeTimer = setTimeout(() => {
-        setShowAltText(false);
-        
-        const openTimer = setTimeout(() => {
-          setBracketsClosed(false);
-        }, 50);
-        
-        return () => clearTimeout(openTimer);
-      }, 400);
-      
-      return () => clearTimeout(closeTimer);
+    closingOffsetRef.current = defaultOffset;
+  }, []);
+
+  // Limpiar timeouts
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) clearTimeout(animationRef.current);
+    };
+  }, []);
+
+  // Calcular el offset actual basado en el texto mostrado (solo cuando está abierto)
+  const currentOffset = showAltText ? altOffset : defaultOffset;
+  
+  // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
+  const animatedOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
+
+  // Ejecutar animación cuando cambia el objetivo
+  useEffect(() => {
+    if (animationRef.current) {
+      clearTimeout(animationRef.current);
+      animationRef.current = null;
     }
-  }, [isHovered]);
+
+    const shouldShowAlt = targetText === 'alt';
+    
+    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
+
+    // Congelar el offset actual para la animación de cierre
+    closingOffsetRef.current = showAltText ? altOffset : defaultOffset;
+
+    // Fase 1: Ocultar letras (afuera hacia adentro)
+    setLettersVisible(false);
+
+    // Fase 2: Cerrar corchetes después de que las letras empiecen a desaparecer
+    animationRef.current = setTimeout(() => {
+      setBracketsClosed(true);
+      
+      // Fase 3: Cuando los corchetes están completamente cerrados, cambiar texto
+      animationRef.current = setTimeout(() => {
+        const currentTarget = isHoveredRef.current ? 'alt' : 'default';
+        const newShowAlt = currentTarget === 'alt';
+        
+        // Cambiar el texto mientras los corchetes están cerrados
+        setShowAltText(newShowAlt);
+        
+        // Fase 4: Abrir corchetes (el nuevo offset se usará automáticamente cuando bracketsClosed sea false)
+        setBracketsClosed(false);
+        
+        // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
+        animationRef.current = setTimeout(() => {
+          setLettersVisible(true);
+        }, 150);
+      }, 300);
+    }, 150);
+  }, [targetText]);
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
+    isHoveredRef.current = true;
+    setTargetText('alt');
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
+    isHoveredRef.current = false;
+    setTargetText('default');
   };
 
+  // Animación de letras
+  const getLetterStyle = (index: number, total: number) => {
+    const distanceFromEdge = Math.min(index, total - 1 - index);
+    const maxDistance = Math.floor(total / 2);
+    
+    // Cuando se ocultan: de afuera hacia adentro (los extremos primero)
+    const hidingDelay = distanceFromEdge * 0.008;
+    // Cuando aparecen: del centro hacia afuera (el centro primero)
+    const showingDelay = (maxDistance - distanceFromEdge) * 0.008;
+    
+    return {
+      opacity: lettersVisible ? 1 : 0,
+      transition: `opacity 0.12s ease ${lettersVisible ? showingDelay : hidingDelay}s`
+    };
+  };
 
   return (
     <section
@@ -108,8 +151,15 @@ const HeroSection = () => {
 
                 {/* Texto */}
                 <div className="px-1.5 py-1">
-                  <span className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap ${textColor}`}>
-                    {currentText}
+                  <span className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex ${textColor}`}>
+                    {currentText.split('').map((letter, index) => (
+                      <span
+                        key={`${showAltText}-${index}`}
+                        style={getLetterStyle(index, currentText.length)}
+                      >
+                        {letter === ' ' ? '\u00A0' : letter}
+                      </span>
+                    ))}
                   </span>
                 </div>
 
