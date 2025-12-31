@@ -1,52 +1,115 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-classroom.png";
 
 const HeroSection = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [showAltText, setShowAltText] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [animationPhase, setAnimationPhase] = useState<'idle' | 'closing' | 'closed' | 'opening'>('idle');
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [textWidth, setTextWidth] = useState(320);
 
-  const mainText = "IA PARA INSTITUCIONES EDUCATIVAS";
-  const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
+  const texts = [
+    { text: "IA PARA INSTITUCIONES EDUCATIVAS", color: "text-secondary" },
+    { text: "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!", color: "text-white" }
+  ];
+
+  const currentText = texts[currentTextIndex];
+
+  // Measure text width
+  useEffect(() => {
+    if (textRef.current) {
+      const width = textRef.current.offsetWidth;
+      setTextWidth(width);
+    }
+  }, [currentTextIndex]);
 
   const handleMouseEnter = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
+    if (animationPhase !== 'idle') return;
     setIsHovered(true);
-    // Wait for brackets to close, then switch text
-    setTimeout(() => {
-      setShowAltText(true);
-    }, 400);
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 800);
+    setAnimationPhase('closing');
   };
 
   const handleMouseLeave = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setIsHovered(false);
-    setTimeout(() => {
-      setShowAltText(false);
-    }, 400);
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 800);
+    if (animationPhase !== 'idle') return;
+    setIsHovered(true);
+    setAnimationPhase('closing');
   };
 
-  const currentText = showAltText ? altText : mainText;
-  const textColor = showAltText ? "text-white" : "text-secondary";
+  // Animation sequence
+  useEffect(() => {
+    if (animationPhase === 'closing') {
+      // Wait for brackets to close
+      const timer = setTimeout(() => {
+        setAnimationPhase('closed');
+      }, 400);
+      return () => clearTimeout(timer);
+    }
 
-  // Letter animation - each letter fades based on hover state
-  const getLetterDelay = (index: number, total: number) => {
-    // When closing (hover), letters in the middle fade first
-    // When opening (not hover), letters appear from edges to center
+    if (animationPhase === 'closed') {
+      // Switch text and start opening
+      setCurrentTextIndex(prev => (prev + 1) % texts.length);
+      const timer = setTimeout(() => {
+        setAnimationPhase('opening');
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+
+    if (animationPhase === 'opening') {
+      // Wait for brackets to open
+      const timer = setTimeout(() => {
+        setAnimationPhase('idle');
+        setIsHovered(false);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [animationPhase, texts.length]);
+
+  // Letter animation - outside to inside when closing, inside to outside when opening
+  const getLetterOpacity = (index: number, total: number) => {
     const center = total / 2;
     const distanceFromCenter = Math.abs(index - center);
     const maxDistance = center;
-    return (1 - distanceFromCenter / maxDistance) * 0.2;
+    const normalizedDistance = distanceFromCenter / maxDistance;
+
+    if (animationPhase === 'closing') {
+      // Fade from outside to inside (edges fade first)
+      return normalizedDistance > 0.5 ? 0 : 1;
+    }
+    if (animationPhase === 'closed') {
+      return 0;
+    }
+    if (animationPhase === 'opening') {
+      // Fade from inside to outside (center appears first)
+      return normalizedDistance < 0.5 ? 1 : 0;
+    }
+    return 1;
+  };
+
+  const getLetterDelay = (index: number, total: number) => {
+    const center = total / 2;
+    const distanceFromCenter = Math.abs(index - center);
+    const maxDistance = center;
+    const normalizedDistance = distanceFromCenter / maxDistance;
+
+    if (animationPhase === 'closing') {
+      // Edges fade first, center fades last
+      return (1 - normalizedDistance) * 0.25;
+    }
+    if (animationPhase === 'opening') {
+      // Center appears first, edges appear last
+      return normalizedDistance * 0.25;
+    }
+    return 0;
+  };
+
+  // Calculate bracket position based on phase
+  const getBracketOffset = () => {
+    if (animationPhase === 'closing' || animationPhase === 'closed') {
+      return textWidth / 2;
+    }
+    return 0;
   };
 
   return (
@@ -75,51 +138,48 @@ const HeroSection = () => {
               className="relative inline-flex items-center justify-center cursor-pointer"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
-              style={{ minWidth: '420px' }}
             >
               {/* Corchete IZQUIERDO - Esquina superior izquierda ┌ */}
               <motion.div
                 className="absolute"
-                style={{ top: '-4px', left: '-8px' }}
+                style={{ top: '-2px', left: '-6px' }}
                 animate={{ 
-                  x: isHovered ? 'calc(210px - 12px)' : 0
+                  x: getBracketOffset()
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                <svg width="20" height="32" viewBox="0 0 20 32" fill="none">
-                  <line x1="0" y1="1" x2="20" y2="1" stroke="hsl(var(--secondary))" strokeWidth="2"/>
-                  <line x1="1" y1="0" x2="1" y2="32" stroke="hsl(var(--secondary))" strokeWidth="2"/>
+                <svg width="12" height="24" viewBox="0 0 12 24" fill="none">
+                  <path d="M1 1 L11 1 M1 1 L1 23" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
                 </svg>
               </motion.div>
 
               {/* Corchete DERECHO - Esquina inferior derecha ┘ */}
               <motion.div
                 className="absolute"
-                style={{ bottom: '-4px', right: '-8px' }}
+                style={{ bottom: '-2px', right: '-6px' }}
                 animate={{ 
-                  x: isHovered ? 'calc(-210px + 12px)' : 0
+                  x: -getBracketOffset()
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                <svg width="20" height="32" viewBox="0 0 20 32" fill="none">
-                  <line x1="19" y1="0" x2="19" y2="32" stroke="hsl(var(--secondary))" strokeWidth="2"/>
-                  <line x1="0" y1="31" x2="20" y2="31" stroke="hsl(var(--secondary))" strokeWidth="2"/>
+                <svg width="12" height="24" viewBox="0 0 12 24" fill="none">
+                  <path d="M11 23 L1 23 M11 23 L11 1" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
                 </svg>
               </motion.div>
 
               {/* Texto con animación letra por letra */}
-              <div className="flex items-center justify-center px-4 py-2">
-                <span className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex`}>
-                  {currentText.split('').map((letter, index) => (
+              <div ref={textRef} className="flex items-center justify-center px-3 py-1">
+                <span className="text-sm font-bold tracking-wider uppercase whitespace-nowrap flex">
+                  {currentText.text.split('').map((letter, index) => (
                     <motion.span
-                      key={`${showAltText}-${index}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: isHovered && !showAltText ? 0 : (!isHovered && showAltText ? 0 : 1) }}
+                      key={`${currentTextIndex}-${index}`}
+                      initial={{ opacity: animationPhase === 'opening' ? 0 : 1 }}
+                      animate={{ opacity: getLetterOpacity(index, currentText.text.length) }}
                       transition={{ 
-                        duration: 0.15,
-                        delay: getLetterDelay(index, currentText.length)
+                        duration: 0.1,
+                        delay: getLetterDelay(index, currentText.text.length)
                       }}
-                      className={textColor}
+                      className={currentText.color}
                     >
                       {letter === ' ' ? '\u00A0' : letter}
                     </motion.span>
