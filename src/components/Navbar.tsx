@@ -18,7 +18,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: "INICIO", href: "#hero" },
-    { label: "NOSOTROS", href: "#what-is" },
+    { label: "¿QUIÉNES SOMOS?", href: "#what-is" },
     { label: "NUESTROS SERVICIOS", href: "#features" },
     { label: "CASOS DE USO", href: "#use-cases" },
     { label: "CONTACTO", href: "#contact" },
@@ -61,7 +61,7 @@ const Navbar = () => {
             ))}
             {/* CTA Button inline with nav */}
             <Button variant="hero" size="sm" asChild>
-              <a href="#contact">Agendar Reunión</a>
+              <a href="#contact">AGENDAR REUNIÓN</a>
             </Button>
           </div>
 
