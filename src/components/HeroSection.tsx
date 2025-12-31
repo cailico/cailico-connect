@@ -8,24 +8,22 @@ const HeroSection = () => {
   const [showAltText, setShowAltText] = useState(false);
   const [lettersVisible, setLettersVisible] = useState(true);
   const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
-  const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
-  const textRef = useRef<HTMLSpanElement>(null);
-  const [bracketOffset, setBracketOffset] = useState(0);
+  
+  // Pre-calcular anchos para ambos textos (medidos manualmente)
+  const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
+  const altTextWidth = 380; // "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!"
+  
+  // Usar el ancho del texto que se está mostrando actualmente
+  const currentTextWidth = showAltText ? altTextWidth : defaultTextWidth;
+  const bracketOffset = currentTextWidth / 2 + 6;
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
   const currentText = showAltText ? altText : defaultText;
   const textColor = showAltText ? "text-white" : "text-secondary";
-
-  // Medir y actualizar el offset solo cuando NO estamos animando
-  useEffect(() => {
-    if (!isAnimating && textRef.current) {
-      setBracketOffset(textRef.current.offsetWidth / 2 + 6);
-    }
-  }, [currentText, isAnimating]);
 
   // Limpiar timeouts
   useEffect(() => {
@@ -43,10 +41,7 @@ const HeroSection = () => {
 
     const shouldShowAlt = targetText === 'alt';
     
-    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible && !isAnimating) return;
-
-    // Marcar que estamos animando para congelar el offset
-    setIsAnimating(true);
+    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
 
     // Fase 1: Ocultar letras (afuera hacia adentro)
     setLettersVisible(false);
@@ -55,23 +50,19 @@ const HeroSection = () => {
     animationRef.current = setTimeout(() => {
       setBracketsClosed(true);
       
-      // Fase 3: Cambiar texto cuando los corchetes están cerrados
+      // Fase 3: Cambiar texto cuando los corchetes están completamente cerrados
       animationRef.current = setTimeout(() => {
         const currentTarget = isHoveredRef.current ? 'alt' : 'default';
         setShowAltText(currentTarget === 'alt');
         
-        // Fase 4: Abrir corchetes
+        // Fase 4: Abrir corchetes inmediatamente después del cambio de texto
+        setBracketsClosed(false);
+        
+        // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
         animationRef.current = setTimeout(() => {
-          setBracketsClosed(false);
-          
-          // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
-          animationRef.current = setTimeout(() => {
-            setLettersVisible(true);
-            // Animación completa, permitir actualización del offset
-            setIsAnimating(false);
-          }, 100);
-        }, 50);
-      }, 250);
+          setLettersVisible(true);
+        }, 150);
+      }, 300);
     }, 150);
   }, [targetText]);
 
@@ -143,10 +134,7 @@ const HeroSection = () => {
 
                 {/* Texto */}
                 <div className="px-1.5 py-1">
-                  <span 
-                    ref={textRef}
-                    className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex ${textColor}`}
-                  >
+                  <span className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap flex ${textColor}`}>
                     {currentText.split('').map((letter, index) => (
                       <span
                         key={`${showAltText}-${index}`}
