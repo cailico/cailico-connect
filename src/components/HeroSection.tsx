@@ -1,124 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-classroom.png";
 
 const HeroSection = () => {
-  const [bracketsClosed, setBracketsClosed] = useState(false);
-  const [showAltText, setShowAltText] = useState(false);
-  const [lettersVisible, setLettersVisible] = useState(true);
-  const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
-  const [textContainerWidth, setTextContainerWidth] = useState(0);
-  const animationRef = useRef<NodeJS.Timeout | null>(null);
-  const isHoveredRef = useRef(false);
-  const closingOffsetRef = useRef(0);
-  const textContainerRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
-  
-  const currentText = showAltText ? altText : defaultText;
-  const textColor = showAltText ? "text-white" : "text-secondary";
-
-  // Medir el ancho real del contenedor de texto
-  useEffect(() => {
-    const updateWidth = () => {
-      if (textContainerRef.current) {
-        setTextContainerWidth(textContainerRef.current.offsetWidth);
-      }
-    };
-    updateWidth();
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
-  }, [currentText]);
-
-  // Calcular offset basado en el ancho real del contenedor
-  // El offset máximo es la mitad del ancho del texto, pero NUNCA más de 10px desde el centro
-  // para asegurar que los corchetes nunca se crucen
-  const safeOffset = Math.min(textContainerWidth / 2, textContainerWidth / 2);
-  // El offset cuando los corchetes se cierran: solo hasta llegar al borde del texto (10px de margen interno)
-  const closedOffset = Math.max(0, safeOffset - 10);
-
-  // Inicializar el ref
-  useEffect(() => {
-    closingOffsetRef.current = closedOffset;
-  }, [closedOffset]);
-
-  // Limpiar timeouts
-  useEffect(() => {
-    return () => {
-      if (animationRef.current) clearTimeout(animationRef.current);
-    };
-  }, []);
-
-  // El offset animado: cuando está cerrado usa el closedOffset, cuando está abierto usa 0
-  const animatedOffset = bracketsClosed ? closedOffset : 0;
-
-  // Ejecutar animación cuando cambia el objetivo
-  useEffect(() => {
-    if (animationRef.current) {
-      clearTimeout(animationRef.current);
-      animationRef.current = null;
-    }
-
-    const shouldShowAlt = targetText === 'alt';
-    
-    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
-
-    // Congelar el offset actual para la animación de cierre
-    closingOffsetRef.current = closedOffset;
-
-    // Fase 1: Ocultar letras (afuera hacia adentro)
-    setLettersVisible(false);
-
-    // Fase 2: Cerrar corchetes después de que las letras empiecen a desaparecer
-    animationRef.current = setTimeout(() => {
-      setBracketsClosed(true);
-      
-      // Fase 3: Cuando los corchetes están completamente cerrados, cambiar texto
-      animationRef.current = setTimeout(() => {
-        const currentTarget = isHoveredRef.current ? 'alt' : 'default';
-        const newShowAlt = currentTarget === 'alt';
-        
-        // Cambiar el texto mientras los corchetes están cerrados
-        setShowAltText(newShowAlt);
-        
-        // Fase 4: Abrir corchetes (el nuevo offset se usará automáticamente cuando bracketsClosed sea false)
-        setBracketsClosed(false);
-        
-        // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
-        animationRef.current = setTimeout(() => {
-          setLettersVisible(true);
-        }, 150);
-      }, 300);
-    }, 150);
-  }, [targetText, closedOffset]);
-
-  const handleMouseEnter = () => {
-    isHoveredRef.current = true;
-    setTargetText('alt');
-  };
-
-  const handleMouseLeave = () => {
-    isHoveredRef.current = false;
-    setTargetText('default');
-  };
-
-  // Animación de letras
-  const getLetterStyle = (index: number, total: number) => {
-    const distanceFromEdge = Math.min(index, total - 1 - index);
-    const maxDistance = Math.floor(total / 2);
-    
-    // Cuando se ocultan: de afuera hacia adentro (los extremos primero)
-    const hidingDelay = distanceFromEdge * 0.008;
-    // Cuando aparecen: del centro hacia afuera (el centro primero)
-    const showingDelay = (maxDistance - distanceFromEdge) * 0.008;
-    
-    return {
-      opacity: lettersVisible ? 1 : 0,
-      transition: `opacity 0.12s ease ${lettersVisible ? showingDelay : hidingDelay}s`
-    };
-  };
 
   return (
     <section
@@ -141,49 +30,45 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            {/* Badge con corchetes animados */}
+            {/* Badge con efecto de brocha */}
             <div 
-              className="relative inline-flex items-center justify-center cursor-pointer"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+              className="relative inline-flex items-center justify-center cursor-pointer px-4"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
-              <div className="flex items-center justify-center">
-                {/* Corchete IZQUIERDO ┌ */}
-                <motion.div
-                  className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? animatedOffset : 0 }}
-                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                  style={{ zIndex: 10 }}
+              {/* Contenedor del texto */}
+              <div className="relative px-3 py-2 max-w-[calc(100vw-40px)]">
+                {/* Texto por defecto */}
+                <motion.span 
+                  className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-secondary block"
+                  animate={{ opacity: isHovered ? 0 : 1 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
-                    <path d="M1 1 L9 1 M1 1 L1 19" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
-                  </svg>
-                </motion.div>
+                  {defaultText}
+                </motion.span>
 
-                {/* Texto */}
-                <div ref={textContainerRef} className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
-                  <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
-                    {currentText.split('').map((letter, index) => (
-                      <span
-                        key={`${showAltText}-${index}`}
-                        style={getLetterStyle(index, currentText.length)}
-                      >
-                        {letter === ' ' ? '\u00A0' : letter}
-                      </span>
-                    ))}
+                {/* Trazo de brocha negro + texto alternativo blanco */}
+                <motion.div 
+                  className="absolute inset-0 flex items-center justify-center overflow-hidden"
+                  initial={{ clipPath: "inset(0 100% 0 0)" }}
+                  animate={{ 
+                    clipPath: isHovered ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)"
+                  }}
+                  transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  {/* Fondo de brocha */}
+                  <div className="absolute inset-0 bg-secondary rounded-sm" 
+                    style={{
+                      maskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,20 Q10,5 30,18 T60,22 T90,15 T120,25 T150,18 T180,22 T200,20 L200,40 L0,40 Z' fill='black'/%3E%3C/svg%3E\")",
+                      WebkitMaskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,20 Q10,5 30,18 T60,22 T90,15 T120,25 T150,18 T180,22 T200,20 L200,40 L0,40 Z' fill='black'/%3E%3C/svg%3E\")",
+                      maskSize: "100% 100%",
+                      WebkitMaskSize: "100% 100%",
+                    }}
+                  />
+                  {/* Texto alternativo */}
+                  <span className="relative z-10 text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-primary-foreground whitespace-nowrap px-3">
+                    {altText}
                   </span>
-                </div>
-
-                {/* Corchete DERECHO ┘ */}
-                <motion.div
-                  className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? -animatedOffset : 0 }}
-                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                  style={{ zIndex: 10 }}
-                >
-                  <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
-                    <path d="M9 19 L1 19 M9 19 L9 1" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
-                  </svg>
                 </motion.div>
               </div>
             </div>
