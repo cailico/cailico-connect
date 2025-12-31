@@ -1,8 +1,28 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-classroom.png";
 
 const HeroSection = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [showAltText, setShowAltText] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    // Después de que los corchetes se cierran (300ms), cambiar el texto
+    setTimeout(() => {
+      setShowAltText(true);
+    }, 300);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    // Después de que los corchetes se cierran (300ms), cambiar el texto de vuelta
+    setTimeout(() => {
+      setShowAltText(false);
+    }, 300);
+  };
+
   return (
     <section
       id="hero"
@@ -24,27 +44,81 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <span className="group relative inline-flex items-center px-8 py-3 text-secondary text-sm font-bold tracking-wider uppercase cursor-pointer">
-              {/* Left L bracket - top */}
-              <span className="absolute left-0 top-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
-              <span className="absolute left-0 top-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
-              
-              {/* Left L bracket - bottom */}
-              <span className="absolute left-0 bottom-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
-              <span className="absolute left-0 bottom-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
-              
-              <span className="transition-opacity duration-300 group-hover:opacity-0 group-hover:delay-0 delay-150">
-                IA para Instituciones Educativas
-              </span>
-              
-              {/* Right L bracket - top */}
-              <span className="absolute right-0 top-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
-              <span className="absolute right-0 top-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
-              
-              {/* Right L bracket - bottom */}
-              <span className="absolute right-0 bottom-0 w-4 h-[2px] bg-secondary transition-all duration-300 group-hover:w-[calc(50%-20px)]" />
-              <span className="absolute right-0 bottom-0 w-[2px] h-4 bg-secondary transition-all duration-300 group-hover:h-1/2" />
-            </span>
+            {/* Badge con corchetes animados */}
+            <div 
+              className="relative inline-flex items-center justify-center px-8 py-3 cursor-pointer"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              {/* Corchete izquierdo */}
+              <motion.div
+                className="absolute left-0 top-0 bottom-0 flex flex-col justify-between"
+                animate={{ 
+                  x: isHovered ? "calc(50% - 4px)" : 0,
+                  left: isHovered ? "50%" : 0
+                }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {/* Top L */}
+                <div className="relative">
+                  <span className="block w-4 h-[2px] bg-secondary rounded-tl-[4px]" />
+                  <span className="absolute left-0 top-0 w-[2px] h-4 bg-secondary rounded-tl-[4px]" />
+                </div>
+                {/* Bottom L */}
+                <div className="relative">
+                  <span className="block w-4 h-[2px] bg-secondary rounded-bl-[4px]" />
+                  <span className="absolute left-0 bottom-0 w-[2px] h-4 bg-secondary rounded-bl-[4px]" />
+                </div>
+              </motion.div>
+
+              {/* Corchete derecho */}
+              <motion.div
+                className="absolute right-0 top-0 bottom-0 flex flex-col justify-between"
+                animate={{ 
+                  x: isHovered ? "calc(-50% + 4px)" : 0,
+                  right: isHovered ? "50%" : 0
+                }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {/* Top L invertida */}
+                <div className="relative">
+                  <span className="block w-4 h-[2px] bg-secondary rounded-tr-[4px] ml-auto" />
+                  <span className="absolute right-0 top-0 w-[2px] h-4 bg-secondary rounded-tr-[4px]" />
+                </div>
+                {/* Bottom L invertida */}
+                <div className="relative">
+                  <span className="block w-4 h-[2px] bg-secondary rounded-br-[4px] ml-auto" />
+                  <span className="absolute right-0 bottom-0 w-[2px] h-4 bg-secondary rounded-br-[4px]" />
+                </div>
+              </motion.div>
+
+              {/* Texto */}
+              <AnimatePresence mode="wait">
+                {!showAltText ? (
+                  <motion.span
+                    key="original"
+                    className="text-secondary text-sm font-bold tracking-wider uppercase px-5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isHovered ? 0 : 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    IA para Instituciones Educativas
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="alternate"
+                    className="text-white text-sm font-bold tracking-wider uppercase px-5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: !isHovered ? 0 : 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, delay: 0.1 }}
+                  >
+                    Reportes, notas al instante, ¡y mucho más!
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.div>
 
           <motion.h1
@@ -83,8 +157,8 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      {/* Bottom Gradient - moved lower */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
     </section>
   );
 };
