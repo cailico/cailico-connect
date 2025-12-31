@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-classroom.png";
 
 const HeroSection = () => {
   const [isHovered, setIsHovered] = useState(false);
-
-  const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
-  const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
 
   return (
     <section
@@ -30,46 +27,75 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            {/* Badge con efecto de brocha */}
+            {/* Badge con efecto de barra negra */}
             <div 
-              className="relative inline-flex items-center justify-center cursor-pointer px-4"
+              className="relative w-full py-4 px-4 cursor-pointer"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              {/* Contenedor del texto */}
-              <div className="relative px-3 py-2 max-w-[calc(100vw-40px)]">
-                {/* Texto por defecto */}
-                <motion.span 
-                  className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-secondary block"
-                  animate={{ opacity: isHovered ? 0 : 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {defaultText}
-                </motion.span>
+              <div className="relative flex items-center justify-center min-h-[48px] md:min-h-[56px]">
+                
+                {/* TEXTO INICIAL - SIEMPRE VISIBLE */}
+                <span className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-secondary text-center">
+                  IA PARA INSTITUCIONES EDUCATIVAS
+                </span>
 
-                {/* Trazo de brocha negro + texto alternativo blanco */}
-                <motion.div 
-                  className="absolute inset-0 flex items-center justify-center overflow-hidden"
-                  initial={{ clipPath: "inset(0 100% 0 0)" }}
-                  animate={{ 
-                    clipPath: isHovered ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)"
-                  }}
-                  transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                >
-                  {/* Fondo de brocha */}
-                  <div className="absolute inset-0 bg-secondary rounded-sm" 
-                    style={{
-                      maskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,20 Q10,5 30,18 T60,22 T90,15 T120,25 T150,18 T180,22 T200,20 L200,40 L0,40 Z' fill='black'/%3E%3C/svg%3E\")",
-                      WebkitMaskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,20 Q10,5 30,18 T60,22 T90,15 T120,25 T150,18 T180,22 T200,20 L200,40 L0,40 Z' fill='black'/%3E%3C/svg%3E\")",
-                      maskSize: "100% 100%",
-                      WebkitMaskSize: "100% 100%",
-                    }}
-                  />
-                  {/* Texto alternativo */}
-                  <span className="relative z-10 text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-primary-foreground whitespace-nowrap px-3">
-                    {altText}
-                  </span>
-                </motion.div>
+                {/* CAPA DE HOVER - SE SOBREPONE AL TEXTO */}
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.div
+                      key="hover-layer"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      {/* Cuadro verde izquierdo */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute left-0 w-3 h-12 md:h-14 bg-[#2D7A3E]"
+                        style={{ zIndex: 20 }}
+                      />
+
+                      {/* Barra negra que cubre el texto */}
+                      <motion.div
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        exit={{ scaleX: 0 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                        className="absolute inset-0 bg-black/90 origin-left flex items-center justify-center"
+                        style={{ 
+                          borderTop: "4px solid #2D7A3E", 
+                          borderBottom: "4px solid #2D7A3E",
+                          zIndex: 15
+                        }}
+                      >
+                        {/* Texto blanco dentro de la barra */}
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.4, duration: 0.3 }}
+                          className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase text-white text-center px-4"
+                        >
+                          REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!
+                        </motion.span>
+                      </motion.div>
+
+                      {/* Cuadro verde derecho */}
+                      <motion.div
+                        initial={{ opacity: 0, x: 10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 w-3 h-12 md:h-14 bg-[#2D7A3E]"
+                        style={{ zIndex: 20 }}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>
