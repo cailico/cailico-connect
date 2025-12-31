@@ -9,16 +9,13 @@ const HeroSection = () => {
 
   const handleMouseEnter = () => {
     setIsHovered(true);
-    // Cambiar el texto cuando los corchetes están cerrados (400ms)
     setTimeout(() => {
       setShowAltText(true);
     }, 400);
   };
 
   const handleMouseLeave = () => {
-    // Primero cerrar los corchetes
     setIsHovered(false);
-    // Cambiar el texto cuando los corchetes están cerrados
     setTimeout(() => {
       setShowAltText(false);
     }, 400);
@@ -45,58 +42,72 @@ const HeroSection = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            {/* Badge con corchetes animados - efecto puertas corredizas */}
+            {/* Badge con corchetes animados */}
             <div 
-              className="relative inline-flex items-center justify-center h-12 cursor-pointer"
+              className="relative inline-flex items-center justify-center h-14 cursor-pointer"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
+              style={{ minWidth: '420px' }}
             >
-              {/* Corchete izquierdo - L invertida (línea arriba) */}
+              {/* Corchete IZQUIERDO - Esquina superior izquierda ┌ */}
               <motion.div
-                className="absolute left-0 top-0 h-full z-20 bg-black/50"
-                style={{ width: 'calc(50% - 180px)' }}
+                className="absolute top-0 left-0"
                 animate={{ 
-                  x: isHovered ? 'calc(100% + 180px)' : 0
+                  x: isHovered ? 'calc(210px - 30px)' : 0
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                <div className="absolute right-0 top-0 bottom-0 w-6">
-                  {/* Línea vertical */}
-                  <span className="absolute right-0 top-0 bottom-0 w-[2px] bg-secondary" />
-                  {/* Línea horizontal arriba */}
-                  <span className="absolute right-0 top-0 w-6 h-[2px] bg-secondary" />
-                </div>
+                <svg width="30" height="56" viewBox="0 0 30 56" fill="none">
+                  {/* Línea horizontal superior (hacia la derecha) */}
+                  <line x1="0" y1="1" x2="30" y2="1" stroke="hsl(var(--secondary))" strokeWidth="2"/>
+                  {/* Línea vertical izquierda */}
+                  <line x1="1" y1="0" x2="1" y2="56" stroke="hsl(var(--secondary))" strokeWidth="2"/>
+                </svg>
               </motion.div>
 
-              {/* Corchete derecho - L (línea abajo) */}
+              {/* Corchete DERECHO - Esquina inferior derecha ┘ */}
               <motion.div
-                className="absolute right-0 top-0 h-full z-20 bg-black/50"
-                style={{ width: 'calc(50% - 180px)' }}
+                className="absolute bottom-0 right-0"
                 animate={{ 
-                  x: isHovered ? 'calc(-100% - 180px)' : 0
+                  x: isHovered ? 'calc(-210px + 30px)' : 0
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                <div className="absolute left-0 top-0 bottom-0 w-6">
-                  {/* Línea vertical */}
-                  <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-secondary" />
-                  {/* Línea horizontal abajo */}
-                  <span className="absolute left-0 bottom-0 w-6 h-[2px] bg-secondary" />
-                </div>
+                <svg width="30" height="56" viewBox="0 0 30 56" fill="none">
+                  {/* Línea vertical derecha */}
+                  <line x1="29" y1="0" x2="29" y2="56" stroke="hsl(var(--secondary))" strokeWidth="2"/>
+                  {/* Línea horizontal inferior (hacia la izquierda) */}
+                  <line x1="0" y1="55" x2="30" y2="55" stroke="hsl(var(--secondary))" strokeWidth="2"/>
+                </svg>
               </motion.div>
 
-              {/* Contenedor de texto con padding para los corchetes */}
-              <div className="px-8 flex items-center justify-center min-w-[360px]">
-                <span 
-                  className={`text-sm font-bold tracking-wider uppercase whitespace-nowrap transition-colors duration-0 ${
-                    showAltText ? 'text-white' : 'text-secondary'
-                  }`}
-                >
-                  {showAltText 
-                    ? "Reportes, notas al instante, ¡y mucho más!" 
-                    : "IA para Instituciones Educativas"
-                  }
-                </span>
+              {/* Texto centrado */}
+              <div className="flex items-center justify-center px-10">
+                <AnimatePresence mode="wait">
+                  {showAltText ? (
+                    <motion.span
+                      key="alt"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-white text-sm font-bold tracking-wider uppercase whitespace-nowrap"
+                    >
+                      Reportes, notas al instante, ¡y mucho más!
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="normal"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-secondary text-sm font-bold tracking-wider uppercase whitespace-nowrap"
+                    >
+                      IA para Instituciones Educativas
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>
