@@ -226,7 +226,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             Diseñamos infraestructuras inteligentes para integrar la comunicación entre directivos, profesores, estudiantes y padres de familia. ¡Lleva tu institución a la nueva era!
           </motion.p>
 
-          {/* Botones - aparecen desde abajo */}
+          {/* Botones - aparecen desde abajo al mismo tiempo que el navbar */}
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
             initial={{ opacity: 0, y: 40 }}
@@ -234,7 +234,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
               opacity: showButtons ? 1 : 0, 
               y: showButtons ? 0 : 40 
             }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           >
             <Button 
               size="lg" 
