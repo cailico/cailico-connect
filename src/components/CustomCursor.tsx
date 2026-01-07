@@ -28,7 +28,7 @@ const CustomCursor = () => {
       id: trailIdRef.current,
     };
     
-    setTrail(prev => [...prev.slice(-20), newPoint]); // Keep last 20 points
+    setTrail(prev => [...prev.slice(-25), newPoint]);
   }, []);
 
   const handleMouseDown = useCallback(() => {
@@ -41,6 +41,7 @@ const CustomCursor = () => {
 
   const handleMouseLeave = useCallback(() => {
     setIsVisible(false);
+    setTrail([]);
   }, []);
 
   const handleMouseEnter = useCallback(() => {
@@ -48,8 +49,6 @@ const CustomCursor = () => {
   }, []);
 
   useEffect(() => {
-    document.body.style.cursor = 'none';
-    
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
@@ -57,7 +56,6 @@ const CustomCursor = () => {
     document.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
-      document.body.style.cursor = 'auto';
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -66,11 +64,16 @@ const CustomCursor = () => {
     };
   }, [handleMouseMove, handleMouseDown, handleMouseUp, handleMouseLeave, handleMouseEnter]);
 
-  // Clean up old trail points
+  // Remove old trail points from the beginning
   useEffect(() => {
     const interval = setInterval(() => {
-      setTrail(prev => prev.slice(1));
-    }, 50);
+      setTrail(prev => {
+        if (prev.length > 0) {
+          return prev.slice(1);
+        }
+        return prev;
+      });
+    }, 40);
     
     return () => clearInterval(interval);
   }, []);
@@ -79,40 +82,30 @@ const CustomCursor = () => {
 
   return (
     <>
-      {/* Trail effect */}
+      {/* Trail effect - solid black line */}
       <svg
         className="fixed inset-0 pointer-events-none z-[9998]"
         style={{ width: '100vw', height: '100vh' }}
       >
-        {trail.length > 1 && trail.map((point, index) => {
-          if (index === 0) return null;
-          const prevPoint = trail[index - 1];
-          const opacity = (index / trail.length) * 0.6;
-          const strokeWidth = (index / trail.length) * 3 + 1;
-          
-          return (
-            <line
-              key={point.id}
-              x1={prevPoint.x}
-              y1={prevPoint.y}
-              x2={point.x}
-              y2={point.y}
-              stroke="#F7941D"
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              opacity={opacity}
-            />
-          );
-        })}
+        {trail.length > 1 && (
+          <polyline
+            points={trail.map(p => `${p.x},${p.y}`).join(' ')}
+            fill="none"
+            stroke="#000000"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        )}
       </svg>
       
-      {/* Pencil cursor */}
+      {/* Pencil cursor - more vertical with tip up */}
       <div
         className="fixed pointer-events-none z-[9999] transition-transform duration-75"
         style={{
           left: position.x,
           top: position.y,
-          transform: `translate(-8px, -8px) rotate(-45deg) ${isClicking ? 'scale(0.8)' : 'scale(1)'}`,
+          transform: `translate(-6px, -6px) rotate(-135deg) ${isClicking ? 'scale(0.85)' : 'scale(1)'}`,
         }}
       >
         <img
