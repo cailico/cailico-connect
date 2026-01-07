@@ -35,30 +35,16 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   const defaultTextRaw = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
-  // Función para renderizar texto con I serif en "IA"
-  const renderTextWithSerifI = (text: string) => {
-    return text.split('').map((letter, index) => {
-      // Si es la I al inicio de "IA" (índice 0)
-      if (index === 0 && text.startsWith("IA")) {
-        return (
-          <span
-            key={`${showAltText}-${index}`}
-            style={getLetterStyle(index, text.length)}
-            className="serif-i"
-          >
-            {letter}
-          </span>
-        );
-      }
-      return (
-        <span
-          key={`${showAltText}-${index}`}
-          style={getLetterStyle(index, text.length)}
-        >
-          {letter === ' ' ? '\u00A0' : letter}
-        </span>
-      );
-    });
+  // Función para renderizar texto letra por letra
+  const renderText = (text: string) => {
+    return text.split('').map((letter, index) => (
+      <span
+        key={`${showAltText}-${index}`}
+        style={getLetterStyle(index, text.length)}
+      >
+        {letter === ' ' ? '\u00A0' : letter}
+      </span>
+    ));
   };
   
   const currentText = showAltText ? altText : defaultTextRaw;
@@ -196,7 +182,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
                 {/* Texto */}
                 <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
                   <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
-                    {renderTextWithSerifI(currentText)}
+                    {renderText(currentText)}
                   </span>
                 </div>
 
@@ -227,7 +213,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
           >
             <span className="block text-white">TRANSFORMA LA</span>
             <span className="block bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent">COMUNICACIÓN DE TU</span>
-            <span className="block text-secondary">ESCUELA CON <span className="serif-i">I</span>A</span>
+            <span className="block text-secondary">ESCUELA CON IA</span>
           </motion.h1>
 
           <motion.p
