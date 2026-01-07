@@ -76,7 +76,7 @@ const AccordionCard = ({ icon: Icon, title, buttonText, description, color, bgIm
         >
           {/* Background Image */}
           <div 
-            className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-15"
+            className="absolute inset-0 bg-contain bg-right bg-no-repeat opacity-15"
             style={{ backgroundImage: `url(${bgImage})` }}
           />
           
