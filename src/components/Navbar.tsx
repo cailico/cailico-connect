@@ -4,9 +4,15 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/cailico-logo-white-border.png";
 
-const Navbar = () => {
+interface NavbarProps {
+  loadingPhase?: 'image' | 'text' | 'ui' | 'complete';
+}
+
+const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const showNavbar = loadingPhase === 'ui' || loadingPhase === 'complete';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,9 +35,12 @@ const Navbar = () => {
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled ? "bg-black/95 backdrop-blur-lg" : "bg-transparent"
       }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ 
+        y: showNavbar ? 0 : -100, 
+        opacity: showNavbar ? 1 : 0 
+      }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <div className="container mx-auto px-4">
         <div className={`flex items-center justify-between transition-all duration-300 ${
