@@ -37,7 +37,7 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
       }`}
       initial={{ y: "-100%" }}
       animate={{ y: showNavbar ? 0 : "-100%" }}
-      transition={{ duration: 0.25, delay: 0.05, ease: "linear" }}
+      transition={{ duration: 0.25, ease: "linear" }}
     >
       <div className="container mx-auto px-4">
         <div className={`flex items-center justify-between transition-all duration-300 ${
