@@ -40,7 +40,7 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
         y: showNavbar ? 0 : -100, 
         opacity: showNavbar ? 1 : 0 
       }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
       <div className="container mx-auto px-4">
         <div className={`flex items-center justify-between transition-all duration-300 ${
