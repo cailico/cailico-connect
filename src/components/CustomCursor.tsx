@@ -99,19 +99,19 @@ const CustomCursor = () => {
         )}
       </svg>
       
-      {/* Pencil cursor - more vertical with tip up */}
+      {/* Pencil cursor */}
       <div
         className="fixed pointer-events-none z-[9999] transition-transform duration-75"
         style={{
           left: position.x,
           top: position.y,
-          transform: `translate(-6px, -6px) rotate(-135deg) ${isClicking ? 'scale(0.85)' : 'scale(1)'}`,
+          transform: `translate(-12px, -32px) ${isClicking ? 'scale(0.85)' : 'scale(1)'}`,
         }}
       >
         <img
           src="/images/pencil-cursor.png"
           alt=""
-          className="w-10 h-10 object-contain"
+          className="w-8 h-8 object-contain"
           draggable={false}
         />
       </div>
