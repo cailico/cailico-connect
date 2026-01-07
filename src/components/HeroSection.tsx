@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Bot } from "lucide-react";
 import heroImage from "@/assets/hero-classroom.png";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  loadingPhase?: 'image' | 'text' | 'ui' | 'complete';
+}
+
+const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   const [bracketsClosed, setBracketsClosed] = useState(false);
   const [showAltText, setShowAltText] = useState(false);
   const [lettersVisible, setLettersVisible] = useState(true);
@@ -12,6 +16,10 @@ const HeroSection = () => {
   const animationRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveredRef = useRef(false);
   const closingOffsetRef = useRef(0);
+
+  const showImage = loadingPhase !== 'image';
+  const showText = loadingPhase === 'text' || loadingPhase === 'ui' || loadingPhase === 'complete';
+  const showButtons = loadingPhase === 'ui' || loadingPhase === 'complete';
   
   // Pre-calcular anchos para ambos textos (medidos manualmente)
   const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
@@ -121,20 +129,27 @@ const HeroSection = () => {
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      {/* Background Image with Overlay */}
-      <div 
+      {/* Background Image with Overlay - aparece primero */}
+      <motion.div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showImage ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
       />
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
+          {/* Texto con zoom suave */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ 
+              opacity: showText ? 1 : 0, 
+              scale: showText ? 1 : 0.9 
+            }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="mb-8"
           >
             {/* Badge con corchetes animados */}
@@ -187,9 +202,12 @@ const HeroSection = () => {
 
           <motion.h1
             className="text-[clamp(1.5rem,6vw,3.5rem)] font-bold leading-[1.25] mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ 
+              opacity: showText ? 1 : 0, 
+              scale: showText ? 1 : 0.9 
+            }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           >
             <span className="block text-white whitespace-nowrap">TRANSFORMA LA</span>
             <span className="block bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent whitespace-nowrap">COMUNICACIÓN DE TU</span>
@@ -198,18 +216,25 @@ const HeroSection = () => {
 
           <motion.p
             className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ 
+              opacity: showText ? 1 : 0, 
+              scale: showText ? 1 : 0.9 
+            }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           >
             Diseñamos infraestructuras inteligentes para integrar la comunicación entre directivos, profesores, estudiantes y padres de familia. ¡Lleva tu institución a la nueva era!
           </motion.p>
 
+          {/* Botones - aparecen desde abajo */}
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ 
+              opacity: showButtons ? 1 : 0, 
+              y: showButtons ? 0 : 40 
+            }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <Button 
               size="lg" 
