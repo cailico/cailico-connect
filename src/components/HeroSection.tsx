@@ -225,7 +225,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             }}
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           >
-            Diseñamos infraestructuras inteligentes para integrar la comunicación de directivos y profesores con estudiantes y padres de familia. ¡Lleva tu institución a la nueva era!
+            Diseñamos infraestructuras inteligentes para integrar la comunicación entre directivos, profesores, estudiantes y padres de familia. ¡Lleva tu institución a la nueva era!
           </motion.p>
 
           {/* Botones - aparecen después del navbar */}
