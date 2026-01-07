@@ -245,7 +245,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             >
               <a href="#contact" className="flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
-                Contáctanos
+                Nuestro WhatsApp
               </a>
             </Button>
             <Button 
