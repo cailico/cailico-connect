@@ -234,7 +234,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
               opacity: showButtons ? 1 : 0, 
               y: showButtons ? 0 : 30 
             }}
-            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
           >
             <Button 
               size="lg" 
