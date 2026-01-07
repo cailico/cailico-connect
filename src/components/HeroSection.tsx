@@ -32,10 +32,36 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   // (nunca deben cruzarse, así que el máximo es llegar justo al centro - 5px de margen)
   const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
 
-  const defaultText = "IA PARA INSTITUCIONES EDUCATIVAS";
+  const defaultTextRaw = "IA PARA INSTITUCIONES EDUCATIVAS";
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
-  const currentText = showAltText ? altText : defaultText;
+  // Función para renderizar texto con I serif en "IA"
+  const renderTextWithSerifI = (text: string, colorClass: string) => {
+    return text.split('').map((letter, index) => {
+      // Si es la I al inicio de "IA" (índice 0)
+      if (index === 0 && text.startsWith("IA")) {
+        return (
+          <span
+            key={`${showAltText}-${index}`}
+            style={getLetterStyle(index, text.length)}
+            className="font-serif"
+          >
+            {letter}
+          </span>
+        );
+      }
+      return (
+        <span
+          key={`${showAltText}-${index}`}
+          style={getLetterStyle(index, text.length)}
+        >
+          {letter === ' ' ? '\u00A0' : letter}
+        </span>
+      );
+    });
+  };
+  
+  const currentText = showAltText ? altText : defaultTextRaw;
   const textColor = showAltText ? "text-white" : "text-secondary";
 
   // Inicializar el ref
@@ -170,14 +196,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
                 {/* Texto */}
                 <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
                   <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
-                    {currentText.split('').map((letter, index) => (
-                      <span
-                        key={`${showAltText}-${index}`}
-                        style={getLetterStyle(index, currentText.length)}
-                      >
-                        {letter === ' ' ? '\u00A0' : letter}
-                      </span>
-                    ))}
+                    {renderTextWithSerifI(currentText, textColor)}
                   </span>
                 </div>
 
@@ -208,7 +227,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
           >
             <span className="block text-white">TRANSFORMA LA</span>
             <span className="block bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent">COMUNICACIÓN DE TU</span>
-            <span className="block text-secondary">ESCUELA CON IA</span>
+            <span className="block text-secondary">ESCUELA CON <span className="font-serif">I</span>A</span>
           </motion.h1>
 
           <motion.p
