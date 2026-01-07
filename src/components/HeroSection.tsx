@@ -139,7 +139,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-20"
     >
       {/* Background Image with Overlay - sin fade */}
       <div 
