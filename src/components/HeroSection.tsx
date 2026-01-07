@@ -129,13 +129,10 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      {/* Background Image with Overlay - aparece primero */}
-      <motion.div 
+      {/* Background Image with Overlay - sin fade */}
+      <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: showImage ? 1 : 0 }}
-        transition={{ duration: 0.5 }}
       />
       <div className="absolute inset-0 bg-black/50" />
 
@@ -226,7 +223,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             Diseñamos infraestructuras inteligentes para integrar la comunicación entre directivos, profesores, estudiantes y padres de familia. ¡Lleva tu institución a la nueva era!
           </motion.p>
 
-          {/* Botones - aparecen desde abajo al mismo tiempo que el navbar */}
+          {/* Botones - aparecen después del navbar */}
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
             initial={{ opacity: 0, y: 30 }}
@@ -234,7 +231,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
               opacity: showButtons ? 1 : 0, 
               y: showButtons ? 0 : 30 
             }}
-            transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.4, delay: 0.25, ease: [0.4, 0, 0.2, 1] }}
           >
             <Button 
               size="lg" 
