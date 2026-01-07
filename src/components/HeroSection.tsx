@@ -139,7 +139,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
       {/* Main Content */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Texto con zoom suave */}
+          {/* Badge con corchetes animados - posicionado más arriba */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
@@ -147,9 +147,8 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
               scale: showText ? 1 : 0.9 
             }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="mb-8"
+            className="mb-4"
           >
-            {/* Badge con corchetes animados */}
             <div 
               className="relative inline-flex items-center justify-center cursor-pointer"
               onMouseEnter={handleMouseEnter}
@@ -197,8 +196,10 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             </div>
           </motion.div>
 
+          {/* Título principal con fuente display estirada e itálica */}
           <motion.h1
-            className="text-[clamp(1.5rem,6vw,3.5rem)] font-bold leading-[1.25] mb-6"
+            className="font-display text-[clamp(2.5rem,10vw,6rem)] leading-[0.95] mb-8 tracking-tight"
+            style={{ fontStyle: 'italic', transform: 'skewX(-5deg)' }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
               opacity: showText ? 1 : 0, 
@@ -206,9 +207,9 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             }}
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           >
-            <span className="block text-white whitespace-nowrap">TRANSFORMA LA</span>
-            <span className="block bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent whitespace-nowrap">COMUNICACIÓN DE TU</span>
-            <span className="block text-secondary whitespace-nowrap">ESCUELA CON IA</span>
+            <span className="block text-white">TRANSFORMA LA</span>
+            <span className="block bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent">COMUNICACIÓN DE TU</span>
+            <span className="block text-secondary">ESCUELA CON IA</span>
           </motion.h1>
 
           <motion.p
