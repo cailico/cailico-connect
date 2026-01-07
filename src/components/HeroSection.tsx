@@ -198,7 +198,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
 
           {/* Título principal con fuente display estirada */}
           <motion.h1
-            className="font-display font-medium text-[clamp(2.5rem,10vw,6rem)] leading-[1.15] mb-8 tracking-tight"
+            className="font-display font-medium text-[clamp(2.5rem,10vw,6rem)] leading-[1.15] mb-4 tracking-tight"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
               opacity: showText ? 1 : 0, 
@@ -212,7 +212,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
           </motion.h1>
 
           <motion.p
-            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10"
+            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-6"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
               opacity: showText ? 1 : 0, 
