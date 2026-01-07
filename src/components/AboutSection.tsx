@@ -1,28 +1,38 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Target, Eye } from "lucide-react";
+import { useRef, useState } from "react";
+import { Target, Eye, ChevronDown } from "lucide-react";
+import misionBg from "@/assets/mision-bg.png";
+import visionBg from "@/assets/vision-bg.png";
 
-interface NeonCardProps {
+interface AccordionCardProps {
   icon: React.ElementType;
   title: string;
+  buttonText: string;
   description: string;
   color: "orange" | "green";
+  bgImage: string;
   delay: number;
 }
 
-const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProps) => {
+const AccordionCard = ({ icon: Icon, title, buttonText, description, color, bgImage, delay }: AccordionCardProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const colors = {
     orange: {
       border: "border-secondary",
+      buttonBorder: "border-secondary",
+      buttonText: "text-secondary",
       iconBg: "bg-secondary/20",
       iconText: "text-secondary",
       titleText: "text-secondary",
     },
     green: {
-      border: "border-[hsl(150,80%,50%)]",
-      iconBg: "bg-[hsl(150,80%,50%)]/20",
-      iconText: "text-[hsl(150,80%,50%)]",
-      titleText: "text-[hsl(150,80%,50%)]",
+      border: "border-[hsl(142,76%,30%)]",
+      buttonBorder: "border-[hsl(142,76%,30%)]",
+      buttonText: "text-[hsl(142,76%,30%)]",
+      iconBg: "bg-[hsl(142,76%,30%)]/20",
+      iconText: "text-[hsl(142,76%,30%)]",
+      titleText: "text-[hsl(142,76%,30%)]",
     },
   };
 
@@ -30,26 +40,65 @@ const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProp
 
   return (
     <motion.div
-      className={`relative bg-white rounded-2xl p-8 border-2 ${c.border}`}
+      className="relative"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, delay }}
     >
-      {/* Header: Icon + Title in same row */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${c.iconBg}`}>
-          <Icon className={`w-7 h-7 ${c.iconText}`} />
-        </div>
-        <h3 className={`font-display font-medium text-2xl md:text-3xl uppercase tracking-tight ${c.titleText}`}>
-          {title}
-        </h3>
-      </div>
+      {/* Trigger Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full flex items-center justify-center gap-3 py-4 px-6 rounded-xl border-2 ${c.buttonBorder} bg-white hover:bg-gray-50 transition-colors`}
+      >
+        <Icon className={`w-6 h-6 ${c.iconText}`} />
+        <span className={`font-display font-medium text-lg md:text-xl uppercase tracking-tight ${c.buttonText}`}>
+          {buttonText}
+        </span>
+        <ChevronDown 
+          className={`w-5 h-5 ${c.iconText} transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+        />
+      </button>
 
-      {/* Description */}
-      <p className="leading-relaxed text-base text-primary font-semibold">
-        {description}
-      </p>
+      {/* Collapsible Content */}
+      <motion.div
+        initial={false}
+        animate={{ 
+          height: isOpen ? "auto" : 0,
+          opacity: isOpen ? 1 : 0,
+          marginTop: isOpen ? 16 : 0
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="overflow-hidden"
+      >
+        <div 
+          className={`relative rounded-2xl p-8 border-2 ${c.border} bg-white overflow-hidden`}
+        >
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15"
+            style={{ backgroundImage: `url(${bgImage})` }}
+          />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            {/* Header: Icon + Title in same row */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${c.iconBg}`}>
+                <Icon className={`w-7 h-7 ${c.iconText}`} />
+              </div>
+              <h3 className={`font-display font-medium text-2xl md:text-3xl uppercase tracking-tight ${c.titleText}`}>
+                {title}
+              </h3>
+            </div>
+
+            {/* Description */}
+            <p className="leading-relaxed text-base text-primary font-semibold">
+              {description}
+            </p>
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
@@ -62,16 +111,20 @@ const AboutSection = () => {
     {
       icon: Target,
       title: "Misión",
+      buttonText: "Ver Misión",
       description:
         "Preparar a la sociedad ante los avances de la inteligencia artificial, impulsando su integración en la vida cotidiana de las personas. En Cailico desarrollamos sistemas que acercan la IA a todos, incluyendo a quienes normalmente no la usarían, reduciendo la distancia entre tecnología y ciudadanía para que su adopción sea natural, masiva y sostenible, de esa manera aportando también a su financiación y desarrollo.",
       color: "orange" as const,
+      bgImage: misionBg,
     },
     {
       icon: Eye,
       title: "Visión",
+      buttonText: "Ver Visión",
       description:
         "Convertirnos en una empresa líder, con impacto nacional e internacional, en la transición social en la era de la inteligencia artificial, reconocida por hacer que esta tecnología pase de ser una novedad técnica a ser una presencia cotidiana. Aspiramos a impulsar una sociedad más familiarizada y preparada para los avances presentes y futuros, gracias a infraestructuras centradas en las personas que vuelven la IA visible, útil y común en distintos ámbitos de la vida.",
       color: "green" as const,
+      bgImage: visionBg,
     },
   ];
 
@@ -108,12 +161,14 @@ const AboutSection = () => {
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {cards.map((card, index) => (
-            <NeonCard
+            <AccordionCard
               key={card.title}
               icon={card.icon}
               title={card.title}
+              buttonText={card.buttonText}
               description={card.description}
               color={card.color}
+              bgImage={card.bgImage}
               delay={0.2 + index * 0.1}
             />
           ))}
