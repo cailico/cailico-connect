@@ -30,7 +30,7 @@ const BenefitsSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 uppercase">
+          <h2 className="font-display font-medium text-3xl md:text-5xl text-foreground mb-4 uppercase tracking-tight">
             Beneficios Para <span className="text-secondary">Todos</span>
           </h2>
         </motion.div>
