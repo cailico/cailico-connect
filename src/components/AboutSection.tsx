@@ -11,38 +11,26 @@ interface NeonCardProps {
 }
 
 const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProps) => {
-  const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { amount: 0.5 });
-
-  // Always use scroll-based activation (both mobile and desktop)
-  const isLit = isInView;
-
-  const glowColors = {
+  const colors = {
     orange: {
-      border: isLit ? "border-secondary" : "border-secondary/50",
-      shadow: isLit ? "0 0 20px hsl(32, 95%, 44%), 0 0 40px hsl(32, 95%, 44%, 0.4)" : "none",
+      border: "border-secondary",
       iconBg: "bg-secondary/20",
       iconText: "text-secondary",
-      titleText: isLit ? "text-secondary drop-shadow-[0_0_12px_hsl(32,95%,44%)]" : "text-secondary",
-      descText: "text-primary",
+      titleText: "text-secondary",
     },
     green: {
-      border: isLit ? "border-[hsl(150,80%,50%)]" : "border-[hsl(150,80%,50%)]/50",
-      shadow: isLit ? "0 0 20px hsl(150, 80%, 50%), 0 0 40px hsl(150, 80%, 50%, 0.4)" : "none",
+      border: "border-[hsl(150,80%,50%)]",
       iconBg: "bg-[hsl(150,80%,50%)]/20",
       iconText: "text-[hsl(150,80%,50%)]",
-      titleText: isLit ? "text-[hsl(150,80%,50%)] drop-shadow-[0_0_12px_hsl(150,80%,50%)]" : "text-[hsl(150,80%,50%)]",
-      descText: "text-primary",
+      titleText: "text-[hsl(150,80%,50%)]",
     },
   };
 
-  const colors = glowColors[color];
+  const c = colors[color];
 
   return (
     <motion.div
-      ref={cardRef}
-      className={`relative bg-white rounded-2xl p-8 border-2 transition-all duration-500 ${colors.border}`}
-      style={{ boxShadow: colors.shadow }}
+      className={`relative bg-white rounded-2xl p-8 border-2 ${c.border}`}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
@@ -50,16 +38,16 @@ const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProp
     >
       {/* Header: Icon + Title in same row */}
       <div className="flex items-center gap-4 mb-6">
-        <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${colors.iconBg}`}>
-          <Icon className={`w-7 h-7 ${colors.iconText}`} />
+        <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${c.iconBg}`}>
+          <Icon className={`w-7 h-7 ${c.iconText}`} />
         </div>
-        <h3 className={`font-display font-medium text-2xl md:text-3xl uppercase tracking-tight transition-all duration-500 ${colors.titleText}`}>
+        <h3 className={`font-display font-medium text-2xl md:text-3xl uppercase tracking-tight ${c.titleText}`}>
           {title}
         </h3>
       </div>
 
       {/* Description */}
-      <p className={`leading-relaxed text-base ${colors.descText}`}>
+      <p className="leading-relaxed text-base text-primary font-semibold">
         {description}
       </p>
     </motion.div>
