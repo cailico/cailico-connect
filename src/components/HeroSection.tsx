@@ -229,12 +229,12 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
           {/* Botones - aparecen desde abajo al mismo tiempo que el navbar */}
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ 
               opacity: showButtons ? 1 : 0, 
-              y: showButtons ? 0 : 40 
+              y: showButtons ? 0 : 30 
             }}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
           >
             <Button 
               size="lg" 

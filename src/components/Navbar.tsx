@@ -35,12 +35,12 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled ? "bg-black/95 backdrop-blur-lg" : "bg-transparent"
       }`}
-      initial={{ y: -100, opacity: 0 }}
+      initial={{ y: -40, opacity: 0 }}
       animate={{ 
-        y: showNavbar ? 0 : -100, 
+        y: showNavbar ? 0 : -40, 
         opacity: showNavbar ? 1 : 0 
       }}
-      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+      transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
     >
       <div className="container mx-auto px-4">
         <div className={`flex items-center justify-between transition-all duration-300 ${
