@@ -19,20 +19,20 @@ const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProp
 
   const glowColors = {
     orange: {
-      border: isLit ? "border-secondary" : "border-secondary/30",
-      shadow: isLit ? "0 0 30px hsl(32, 95%, 44%), 0 0 60px hsl(32, 95%, 44%, 0.5), 0 0 90px hsl(32, 95%, 44%, 0.3)" : "none",
-      iconBg: isLit ? "bg-secondary/30" : "bg-secondary/10",
-      iconText: isLit ? "text-secondary drop-shadow-[0_0_10px_hsl(32,95%,44%)]" : "text-secondary/50",
-      titleText: isLit ? "text-secondary drop-shadow-[0_0_8px_hsl(32,95%,44%)]" : "text-secondary/40",
-      descText: isLit ? "text-white/90" : "text-white/30",
+      border: isLit ? "border-secondary" : "border-secondary/50",
+      shadow: isLit ? "0 0 20px hsl(32, 95%, 44%), 0 0 40px hsl(32, 95%, 44%, 0.4)" : "none",
+      iconBg: "bg-secondary/20",
+      iconText: "text-secondary",
+      titleText: isLit ? "text-secondary drop-shadow-[0_0_12px_hsl(32,95%,44%)]" : "text-secondary",
+      descText: "text-primary",
     },
     green: {
-      border: isLit ? "border-[hsl(150,80%,50%)]" : "border-[hsl(150,80%,50%)]/30",
-      shadow: isLit ? "0 0 30px hsl(150, 80%, 50%), 0 0 60px hsl(150, 80%, 50%, 0.5), 0 0 90px hsl(150, 80%, 50%, 0.3)" : "none",
-      iconBg: isLit ? "bg-[hsl(150,80%,50%)]/30" : "bg-[hsl(150,80%,50%)]/10",
-      iconText: isLit ? "text-[hsl(150,80%,50%)] drop-shadow-[0_0_10px_hsl(150,80%,50%)]" : "text-[hsl(150,80%,50%)]/50",
-      titleText: isLit ? "text-[hsl(150,80%,50%)] drop-shadow-[0_0_8px_hsl(150,80%,50%)]" : "text-[hsl(150,80%,50%)]/40",
-      descText: isLit ? "text-white/90" : "text-white/30",
+      border: isLit ? "border-[hsl(150,80%,50%)]" : "border-[hsl(150,80%,50%)]/50",
+      shadow: isLit ? "0 0 20px hsl(150, 80%, 50%), 0 0 40px hsl(150, 80%, 50%, 0.4)" : "none",
+      iconBg: "bg-[hsl(150,80%,50%)]/20",
+      iconText: "text-[hsl(150,80%,50%)]",
+      titleText: isLit ? "text-[hsl(150,80%,50%)] drop-shadow-[0_0_12px_hsl(150,80%,50%)]" : "text-[hsl(150,80%,50%)]",
+      descText: "text-primary",
     },
   };
 
@@ -41,7 +41,7 @@ const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProp
   return (
     <motion.div
       ref={cardRef}
-      className={`relative bg-black rounded-2xl p-8 border-2 transition-all duration-500 ${colors.border}`}
+      className={`relative bg-white rounded-2xl p-8 border-2 transition-all duration-500 ${colors.border}`}
       style={{ boxShadow: colors.shadow }}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -50,31 +50,18 @@ const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProp
     >
       {/* Header: Icon + Title in same row */}
       <div className="flex items-center gap-4 mb-6">
-        <motion.div
-          className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-500 ${colors.iconBg}`}
-          animate={{ scale: isLit ? 1.05 : 1 }}
-        >
-          <Icon className={`w-7 h-7 transition-all duration-500 ${colors.iconText}`} />
-        </motion.div>
+        <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${colors.iconBg}`}>
+          <Icon className={`w-7 h-7 ${colors.iconText}`} />
+        </div>
         <h3 className={`font-display font-medium text-2xl md:text-3xl uppercase tracking-tight transition-all duration-500 ${colors.titleText}`}>
           {title}
         </h3>
       </div>
 
       {/* Description */}
-      <p className={`leading-relaxed text-base transition-all duration-500 ${colors.descText}`}>
+      <p className={`leading-relaxed text-base ${colors.descText}`}>
         {description}
       </p>
-
-      {/* Neon glow overlay */}
-      <div 
-        className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500 ${isLit ? 'opacity-100' : 'opacity-0'}`}
-        style={{
-          background: color === 'orange' 
-            ? 'radial-gradient(ellipse at center, hsl(32, 95%, 44%, 0.1) 0%, transparent 70%)'
-            : 'radial-gradient(ellipse at center, hsl(142, 76%, 36%, 0.1) 0%, transparent 70%)'
-        }}
-      />
     </motion.div>
   );
 };
