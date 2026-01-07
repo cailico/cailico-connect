@@ -113,7 +113,6 @@
 @layer base {
   * {
     @apply border-border;
-    cursor: none !important;
   }
 
   html {
@@ -123,11 +122,6 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    cursor: none !important;
-  }
-
-  a, button, [role="button"], input, select, textarea, label {
-    cursor: none !important;
   }
 }
 
