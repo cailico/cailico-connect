@@ -196,10 +196,9 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             </div>
           </motion.div>
 
-          {/* Título principal con fuente display estirada e itálica */}
+          {/* Título principal con fuente display estirada */}
           <motion.h1
-            className="font-display text-[clamp(2.5rem,10vw,6rem)] leading-[0.95] mb-8 tracking-tight"
-            style={{ fontStyle: 'italic', transform: 'skewX(-5deg)' }}
+            className="font-display font-medium text-[clamp(2.5rem,10vw,6rem)] leading-[1.15] mb-8 tracking-tight"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
               opacity: showText ? 1 : 0, 
