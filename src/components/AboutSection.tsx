@@ -45,7 +45,7 @@ const AboutSection = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <p className="text-lg text-foreground/80 leading-relaxed text-center">
-            Cailico es una empresa enfocada en acercar a todas las personas a la inteligencia artificial y lograr la integración de esta tecnología a la sociedad más rápidamente. Para ello creamos infraestructuras inteligentes que resuelvan necesidades de las personas del común. Nuestro trabajo parte de una idea simple: la IA debe volverse comprensible, accesible y cotidiana para todos. En otra palabras, que vuelva parte del paisaje: que la gente la vea, la use, confíe en ella y la entienda como un elemento del día a día.
+            Cailico es una empresa enfocada en acercar la inteligencia artificial a las personas y lograr la integración de esta tecnología a la sociedad más rápidamente. Para ello creamos infraestructuras inteligentes que resuelvan necesidades de las personas del común. Nuestro trabajo parte de una idea simple: la IA debe volverse comprensible, accesible y cotidiana para todos. En otra palabras, que vuelva parte del paisaje: que la gente la vea, la use, confíe en ella y la entienda como un elemento del día a día.
           </p>
           <p className="text-lg text-foreground/80 leading-relaxed text-center">
             Nuestro enfoque actual es el sector educativo al ser uno de los más masivos y transversales de la sociedad: casi todas las personas se relacionan con él, directa o indirectamente. Esto nos permite acelerar la adopción de la IA en la vida cotidiana y avanzar con mayor fuerza hacia nuestra misión.
@@ -76,7 +76,7 @@ const AboutSection = () => {
                 <card.icon className="w-7 h-7" />
               </motion.div>
 
-              <h3 className="text-xl font-semibold text-primary mb-4">
+              <h3 className="font-display font-medium text-2xl md:text-3xl text-primary mb-4 uppercase tracking-tight text-center">
                 {card.title}
               </h3>
               <p className="text-primary/80 leading-relaxed text-base">
