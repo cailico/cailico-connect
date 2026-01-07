@@ -20,16 +20,16 @@ const Index = () => {
     img.onload = () => {
       // Imagen cargada, pasar a fase de texto
       setTimeout(() => setLoadingPhase('text'), 100);
-      // Después del zoom del texto, mostrar navbar y botones
-      setTimeout(() => setLoadingPhase('ui'), 800);
+      // Después del zoom del texto, mostrar navbar y botones inmediatamente
+      setTimeout(() => setLoadingPhase('ui'), 500);
       // Animación completa
-      setTimeout(() => setLoadingPhase('complete'), 1400);
+      setTimeout(() => setLoadingPhase('complete'), 1100);
     };
     // Fallback si la imagen ya está en caché
     if (img.complete) {
       setTimeout(() => setLoadingPhase('text'), 100);
-      setTimeout(() => setLoadingPhase('ui'), 800);
-      setTimeout(() => setLoadingPhase('complete'), 1400);
+      setTimeout(() => setLoadingPhase('ui'), 500);
+      setTimeout(() => setLoadingPhase('complete'), 1100);
     }
   }, []);
 
