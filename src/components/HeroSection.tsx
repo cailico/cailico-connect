@@ -36,7 +36,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
   // Función para renderizar texto con I serif en "IA"
-  const renderTextWithSerifI = (text: string, colorClass: string) => {
+  const renderTextWithSerifI = (text: string) => {
     return text.split('').map((letter, index) => {
       // Si es la I al inicio de "IA" (índice 0)
       if (index === 0 && text.startsWith("IA")) {
@@ -44,7 +44,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
           <span
             key={`${showAltText}-${index}`}
             style={getLetterStyle(index, text.length)}
-            className="font-serif"
+            className="serif-i"
           >
             {letter}
           </span>
@@ -196,7 +196,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
                 {/* Texto */}
                 <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
                   <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
-                    {renderTextWithSerifI(currentText, textColor)}
+                    {renderTextWithSerifI(currentText)}
                   </span>
                 </div>
 
@@ -226,12 +226,12 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           >
             <span className="block text-white">TRANSFORMA LA</span>
-            <span className="block bg-gradient-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent">COMUNICACIÓN DE TU</span>
-            <span className="block text-secondary">ESCUELA CON <span className="font-serif">I</span>A</span>
+            <span className="block bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent">COMUNICACIÓN DE TU</span>
+            <span className="block text-secondary">ESCUELA CON <span className="serif-i">I</span>A</span>
           </motion.h1>
 
           <motion.p
-            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-6"
+            className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-6"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
               opacity: showText ? 1 : 0, 
