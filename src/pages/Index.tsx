@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import WhatIsSection from "@/components/WhatIsSection";
+import AboutSection from "@/components/AboutSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -36,7 +36,7 @@ const Index = () => {
     <main className="overflow-x-hidden">
       <Navbar loadingPhase={loadingPhase} />
       <HeroSection loadingPhase={loadingPhase} />
-      <WhatIsSection />
+      <AboutSection />
       <FeaturesSection />
       <HowItWorksSection />
       <BenefitsSection />
