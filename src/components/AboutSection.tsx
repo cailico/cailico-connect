@@ -1,5 +1,5 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { Target, Eye } from "lucide-react";
 
 interface NeonCardProps {
@@ -13,35 +13,26 @@ interface NeonCardProps {
 const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProps) => {
   const cardRef = useRef(null);
   const isInView = useInView(cardRef, { amount: 0.5 });
-  const [isHovered, setIsHovered] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // On mobile: light up when in view. On desktop: light up on hover
-  const isLit = isMobile ? isInView : isHovered;
+  // Always use scroll-based activation (both mobile and desktop)
+  const isLit = isInView;
 
   const glowColors = {
     orange: {
-      border: isLit ? "border-secondary" : "border-secondary/20",
+      border: isLit ? "border-secondary" : "border-secondary/30",
       shadow: isLit ? "0 0 30px hsl(32, 95%, 44%), 0 0 60px hsl(32, 95%, 44%, 0.5), 0 0 90px hsl(32, 95%, 44%, 0.3)" : "none",
       iconBg: isLit ? "bg-secondary/30" : "bg-secondary/10",
       iconText: isLit ? "text-secondary drop-shadow-[0_0_10px_hsl(32,95%,44%)]" : "text-secondary/50",
       titleText: isLit ? "text-secondary drop-shadow-[0_0_8px_hsl(32,95%,44%)]" : "text-secondary/40",
-      descText: isLit ? "text-foreground/90" : "text-foreground/30",
+      descText: isLit ? "text-white/90" : "text-white/30",
     },
     green: {
-      border: isLit ? "border-accent" : "border-accent/20",
-      shadow: isLit ? "0 0 30px hsl(142, 76%, 36%), 0 0 60px hsl(142, 76%, 36%, 0.5), 0 0 90px hsl(142, 76%, 36%, 0.3)" : "none",
-      iconBg: isLit ? "bg-accent/30" : "bg-accent/10",
-      iconText: isLit ? "text-accent drop-shadow-[0_0_10px_hsl(142,76%,36%)]" : "text-accent/50",
-      titleText: isLit ? "text-accent drop-shadow-[0_0_8px_hsl(142,76%,36%)]" : "text-accent/40",
-      descText: isLit ? "text-foreground/90" : "text-foreground/30",
+      border: isLit ? "border-[hsl(150,80%,50%)]" : "border-[hsl(150,80%,50%)]/30",
+      shadow: isLit ? "0 0 30px hsl(150, 80%, 50%), 0 0 60px hsl(150, 80%, 50%, 0.5), 0 0 90px hsl(150, 80%, 50%, 0.3)" : "none",
+      iconBg: isLit ? "bg-[hsl(150,80%,50%)]/30" : "bg-[hsl(150,80%,50%)]/10",
+      iconText: isLit ? "text-[hsl(150,80%,50%)] drop-shadow-[0_0_10px_hsl(150,80%,50%)]" : "text-[hsl(150,80%,50%)]/50",
+      titleText: isLit ? "text-[hsl(150,80%,50%)] drop-shadow-[0_0_8px_hsl(150,80%,50%)]" : "text-[hsl(150,80%,50%)]/40",
+      descText: isLit ? "text-white/90" : "text-white/30",
     },
   };
 
@@ -50,14 +41,12 @@ const NeonCard = ({ icon: Icon, title, description, color, delay }: NeonCardProp
   return (
     <motion.div
       ref={cardRef}
-      className={`relative bg-primary/80 rounded-2xl p-8 border-2 transition-all duration-500 ${colors.border}`}
+      className={`relative bg-black rounded-2xl p-8 border-2 transition-all duration-500 ${colors.border}`}
       style={{ boxShadow: colors.shadow }}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, delay }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Header: Icon + Title in same row */}
       <div className="flex items-center gap-4 mb-6">
