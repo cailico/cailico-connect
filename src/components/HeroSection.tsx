@@ -129,10 +129,13 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      {/* Background Image with Overlay - aparece inmediatamente */}
-      <div 
+      {/* Background Image with Overlay - aparece primero */}
+      <motion.div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showImage ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
       />
       <div className="absolute inset-0 bg-black/50" />
 
