@@ -33,26 +33,18 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
 
   const defaultTextRaw = "IA PARA INSTITUCIONES EDUCATIVAS";
-  const altText = "REPORTES, NOTAS AL INSTANTE ¡Y MUCHO MÁS!";
+  const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
-  // Función para renderizar texto letra por letra con colores
+  // Función para renderizar texto letra por letra
   const renderText = (text: string) => {
-    // Para el texto alternativo, "¡Y MUCHO MÁS!" va en naranja
-    const orangePhrase = "¡Y MUCHO MÁS!";
-    const orangeStartIndex = showAltText ? text.indexOf(orangePhrase) : -1;
-    
-    return text.split('').map((letter, index) => {
-      const isOrangeChar = orangeStartIndex !== -1 && index >= orangeStartIndex;
-      return (
-        <span
-          key={`${showAltText}-${index}`}
-          style={getLetterStyle(index, text.length)}
-          className={isOrangeChar ? "text-secondary" : ""}
-        >
-          {letter === ' ' ? '\u00A0' : letter}
-        </span>
-      );
-    });
+    return text.split('').map((letter, index) => (
+      <span
+        key={`${showAltText}-${index}`}
+        style={getLetterStyle(index, text.length)}
+      >
+        {letter === ' ' ? '\u00A0' : letter}
+      </span>
+    ));
   };
   
   const currentText = showAltText ? altText : defaultTextRaw;
@@ -251,7 +243,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
               className="bg-whatsapp hover:bg-whatsapp-dark text-white font-semibold rounded-full px-8"
               asChild
             >
-              <a href="https://wa.me/573016241863" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+              <a href="#contact" className="flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
                 Nuestro WhatsApp
               </a>

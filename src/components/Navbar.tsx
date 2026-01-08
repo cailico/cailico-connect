@@ -37,7 +37,7 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
   const navItems = [
     { label: "INICIO", href: "#hero" },
     { label: "¿QUIÉNES SOMOS?", href: "#quienes-somos" },
-    { label: "PRODUCTO", href: "#features" },
+    { label: "NUESTROS SERVICIOS", href: "#features" },
     { label: "CASOS DE USO", href: "#use-cases" },
     { label: "CONTACTO", href: "#contact" },
   ];
