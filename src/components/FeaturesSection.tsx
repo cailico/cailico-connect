@@ -48,7 +48,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="py-20 md:py-32 bg-background" ref={ref}>
+    <section id="features" className="py-12 md:py-20 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.div
           className="text-center mb-16"
@@ -57,7 +57,7 @@ const FeaturesSection = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="font-display font-medium text-3xl md:text-5xl text-foreground mb-4 uppercase tracking-tight">
-            PRODUCTO
+            <span className="text-secondary">PROD</span><span className="text-white">UCTO</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Todo lo que necesitas para transformar la comunicación educativa
