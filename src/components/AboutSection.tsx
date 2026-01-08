@@ -113,7 +113,7 @@ const AboutSection = () => {
       title: "Misión",
       buttonText: "Ver Misión",
       description:
-        "Preparar a la sociedad ante los avances de la inteligencia artificial, impulsando su integración en la vida cotidiana mediante sistemas que acerquen la IA a todas las personas (incluyendo a quienes normalmente no la usarían), reduzcan la distancia entre tecnología y ciudadanía y promuevan una adopción natural, masiva y sostenible. Con esto, también aportamos a su financiación y desarrollo.",
+        "Preparar a la sociedad ante los avances de la inteligencia artificial, impulsando su integración en la vida cotidiana mediante sistemas que acerquen la IA a todas las personas (incluyendo a quienes normalmente no la usarían), reduzcan la distancia entre tecnología y ciudadanía y promuevan una adopción natural, masiva y sostenible. Con esto, también aportar a su financiación y desarrollo.",
       color: "orange" as const,
       bgImage: misionBg,
     },
