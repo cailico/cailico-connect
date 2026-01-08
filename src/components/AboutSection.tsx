@@ -113,7 +113,7 @@ const AboutSection = () => {
       title: "Misión",
       buttonText: "Ver Misión",
       description:
-        "Preparar a la sociedad ante los avances de la inteligencia artificial, impulsando su integración en la vida cotidiana mediante sistemas que acerquen la IA a todas las personas (incluyendo a quienes normalmente no la usarían), reduzcan la distancia entre tecnología y ciudadanía y promuevan una adopción natural, masiva y sostenible. Con esto, también aportamos a su financiación y desarrollo.",
+        "Preparar a la sociedad ante los avances de la inteligencia artificial, impulsando su integración en la vida cotidiana de las personas. En Cailico desarrollamos sistemas que acercan la IA a todos, incluyendo a quienes normalmente no la usarían, reduciendo la distancia entre tecnología y ciudadanía para que su adopción sea natural, masiva y sostenible, de esa manera aportando también a su financiación y desarrollo.",
       color: "orange" as const,
       bgImage: misionBg,
     },
@@ -122,7 +122,7 @@ const AboutSection = () => {
       title: "Visión",
       buttonText: "Ver Visión",
       description:
-        "Convertirnos en una empresa líder, con impacto nacional e internacional, en la transición social en la era de la inteligencia artificial, reconocida por hacer que esta tecnología pase de ser una novedad técnica a ser una presencia cotidiana. Aspiramos a impulsar una sociedad más familiarizada y preparada para los avances presentes y futuros, gracias a infraestructuras centradas en las personas que vuelven la IA visible, útil y común en distintos ámbitos de la vida.",
+        "Convertirnos en la empresa líder en el mundo en el desarrollo de productos e infraestructuras que impulsen la transición social en la era de la inteligencia artificial. Aspiramos a formar una sociedad más familiarizada y preparada para los avances presentes y futuros, gracias a infraestructuras que vuelven la IA visible, útil y común en distintos ámbitos de la vida.",
       color: "green" as const,
       bgImage: visionBg,
     },
@@ -149,10 +149,10 @@ const AboutSection = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <p className="text-lg text-foreground/80 leading-relaxed text-center">
-            Cailico es una empresa enfocada en acercar la inteligencia artificial a las personas y lograr la integración de esta tecnología a la sociedad más rápidamente. Para ello creamos infraestructuras inteligentes que resuelvan necesidades de las personas del común. Nuestro trabajo parte de una idea simple: la IA debe volverse comprensible, accesible y cotidiana para todos. En otra palabras, que vuelva parte del paisaje: que la gente la vea, la use, confíe en ella y la entienda como un elemento del día a día.
+            Cailico es una empresa enfocada en acercar a todas las personas a la inteligencia artificial y lograr la integración de esta tecnología a la sociedad más rápidamente. Para ello creamos infraestructuras inteligentes que resuelvan necesidades de las personas del común. Nuestro trabajo parte de una idea simple: la IA debe volverse comprensible, accesible y cotidiana para todos. En otra palabras, hacerla parte del paisaje: que la gente la vea, la use, confíe en ella y la entienda como un elemento del día a día.
           </p>
           <p className="text-lg text-foreground/80 leading-relaxed text-center">
-            Nuestro enfoque actual es el sector educativo al ser uno de los más masivos y transversales de la sociedad: casi todas las personas se relacionan con él, directa o indirectamente. Esto nos permite acelerar la adopción de la IA en la vida cotidiana y avanzar con mayor fuerza hacia nuestra misión.
+            Nuestro enfoque actual es el sector educativo al ser uno de los más masivos y transversales de la sociedad: casi todas las personas se relacionan con él, directa o indirectamente. Esto nos permite acelerar la adopción de la IA en la vida cotidiana y avanzar con mayor fuerza hacia nuestra misión (ver abajo).
           </p>
           <p className="text-lg text-secondary font-medium leading-relaxed text-center">
             En Cailico construimos puentes: entre lo que la tecnología ya puede hacer y lo que las personas realmente pueden aprovechar.
