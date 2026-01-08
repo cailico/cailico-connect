@@ -129,7 +129,7 @@ const AboutSection = () => {
   ];
 
   return (
-    <section id="quienes-somos" className="py-20 md:py-32 bg-background" ref={ref}>
+    <section id="quienes-somos" className="py-20 md:py-24 pb-8 md:pb-12 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.div
           className="text-center mb-12"
