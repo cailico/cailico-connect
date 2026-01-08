@@ -78,7 +78,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
     }
 
     return () => clearTimeout(timeout);
-  }, [startTyping, displayedText, isDeleting, fullText, texts.length]);
+  }, [displayedText, isDeleting, fullText, texts.length]);
 
   // Renderizar texto con colores
   const renderText = () => {
