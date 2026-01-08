@@ -33,22 +33,24 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
 
   const defaultTextRaw = "IA PARA INSTITUCIONES EDUCATIVAS";
-  const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
+  const altTextPart1 = "REPORTES, NOTAS AL INSTANTE ";
+  const altTextPart2 = "¡Y MUCHO MÁS!";
   
   // Función para renderizar texto letra por letra
-  const renderText = (text: string) => {
+  const renderText = (text: string, colorClass: string, startIndex: number = 0, totalLength: number = text.length) => {
     return text.split('').map((letter, index) => (
       <span
-        key={`${showAltText}-${index}`}
-        style={getLetterStyle(index, text.length)}
+        key={`${showAltText}-${startIndex + index}`}
+        className={colorClass}
+        style={getLetterStyle(startIndex + index, totalLength)}
       >
         {letter === ' ' ? '\u00A0' : letter}
       </span>
     ));
   };
   
-  const currentText = showAltText ? altText : defaultTextRaw;
-  const textColor = showAltText ? "text-white" : "text-secondary";
+  const fullAltText = altTextPart1 + altTextPart2;
+  const currentText = showAltText ? fullAltText : defaultTextRaw;
 
   // Inicializar el ref
   useEffect(() => {
@@ -181,8 +183,15 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
 
                 {/* Texto */}
                 <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
-                  <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
-                    {renderText(currentText)}
+                  <span className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center">
+                    {showAltText ? (
+                      <>
+                        {renderText(altTextPart1, "text-white", 0, fullAltText.length)}
+                        {renderText(altTextPart2, "text-secondary", altTextPart1.length, fullAltText.length)}
+                      </>
+                    ) : (
+                      renderText(defaultTextRaw, "text-secondary")
+                    )}
                   </span>
                 </div>
 
@@ -243,7 +252,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
               className="bg-whatsapp hover:bg-whatsapp-dark text-white font-semibold rounded-full px-8"
               asChild
             >
-              <a href="#contact" className="flex items-center gap-2">
+              <a href="https://wa.me/573016241863" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
                 Nuestro WhatsApp
               </a>
