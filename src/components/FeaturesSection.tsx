@@ -57,7 +57,7 @@ const FeaturesSection = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="font-display font-medium text-3xl md:text-5xl text-foreground mb-4 uppercase tracking-tight">
-            Características <span className="text-secondary">Principales</span>
+            PRODUCTO
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Todo lo que necesitas para transformar la comunicación educativa

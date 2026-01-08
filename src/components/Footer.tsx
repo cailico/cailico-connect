@@ -7,7 +7,7 @@ const Footer = () => {
 
   const links = [
     { label: "Inicio", href: "#hero" },
-    { label: "Características", href: "#features" },
+    { label: "Producto", href: "#features" },
     { label: "Cómo Funciona", href: "#how-it-works" },
     { label: "Casos de Uso", href: "#use-cases" },
     { label: "Contacto", href: "#contact" },
