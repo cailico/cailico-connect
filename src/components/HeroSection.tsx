@@ -33,28 +33,10 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
 
   const defaultTextRaw = "IA PARA INSTITUCIONES EDUCATIVAS";
-  const altTextPart1 = "REPORTES, NOTAS AL INSTANTE ";
-  const altTextPart2 = "¡Y MUCHO MÁS!";
-  const altText = altTextPart1 + altTextPart2;
+  const altText = "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!";
   
   // Función para renderizar texto letra por letra
   const renderText = (text: string) => {
-    if (showAltText) {
-      // Para el texto alternativo, colorear "¡Y MUCHO MÁS!" en naranja
-      const part1Length = altTextPart1.length;
-      return text.split('').map((letter, index) => {
-        const isOrangePart = index >= part1Length;
-        return (
-          <span
-            key={`${showAltText}-${index}`}
-            style={getLetterStyle(index, text.length)}
-            className={isOrangePart ? "text-secondary" : "text-white"}
-          >
-            {letter === ' ' ? '\u00A0' : letter}
-          </span>
-        );
-      });
-    }
     return text.split('').map((letter, index) => (
       <span
         key={`${showAltText}-${index}`}
@@ -66,7 +48,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   };
   
   const currentText = showAltText ? altText : defaultTextRaw;
-  const textColor = showAltText ? "" : "text-secondary";
+  const textColor = showAltText ? "text-white" : "text-secondary";
 
   // Inicializar el ref
   useEffect(() => {
@@ -261,7 +243,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
               className="bg-whatsapp hover:bg-whatsapp-dark text-white font-semibold rounded-full px-8"
               asChild
             >
-              <a href="https://wa.me/573016241863" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+              <a href="#contact" className="flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
                 Nuestro WhatsApp
               </a>
