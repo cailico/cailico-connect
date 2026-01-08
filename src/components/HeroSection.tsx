@@ -46,7 +46,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
     }
   }, [showButtons, startTyping]);
 
-  // Typewriter effect
+  // Typewriter effect - se activa cuando startTyping es true
   useEffect(() => {
     if (!startTyping) return;
     
@@ -78,7 +78,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
     }
 
     return () => clearTimeout(timeout);
-  }, [displayedText, isDeleting, fullText, texts.length]);
+  }, [startTyping, displayedText, isDeleting, fullText, texts.length]);
 
   // Renderizar texto con colores
   const renderText = () => {
