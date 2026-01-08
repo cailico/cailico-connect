@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Bot } from "lucide-react";
@@ -9,159 +9,111 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
-  const [bracketsClosed, setBracketsClosed] = useState(false);
-  const [showAltText, setShowAltText] = useState(false);
-  const [lettersVisible, setLettersVisible] = useState(true);
-  const [targetText, setTargetText] = useState<'default' | 'alt'>('default');
-  const animationRef = useRef<NodeJS.Timeout | null>(null);
-  const isHoveredRef = useRef(false);
-  const closingOffsetRef = useRef(0);
+  const [displayedText, setDisplayedText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [textIndex, setTextIndex] = useState(0);
+  const [showCursor, setShowCursor] = useState(true);
 
   const showImage = loadingPhase !== 'image';
   const showText = loadingPhase === 'text' || loadingPhase === 'ui' || loadingPhase === 'complete';
   const showButtons = loadingPhase === 'ui' || loadingPhase === 'complete';
-  
-  // Pre-calcular anchos para ambos textos (medidos manualmente)
-  const defaultTextWidth = 285; // "IA PARA INSTITUCIONES EDUCATIVAS"
-  const altTextWidth = 380; // "REPORTES, NOTAS AL INSTANTE, ¡Y MUCHO MÁS!"
-  
-  const defaultOffset = defaultTextWidth / 2 + 6;
-  const altOffset = altTextWidth / 2 + 6;
-  
-  // Constante de seguridad: distancia máxima que los corchetes pueden moverse hacia el centro
-  // (nunca deben cruzarse, así que el máximo es llegar justo al centro - 5px de margen)
-  const maxSafeOffset = Math.min(defaultOffset, altOffset) - 5;
 
-  const defaultTextRaw = "IA PARA INSTITUCIONES EDUCATIVAS";
-  const altText = "REPORTES, NOTAS AL INSTANTE ¡Y MUCHO MÁS!";
-  
-  // Función para renderizar texto letra por letra
-  const renderText = (text: string) => {
-    // Para el texto alternativo, dividir en partes para colorear "¡Y MUCHO MÁS!" en naranja
-    if (showAltText) {
+  const texts = [
+    { text: "IA PARA INSTITUCIONES EDUCATIVAS", cursorColor: "bg-secondary" },
+    { text: "REPORTES, NOTAS AL INSTANTE ¡Y MUCHO MÁS!", cursorColor: "bg-white" }
+  ];
+
+  const currentTextData = texts[textIndex];
+  const fullText = currentTextData.text;
+
+  // Cursor blinking effect
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+    return () => clearInterval(cursorInterval);
+  }, []);
+
+  // Typewriter effect
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (!isDeleting) {
+      // Typing
+      if (displayedText.length < fullText.length) {
+        timeout = setTimeout(() => {
+          setDisplayedText(fullText.slice(0, displayedText.length + 1));
+        }, 50); // Velocidad de escritura
+      } else {
+        // Texto completo, esperar 7 segundos
+        timeout = setTimeout(() => {
+          setIsDeleting(true);
+        }, 7000);
+      }
+    } else {
+      // Deleting (más rápido)
+      if (displayedText.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayedText(displayedText.slice(0, -1));
+        }, 20); // Velocidad de borrado (más rápido)
+      } else {
+        // Texto borrado, cambiar al siguiente
+        setIsDeleting(false);
+        setTextIndex((prev) => (prev + 1) % texts.length);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayedText, isDeleting, fullText, texts.length]);
+
+  // Renderizar texto con colores
+  const renderText = () => {
+    if (textIndex === 1) {
+      // Segundo texto: "¡Y MUCHO MÁS!" en naranja
       const orangePart = "¡Y MUCHO MÁS!";
-      const whitePart = text.replace(orangePart, "");
+      const orangeStartIndex = fullText.indexOf(orangePart);
       
       return (
         <>
-          {whitePart.split('').map((letter, index) => (
-            <span
-              key={`alt-white-${index}`}
-              style={getLetterStyle(index, text.length)}
-            >
-              {letter === ' ' ? '\u00A0' : letter}
-            </span>
-          ))}
-          {orangePart.split('').map((letter, index) => (
-            <span
-              key={`alt-orange-${index}`}
-              className="text-secondary"
-              style={getLetterStyle(whitePart.length + index, text.length)}
-            >
-              {letter === ' ' ? '\u00A0' : letter}
-            </span>
-          ))}
+          {displayedText.split('').map((letter, index) => {
+            const isOrange = index >= orangeStartIndex;
+            return (
+              <span
+                key={index}
+                className={isOrange ? "text-secondary" : "text-white"}
+              >
+                {letter === ' ' ? '\u00A0' : letter}
+              </span>
+            );
+          })}
         </>
       );
     }
     
-    return text.split('').map((letter, index) => (
-      <span
-        key={`${showAltText}-${index}`}
-        style={getLetterStyle(index, text.length)}
-      >
-        {letter === ' ' ? '\u00A0' : letter}
-      </span>
-    ));
+    // Primer texto: todo en naranja
+    return (
+      <>
+        {displayedText.split('').map((letter, index) => (
+          <span key={index} className="text-secondary">
+            {letter === ' ' ? '\u00A0' : letter}
+          </span>
+        ))}
+      </>
+    );
   };
-  
-  const currentText = showAltText ? altText : defaultTextRaw;
-  const textColor = showAltText ? "text-white" : "text-secondary";
 
-  // Inicializar el ref
-  useEffect(() => {
-    closingOffsetRef.current = defaultOffset;
-  }, []);
-
-  // Limpiar timeouts
-  useEffect(() => {
-    return () => {
-      if (animationRef.current) clearTimeout(animationRef.current);
-    };
-  }, []);
-
-  // Calcular el offset actual basado en el texto mostrado (solo cuando está abierto)
-  const currentOffset = showAltText ? altOffset : defaultOffset;
-  
-  // El offset animado: cuando está cerrado usa el ref congelado, cuando está abierto usa el actual
-  // IMPORTANTE: Limitamos con maxSafeOffset para que los corchetes NUNCA puedan cruzarse
-  const rawOffset = bracketsClosed ? closingOffsetRef.current : currentOffset;
-  const animatedOffset = Math.min(rawOffset, maxSafeOffset);
-
-  // Ejecutar animación cuando cambia el objetivo
-  useEffect(() => {
-    if (animationRef.current) {
-      clearTimeout(animationRef.current);
-      animationRef.current = null;
+  // Determinar el color del cursor
+  const getCursorColor = () => {
+    if (textIndex === 1) {
+      const orangePart = "¡Y MUCHO MÁS!";
+      const orangeStartIndex = fullText.indexOf(orangePart);
+      // Si estamos escribiendo/borrando en la parte naranja
+      if (displayedText.length >= orangeStartIndex) {
+        return "bg-secondary";
+      }
+      return "bg-white";
     }
-
-    const shouldShowAlt = targetText === 'alt';
-    
-    if (showAltText === shouldShowAlt && !bracketsClosed && lettersVisible) return;
-
-    // Congelar el offset actual para la animación de cierre
-    closingOffsetRef.current = showAltText ? altOffset : defaultOffset;
-
-    // Fase 1: Ocultar letras (afuera hacia adentro)
-    setLettersVisible(false);
-
-    // Fase 2: Cerrar corchetes después de que las letras empiecen a desaparecer
-    animationRef.current = setTimeout(() => {
-      setBracketsClosed(true);
-      
-      // Fase 3: Cuando los corchetes están completamente cerrados, cambiar texto
-      animationRef.current = setTimeout(() => {
-        const currentTarget = isHoveredRef.current ? 'alt' : 'default';
-        const newShowAlt = currentTarget === 'alt';
-        
-        // Cambiar el texto mientras los corchetes están cerrados
-        setShowAltText(newShowAlt);
-        
-        // Fase 4: Abrir corchetes (el nuevo offset se usará automáticamente cuando bracketsClosed sea false)
-        setBracketsClosed(false);
-        
-        // Fase 5: Mostrar letras (centro hacia afuera) después de que los corchetes empiecen a abrirse
-        animationRef.current = setTimeout(() => {
-          setLettersVisible(true);
-        }, 150);
-      }, 300);
-    }, 150);
-  }, [targetText]);
-
-  const handleMouseEnter = () => {
-    isHoveredRef.current = true;
-    setTargetText('alt');
-  };
-
-  const handleMouseLeave = () => {
-    isHoveredRef.current = false;
-    setTargetText('default');
-  };
-
-  // Animación de letras
-  const getLetterStyle = (index: number, total: number) => {
-    const distanceFromEdge = Math.min(index, total - 1 - index);
-    const maxDistance = Math.floor(total / 2);
-    
-    // Cuando se ocultan: de afuera hacia adentro (los extremos primero)
-    const hidingDelay = distanceFromEdge * 0.008;
-    // Cuando aparecen: del centro hacia afuera (el centro primero)
-    const showingDelay = (maxDistance - distanceFromEdge) * 0.008;
-    
-    return {
-      opacity: lettersVisible ? 1 : 0,
-      transition: `opacity 0.12s ease ${lettersVisible ? showingDelay : hidingDelay}s`
-    };
+    return "bg-secondary"; // Primer texto siempre naranja
   };
 
   return (
@@ -179,7 +131,7 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
       {/* Main Content */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge con corchetes animados - posicionado más arriba */}
+          {/* Badge con efecto typewriter */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
@@ -189,42 +141,16 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="mb-4"
           >
-            <div 
-              className="relative inline-flex items-center justify-center cursor-pointer"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div className="flex items-center justify-center">
-                {/* Corchete IZQUIERDO ┌ */}
-                <motion.div
-                  className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? animatedOffset : 0 }}
-                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                  style={{ zIndex: 10 }}
-                >
-                  <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
-                    <path d="M1 1 L9 1 M1 1 L1 19" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
-                  </svg>
-                </motion.div>
-
-                {/* Texto */}
-                <div className="px-1.5 py-1 max-w-[calc(100vw-80px)]">
-                  <span className={`text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center ${textColor}`}>
-                    {renderText(currentText)}
-                  </span>
-                </div>
-
-                {/* Corchete DERECHO ┘ */}
-                <motion.div
-                  className="flex-shrink-0"
-                  animate={{ x: bracketsClosed ? -animatedOffset : 0 }}
-                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                  style={{ zIndex: 10 }}
-                >
-                  <svg width="10" height="20" viewBox="0 0 10 20" fill="none">
-                    <path d="M9 19 L1 19 M9 19 L9 1" stroke="hsl(var(--secondary))" strokeWidth="2" strokeLinecap="square"/>
-                  </svg>
-                </motion.div>
+            <div className="relative inline-flex items-center justify-center">
+              <div className="flex items-center justify-center px-3 py-2">
+                <span className="text-[clamp(0.6rem,2.5vw,0.875rem)] font-bold tracking-wider uppercase flex flex-wrap justify-center min-h-[1.5em]">
+                  {renderText()}
+                  {/* Cursor rectangular */}
+                  <span 
+                    className={`inline-block w-[0.6em] h-[1.1em] ml-[2px] align-middle transition-opacity duration-100 ${getCursorColor()}`}
+                    style={{ opacity: showCursor ? 1 : 0 }}
+                  />
+                </span>
               </div>
             </div>
           </motion.div>
