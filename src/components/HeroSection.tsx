@@ -11,6 +11,7 @@ interface HeroSectionProps {
 const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [startTyping, setStartTyping] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
   const [showCursor, setShowCursor] = useState(true);
 
@@ -34,8 +35,21 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
     return () => clearInterval(cursorInterval);
   }, []);
 
+  // Start typing only after UI is loaded
+  useEffect(() => {
+    if (showButtons && !startTyping) {
+      // Small delay after buttons appear
+      const timer = setTimeout(() => {
+        setStartTyping(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [showButtons, startTyping]);
+
   // Typewriter effect
   useEffect(() => {
+    if (!startTyping) return;
+    
     let timeout: NodeJS.Timeout;
 
     if (!isDeleting) {
