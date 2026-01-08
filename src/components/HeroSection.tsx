@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Bot } from "lucide-react";
@@ -46,9 +46,21 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
     }
   }, [showButtons, startTyping]);
 
-  // Typewriter effect - se activa cuando startTyping es true
+  // Ref para controlar si el typewriter ya fue iniciado
+  const typingStartedRef = useRef(false);
+
+  // Efecto para iniciar el typewriter cuando startTyping cambia a true
   useEffect(() => {
-    if (!startTyping) return;
+    if (startTyping && !typingStartedRef.current) {
+      typingStartedRef.current = true;
+      // Forzar una actualización para iniciar el ciclo
+      setDisplayedText("");
+    }
+  }, [startTyping]);
+
+  // Typewriter effect - se ejecuta después de que typingStartedRef es true
+  useEffect(() => {
+    if (!typingStartedRef.current) return;
     
     let timeout: NodeJS.Timeout;
 
