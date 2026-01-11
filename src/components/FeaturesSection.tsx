@@ -48,7 +48,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="pt-16 md:pt-24 pb-12 md:pb-20 bg-background" ref={ref}>
+    <section id="features" className="pt-8 md:pt-12 pb-12 md:pb-20 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.div
           className="text-center mb-16"
