@@ -101,8 +101,8 @@ const InfrastructureSection = () => {
   }, [isAutoPlaying, isInView, features.length]);
 
   return (
-    <section id="infrastructure" className="py-8 md:py-12 bg-white" ref={ref}>
-      <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-24">
+    <section id="infrastructure" className="relative pb-16 md:pb-20 bg-transparent" ref={ref}>
+      <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-24 relative z-10">
         {/* Header */}
         <motion.div
           className="text-center mb-8 md:mb-10"
@@ -110,7 +110,7 @@ const InfrastructureSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
             Lleve la comunicación entre los miembros de su comunidad educativa al siguiente nivel con nuestro Sistema de Comunicación Educativa por Inteligencia Artificial, el cual integra un agente de WhatsApp disponible 24/7, el cual reconoce y recuerda a la persona, y una plataforma institucional que trabajan en conjunto.
           </p>
         </motion.div>
