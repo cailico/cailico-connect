@@ -17,6 +17,10 @@ const InfrastructureSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Touch/swipe handling
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   const features = [
     {
@@ -86,6 +90,28 @@ const InfrastructureSection = () => {
     setActiveIndex((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   }, [stopAutoPlay, features.length]);
 
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(diff) > minSwipeDistance) {
+      if (diff > 0) {
+        goToNext();
+      } else {
+        goToPrev();
+      }
+    }
+  };
+
   useEffect(() => {
     if (isAutoPlaying && isInView) {
       autoPlayRef.current = setInterval(() => {
@@ -115,15 +141,24 @@ const InfrastructureSection = () => {
           </p>
         </motion.div>
 
-        {/* Tabs Navigation */}
+        {/* Tabs Navigation with Arrows */}
         <motion.div
           className="relative mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <div className="flex items-center justify-center gap-2 md:gap-3">
-            <div className="flex gap-2 md:gap-2.5 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center justify-center gap-2">
+            {/* Left Tab Arrow */}
+            <button
+              onClick={goToPrev}
+              className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex"
+              aria-label="Anterior pestaña"
+            >
+              <ChevronLeft className="h-6 w-6 stroke-[1.5]" />
+            </button>
+
+            <div className="flex gap-2 md:gap-2.5 overflow-hidden max-w-xs sm:max-w-md md:max-w-none">
               {features.map((feature, index) => (
                 <button
                   key={feature.id}
@@ -132,33 +167,48 @@ const InfrastructureSection = () => {
                     activeIndex === index
                       ? "bg-secondary border-secondary text-white shadow-md"
                       : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
-                  }`}
+                  } ${index < 3 || window.innerWidth >= 768 ? 'flex' : 'hidden md:flex'}`}
                 >
                   {feature.tab}
                 </button>
               ))}
             </div>
+
+            {/* Right Tab Arrow */}
+            <button
+              onClick={goToNext}
+              className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex"
+              aria-label="Siguiente pestaña"
+            >
+              <ChevronRight className="h-6 w-6 stroke-[1.5]" />
+            </button>
           </div>
         </motion.div>
 
-        {/* Carousel Container with Arrows Outside */}
+        {/* Carousel Container with Arrows Outside - Same for all screen sizes */}
         <motion.div
-          className="relative max-w-5xl mx-auto flex items-center gap-4"
+          className="relative max-w-5xl mx-auto flex items-center gap-2 md:gap-4"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          {/* Left Arrow - Outside card, simple line style */}
+          {/* Left Arrow - Always visible, outside card */}
           <button
             onClick={goToPrev}
-            className="hidden md:flex shrink-0 items-center justify-center text-white hover:text-secondary transition-colors"
+            className="shrink-0 flex items-center justify-center text-white hover:text-secondary transition-colors"
             aria-label="Anterior"
           >
             <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
           </button>
 
           {/* Cards Carousel */}
-          <div className="flex-1 overflow-hidden" ref={carouselRef}>
+          <div 
+            className="flex-1 overflow-hidden" 
+            ref={carouselRef}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div 
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${activeIndex * 100}%)` }}
@@ -169,19 +219,20 @@ const InfrastructureSection = () => {
                   className="w-full shrink-0"
                 >
                   <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                    <div className="grid md:grid-cols-2 min-h-[380px] md:min-h-[400px]">
+                    {/* Fixed height container for consistent card sizes */}
+                    <div className="grid md:grid-cols-2 h-[480px] md:h-[420px]">
                       {/* Text Content */}
-                      <div className="p-8 md:p-10 lg:p-12 flex flex-col justify-center order-2 md:order-1 border-t md:border-t-0 md:border-r border-gray-200">
+                      <div className="p-6 md:p-10 lg:p-12 flex flex-col justify-center order-2 md:order-1 border-t md:border-t-0 md:border-r border-gray-200 h-[240px] md:h-full overflow-hidden">
                         <h3 className="font-display font-bold text-xl md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-4 leading-tight">
                           {feature.title}
                         </h3>
-                        <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                        <p className="text-gray-600 leading-relaxed text-sm md:text-base line-clamp-5 md:line-clamp-none">
                           {feature.description}
                         </p>
                       </div>
 
                       {/* Image */}
-                      <div className="relative h-56 md:h-auto order-1 md:order-2">
+                      <div className="relative h-[240px] md:h-full order-1 md:order-2">
                         <img
                           src={feature.image}
                           alt={feature.title}
@@ -195,33 +246,15 @@ const InfrastructureSection = () => {
             </div>
           </div>
 
-          {/* Right Arrow - Outside card, simple line style */}
+          {/* Right Arrow - Always visible, outside card */}
           <button
             onClick={goToNext}
-            className="hidden md:flex shrink-0 items-center justify-center text-white hover:text-secondary transition-colors"
+            className="shrink-0 flex items-center justify-center text-white hover:text-secondary transition-colors"
             aria-label="Siguiente"
           >
             <ChevronRight className="h-8 w-8 stroke-[1.5]" />
           </button>
         </motion.div>
-
-        {/* Mobile Navigation Arrows */}
-        <div className="flex md:hidden justify-center gap-8 mt-4">
-          <button
-            onClick={goToPrev}
-            className="text-white hover:text-secondary transition-colors"
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
-          </button>
-          <button
-            onClick={goToNext}
-            className="text-white hover:text-secondary transition-colors"
-            aria-label="Siguiente"
-          >
-            <ChevronRight className="h-8 w-8 stroke-[1.5]" />
-          </button>
-        </div>
 
         {/* Progress Bar for auto-play */}
         {isAutoPlaying && (

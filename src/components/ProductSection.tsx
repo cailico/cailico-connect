@@ -15,7 +15,7 @@ const ProductSection = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${productoBg})` }}
       >
-        <div className="absolute inset-0 bg-black/85" />
+        <div className="absolute inset-0 bg-black/70" />
       </div>
       
       {/* Title Section */}
