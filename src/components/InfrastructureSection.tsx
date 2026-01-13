@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 import featureProgramacion from "@/assets/feature-programacion.png";
 import featureComunicados from "@/assets/feature-comunicados.png";
@@ -13,6 +12,7 @@ import featureEstadisticas from "@/assets/feature-estadisticas.png";
 
 const InfrastructureSection = () => {
   const ref = useRef(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -100,10 +100,8 @@ const InfrastructureSection = () => {
     };
   }, [isAutoPlaying, isInView, features.length]);
 
-  const currentFeature = features[activeIndex];
-
   return (
-    <section id="infrastructure" className="py-8 md:py-12 bg-background" ref={ref}>
+    <section id="infrastructure" className="py-8 md:py-12 bg-white" ref={ref}>
       <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-24">
         {/* Header */}
         <motion.div
@@ -112,12 +110,12 @@ const InfrastructureSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Lleve la comunicación entre los miembros de su comunidad educativa al siguiente nivel con nuestro Sistema de Comunicación Educativa por Inteligencia Artificial, el cual integra un agente de WhatsApp disponible 24/7, el cual reconoce y recuerda a la persona, y una plataforma institucional que trabajan en conjunto.
           </p>
         </motion.div>
 
-        {/* Tabs Navigation - estilo Truora con flechas a los lados */}
+        {/* Tabs Navigation */}
         <motion.div
           className="relative mb-6"
           initial={{ opacity: 0, y: 20 }}
@@ -125,15 +123,6 @@ const InfrastructureSection = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <div className="flex items-center justify-center gap-2 md:gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={goToPrev}
-              className="shrink-0 h-9 w-9 rounded-full border border-gray-300 hover:border-secondary hover:bg-secondary/10 text-gray-500 hover:text-secondary bg-white"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            
             <div className="flex gap-2 md:gap-2.5 overflow-x-auto scrollbar-hide">
               {features.map((feature, index) => (
                 <button
@@ -149,105 +138,106 @@ const InfrastructureSection = () => {
                 </button>
               ))}
             </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={goToNext}
-              className="shrink-0 h-9 w-9 rounded-full border border-gray-300 hover:border-secondary hover:bg-secondary/10 text-gray-500 hover:text-secondary bg-white"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
           </div>
         </motion.div>
 
-        {/* Content Card - estilo Truora */}
+        {/* Carousel Container with Arrows Outside */}
         <motion.div
-          className="relative bg-white rounded-2xl overflow-hidden shadow-xl max-w-5xl mx-auto"
+          className="relative max-w-5xl mx-auto flex items-center gap-4"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <div className="grid md:grid-cols-2 min-h-[400px] md:min-h-[420px]">
-            {/* Text Content */}
-            <div className="p-8 md:p-10 lg:p-12 flex flex-col justify-center order-2 md:order-1">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentFeature.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <h3 className="font-display font-bold text-xl md:text-2xl lg:text-3xl text-gray-900 mb-4 leading-tight">
-                    {currentFeature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                    {currentFeature.description}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+          {/* Left Arrow - Outside card, simple line style */}
+          <button
+            onClick={goToPrev}
+            className="hidden md:flex shrink-0 items-center justify-center text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
+          </button>
 
-            {/* Image */}
-            <div className="relative h-56 md:h-auto order-1 md:order-2 bg-gray-50">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentFeature.id}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0, scale: 1.02 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <img
-                    src={currentFeature.image}
-                    alt={currentFeature.title}
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Arrows inside the card */}
-          <div className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-10">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={goToPrev}
-              className="h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg border border-gray-200 text-gray-600 hover:text-secondary"
+          {/* Cards Carousel */}
+          <div className="flex-1 overflow-hidden" ref={carouselRef}>
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${activeIndex * 100}%)` }}
             >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-10">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={goToNext}
-              className="h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg border border-gray-200 text-gray-600 hover:text-secondary"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
+              {features.map((feature) => (
+                <div
+                  key={feature.id}
+                  className="w-full shrink-0"
+                >
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                    <div className="grid md:grid-cols-2 min-h-[380px] md:min-h-[400px]">
+                      {/* Text Content */}
+                      <div className="p-8 md:p-10 lg:p-12 flex flex-col justify-center order-2 md:order-1 border-t md:border-t-0 md:border-r border-gray-200">
+                        <h3 className="font-display font-bold text-xl md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-4 leading-tight">
+                          {feature.title}
+                        </h3>
+                        <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                          {feature.description}
+                        </p>
+                      </div>
+
+                      {/* Image */}
+                      <div className="relative h-56 md:h-auto order-1 md:order-2">
+                        <img
+                          src={feature.image}
+                          alt={feature.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Progress Bar */}
-          {isAutoPlaying && (
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200">
-              <motion.div
-                className="h-full bg-secondary"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 6, ease: "linear" }}
-                key={activeIndex}
-              />
-            </div>
-          )}
+          {/* Right Arrow - Outside card, simple line style */}
+          <button
+            onClick={goToNext}
+            className="hidden md:flex shrink-0 items-center justify-center text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            aria-label="Siguiente"
+          >
+            <ChevronRight className="h-8 w-8 stroke-[1.5]" />
+          </button>
         </motion.div>
 
+        {/* Mobile Navigation Arrows */}
+        <div className="flex md:hidden justify-center gap-8 mt-4">
+          <button
+            onClick={goToPrev}
+            className="text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
+          </button>
+          <button
+            onClick={goToNext}
+            className="text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            aria-label="Siguiente"
+          >
+            <ChevronRight className="h-8 w-8 stroke-[1.5]" />
+          </button>
+        </div>
+
+        {/* Progress Bar for auto-play */}
+        {isAutoPlaying && (
+          <div className="max-w-5xl mx-auto mt-4 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-secondary"
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 6, ease: "linear" }}
+              key={activeIndex}
+            />
+          </div>
+        )}
+
         {/* Dots Navigation */}
-        <div className="flex justify-center gap-2 mt-6">
+        <div className="flex justify-center gap-2 mt-4">
           {features.map((_, index) => (
             <button
               key={index}
@@ -255,7 +245,7 @@ const InfrastructureSection = () => {
               className={`h-2 rounded-full transition-all duration-300 ${
                 activeIndex === index
                   ? "bg-secondary w-6"
-                  : "bg-white/30 w-2 hover:bg-white/50"
+                  : "bg-gray-300 w-2 hover:bg-gray-400"
               }`}
             />
           ))}
