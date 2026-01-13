@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import InfrastructureSection from "@/components/InfrastructureSection";
+import ProductSection from "@/components/ProductSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import BenefitsSection from "@/components/BenefitsSection";
 import UseCasesSection from "@/components/UseCasesSection";
@@ -38,8 +37,7 @@ const Index = () => {
       <Navbar loadingPhase={loadingPhase} />
       <HeroSection loadingPhase={loadingPhase} />
       <AboutSection />
-      <FeaturesSection />
-      <InfrastructureSection />
+      <ProductSection />
       <HowItWorksSection />
       <BenefitsSection />
       <UseCasesSection />
