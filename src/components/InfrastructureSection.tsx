@@ -101,7 +101,7 @@ const InfrastructureSection = () => {
   }, [isAutoPlaying, isInView, features.length]);
 
   return (
-    <section id="infrastructure" className="py-8 md:py-12 bg-white" ref={ref}>
+    <section id="infrastructure" className="py-8 md:py-12 bg-background" ref={ref}>
       <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-24">
         {/* Header */}
         <motion.div
@@ -110,7 +110,7 @@ const InfrastructureSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
             Lleve la comunicación entre los miembros de su comunidad educativa al siguiente nivel con nuestro Sistema de Comunicación Educativa por Inteligencia Artificial, el cual integra un agente de WhatsApp disponible 24/7, el cual reconoce y recuerda a la persona, y una plataforma institucional que trabajan en conjunto.
           </p>
         </motion.div>
@@ -131,7 +131,7 @@ const InfrastructureSection = () => {
                   className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 border ${
                     activeIndex === index
                       ? "bg-secondary border-secondary text-white shadow-md"
-                      : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
+                      : "bg-white/10 border-white/30 text-white/80 hover:border-secondary/50 hover:text-secondary"
                   }`}
                 >
                   {feature.tab}
@@ -151,7 +151,7 @@ const InfrastructureSection = () => {
           {/* Left Arrow - Outside card, simple line style */}
           <button
             onClick={goToPrev}
-            className="hidden md:flex shrink-0 items-center justify-center text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="hidden md:flex shrink-0 items-center justify-center text-white/80 hover:text-secondary transition-colors"
             aria-label="Anterior"
           >
             <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
@@ -198,7 +198,7 @@ const InfrastructureSection = () => {
           {/* Right Arrow - Outside card, simple line style */}
           <button
             onClick={goToNext}
-            className="hidden md:flex shrink-0 items-center justify-center text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="hidden md:flex shrink-0 items-center justify-center text-white/80 hover:text-secondary transition-colors"
             aria-label="Siguiente"
           >
             <ChevronRight className="h-8 w-8 stroke-[1.5]" />
@@ -209,14 +209,14 @@ const InfrastructureSection = () => {
         <div className="flex md:hidden justify-center gap-8 mt-4">
           <button
             onClick={goToPrev}
-            className="text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="text-white/80 hover:text-secondary transition-colors"
             aria-label="Anterior"
           >
             <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
           </button>
           <button
             onClick={goToNext}
-            className="text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="text-white/80 hover:text-secondary transition-colors"
             aria-label="Siguiente"
           >
             <ChevronRight className="h-8 w-8 stroke-[1.5]" />
@@ -225,7 +225,7 @@ const InfrastructureSection = () => {
 
         {/* Progress Bar for auto-play */}
         {isAutoPlaying && (
-          <div className="max-w-5xl mx-auto mt-4 h-1 bg-gray-200 rounded-full overflow-hidden">
+          <div className="max-w-5xl mx-auto mt-4 h-1 bg-white/20 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-secondary"
               initial={{ width: "0%" }}
@@ -245,7 +245,7 @@ const InfrastructureSection = () => {
               className={`h-2 rounded-full transition-all duration-300 ${
                 activeIndex === index
                   ? "bg-secondary w-6"
-                  : "bg-gray-300 w-2 hover:bg-gray-400"
+                  : "bg-white/40 w-2 hover:bg-white/60"
               }`}
             />
           ))}
