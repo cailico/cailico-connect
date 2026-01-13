@@ -151,7 +151,7 @@ const InfrastructureSection = () => {
           {/* Left Arrow - Outside card, simple line style */}
           <button
             onClick={goToPrev}
-            className="hidden md:flex shrink-0 items-center justify-center text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="hidden md:flex shrink-0 items-center justify-center text-white hover:text-secondary transition-colors"
             aria-label="Anterior"
           >
             <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
@@ -198,7 +198,7 @@ const InfrastructureSection = () => {
           {/* Right Arrow - Outside card, simple line style */}
           <button
             onClick={goToNext}
-            className="hidden md:flex shrink-0 items-center justify-center text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="hidden md:flex shrink-0 items-center justify-center text-white hover:text-secondary transition-colors"
             aria-label="Siguiente"
           >
             <ChevronRight className="h-8 w-8 stroke-[1.5]" />
@@ -209,14 +209,14 @@ const InfrastructureSection = () => {
         <div className="flex md:hidden justify-center gap-8 mt-4">
           <button
             onClick={goToPrev}
-            className="text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="text-white hover:text-secondary transition-colors"
             aria-label="Anterior"
           >
             <ChevronLeft className="h-8 w-8 stroke-[1.5]" />
           </button>
           <button
             onClick={goToNext}
-            className="text-[hsl(209,52%,22%)] hover:text-secondary transition-colors"
+            className="text-white hover:text-secondary transition-colors"
             aria-label="Siguiente"
           >
             <ChevronRight className="h-8 w-8 stroke-[1.5]" />
