@@ -87,41 +87,30 @@ const HowItWorksSection = () => {
     },
   ];
 
-  // Calculate timeline height based on visible icons - updates immediately
+  // Calculate timeline height based on visible icons
   useEffect(() => {
-    const updateLineHeight = () => {
-      if (!stepsContainerRef.current || visibleCount <= 1) {
-        setLineHeight(0);
-        return;
-      }
+    if (!stepsContainerRef.current || visibleCount <= 1) {
+      setLineHeight(0);
+      return;
+    }
 
-      // Use requestAnimationFrame to ensure DOM is updated
-      requestAnimationFrame(() => {
-        if (!stepsContainerRef.current) return;
+    const icons = stepsContainerRef.current.querySelectorAll('[data-icon]');
+    if (icons.length >= visibleCount) {
+      const firstIcon = icons[0] as HTMLElement;
+      const lastVisibleIcon = icons[visibleCount - 1] as HTMLElement;
+      
+      if (firstIcon && lastVisibleIcon) {
+        const containerRect = stepsContainerRef.current.getBoundingClientRect();
+        const firstIconRect = firstIcon.getBoundingClientRect();
+        const lastIconRect = lastVisibleIcon.getBoundingClientRect();
         
-        const icons = stepsContainerRef.current.querySelectorAll('[data-icon]');
-        if (icons.length >= visibleCount) {
-          const firstIcon = icons[0] as HTMLElement;
-          const lastVisibleIcon = icons[visibleCount - 1] as HTMLElement;
-          
-          if (firstIcon && lastVisibleIcon) {
-            const containerRect = stepsContainerRef.current.getBoundingClientRect();
-            const firstIconRect = firstIcon.getBoundingClientRect();
-            const lastIconRect = lastVisibleIcon.getBoundingClientRect();
-            
-            const startY = firstIconRect.top - containerRect.top + firstIconRect.height / 2;
-            const endY = lastIconRect.top - containerRect.top + lastIconRect.height / 2;
-            
-            setLineHeight(Math.max(0, endY - startY));
-          }
-        }
-      });
-    };
-
-    updateLineHeight();
-    
-    window.addEventListener('resize', updateLineHeight);
-    return () => window.removeEventListener('resize', updateLineHeight);
+        // Calculate from center of first icon to center of last visible icon
+        const startY = firstIconRect.top - containerRect.top + firstIconRect.height / 2;
+        const endY = lastIconRect.top - containerRect.top + lastIconRect.height / 2;
+        
+        setLineHeight(endY - startY);
+      }
+    }
   }, [visibleCount]);
 
   useEffect(() => {
@@ -133,10 +122,8 @@ const HowItWorksSection = () => {
       lastScrollY.current = currentScrollY;
 
       const viewportHeight = window.innerHeight;
-      // Trigger point for showing steps when scrolling down
-      const triggerPointDown = viewportHeight * 0.92;
-      // Trigger point for hiding steps when scrolling up - earlier so text doesn't touch edge
-      const triggerPointUp = viewportHeight * 0.75;
+      // Same trigger point for both directions - mirror behavior
+      const triggerPoint = viewportHeight * 0.92;
 
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       
@@ -147,20 +134,20 @@ const HowItWorksSection = () => {
           const nextEl = stepElements[nextIndex];
           if (nextEl) {
             const rect = nextEl.getBoundingClientRect();
-            if (rect.top < triggerPointDown) {
+            if (rect.top < triggerPoint) {
               setVisibleCount(prev => Math.min(prev + 1, steps.length));
             }
           }
         }
       } else {
-        // When scrolling up, check if the LAST visible step should hide earlier
+        // When scrolling up, check if the LAST visible step should hide
         const lastVisibleIndex = visibleCount - 1;
         if (lastVisibleIndex > 0) {
           const lastEl = stepElements[lastVisibleIndex];
           if (lastEl) {
             const rect = lastEl.getBoundingClientRect();
-            // Hide earlier so text doesn't touch the edge before disappearing
-            if (rect.top > triggerPointUp) {
+            // Hide at exact same point as it appeared - mirror behavior
+            if (rect.top > triggerPoint) {
               setVisibleCount(prev => Math.max(prev - 1, 1));
             }
           }
@@ -192,14 +179,13 @@ const HowItWorksSection = () => {
         </motion.div>
 
         <div className="max-w-4xl mx-auto relative" ref={stepsContainerRef}>
-          {/* Timeline line - instant connection, no delay */}
-          {visibleCount > 1 && lineHeight > 0 && (
+          {/* Timeline line - connects from first to last visible step icon */}
+          {visibleCount > 1 && (
             <div 
-              className="absolute left-5 md:left-6 w-0.5 bg-secondary/30"
+              className="absolute left-5 md:left-6 w-0.5 bg-secondary/30 transition-all duration-300"
               style={{ 
                 top: '20px',
-                height: `${lineHeight}px`,
-                transition: 'height 0.1s ease-out'
+                height: `${lineHeight}px`
               }} 
             />
           )}
