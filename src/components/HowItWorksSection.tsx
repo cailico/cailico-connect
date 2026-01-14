@@ -125,7 +125,7 @@ const HowItWorksSection = () => {
       // Trigger point for showing steps (when scrolling down)
       const triggerPointDown = viewportHeight * 0.92;
       // Trigger point for hiding steps (when scrolling up) - hide earlier before text reaches edge
-      const triggerPointUp = viewportHeight * 0.75;
+      const triggerPointUp = viewportHeight * 0.70;
 
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       
