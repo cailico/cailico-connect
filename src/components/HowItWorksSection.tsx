@@ -15,8 +15,8 @@ import {
 const HowItWorksSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [openIndex, setOpenIndex] = useState(0);
-  const stepsRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [visibleCount, setVisibleCount] = useState(1);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   const steps = [
     {
@@ -84,38 +84,37 @@ const HowItWorksSection = () => {
     },
   ];
 
-  // Track which step is in the center of the viewport
   useEffect(() => {
     const handleScroll = () => {
-      const viewportCenter = window.innerHeight / 2;
-      let closestIndex = 0;
-      let closestDistance = Infinity;
+      if (!sectionRef.current) return;
 
-      stepsRefs.current.forEach((stepRef, index) => {
-        if (stepRef) {
-          const rect = stepRef.getBoundingClientRect();
-          const stepCenter = rect.top + rect.height / 2;
-          const distance = Math.abs(stepCenter - viewportCenter);
-          
-          if (distance < closestDistance) {
-            closestDistance = distance;
-            closestIndex = index;
-          }
-        }
-      });
+      const sectionRect = sectionRef.current.getBoundingClientRect();
+      const sectionTop = sectionRect.top;
+      const sectionHeight = sectionRect.height;
+      const viewportHeight = window.innerHeight;
 
-      setOpenIndex(closestIndex);
+      // Calculate how far we've scrolled through the section
+      // When section top is at viewport bottom, progress = 0
+      // When section bottom is at viewport top, progress = 1
+      const scrollProgress = (viewportHeight - sectionTop) / (sectionHeight + viewportHeight);
+      
+      // Map progress to number of visible steps (1 to 9)
+      // We want all steps visible by the time we're ~80% through the section
+      const normalizedProgress = Math.max(0, Math.min(1, scrollProgress / 0.8));
+      const newVisibleCount = Math.max(1, Math.min(steps.length, Math.ceil(normalizedProgress * steps.length)));
+      
+      setVisibleCount(newVisibleCount);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll(); // Initial check
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [steps.length]);
 
   return (
     <section id="how-it-works" className="py-20 md:py-32 bg-background" ref={ref}>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4" ref={sectionRef}>
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
@@ -131,34 +130,33 @@ const HowItWorksSection = () => {
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.number}
-              ref={(el) => (stepsRefs.current[index] = el)}
-              className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
-              initial={{ opacity: 0, x: -30 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.05 }}
-            >
-              {/* Timeline line */}
-              {index !== steps.length - 1 && (
-                <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-0 w-0.5 bg-secondary/30" />
-              )}
-
-              {/* Icon */}
+          <AnimatePresence mode="sync">
+            {steps.slice(0, visibleCount).map((step, index) => (
               <motion.div
-                className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
-                whileHover={{ scale: 1.1 }}
+                key={step.number}
+                className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                <step.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary-foreground" />
-              </motion.div>
+                {/* Timeline line */}
+                {index !== visibleCount - 1 && (
+                  <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-0 w-0.5 bg-secondary/30" />
+                )}
 
-              {/* Content */}
-              <div className="flex-1 pt-1">
-                <button
-                  onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
-                  className="w-full text-left"
+                {/* Icon */}
+                <motion.div
+                  className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
                 >
+                  <step.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary-foreground" />
+                </motion.div>
+
+                {/* Content */}
+                <div className="flex-1 pt-1">
                   <div className="flex items-start gap-3 mb-2">
                     <span className="text-xs font-bold text-secondary">
                       {step.number}
@@ -167,26 +165,13 @@ const HowItWorksSection = () => {
                       {step.title}
                     </h3>
                   </div>
-                </button>
-                
-                <AnimatePresence>
-                  {openIndex === index && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-9 pb-4">
-                        {step.description}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
-          ))}
+                  <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-9">
+                    {step.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </section>
