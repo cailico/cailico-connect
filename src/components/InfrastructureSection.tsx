@@ -19,6 +19,10 @@ const InfrastructureSection = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   
+  // Touch/swipe handling - fast response
+  const touchStartX = useRef<number>(0);
+  const hasSwiped = useRef<boolean>(false);
+
   // Tab gap for sliding calculation
   const tabGap = 8;
 
@@ -101,6 +105,26 @@ const InfrastructureSection = () => {
     setActiveIndex((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   }, [stopAutoPlay, features.length]);
 
+  // Fast swipe handlers - triggers immediately on movement threshold
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    hasSwiped.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (hasSwiped.current) return;
+    
+    const diff = touchStartX.current - e.touches[0].clientX;
+    
+    if (Math.abs(diff) > 25) {
+      hasSwiped.current = true;
+      if (diff > 0) {
+        goToNextCard();
+      } else {
+        goToPrevCard();
+      }
+    }
+  };
 
   useEffect(() => {
     if (isAutoPlaying && isInView) {
@@ -221,6 +245,8 @@ const InfrastructureSection = () => {
           <div 
             className="flex-1 overflow-hidden" 
             ref={carouselRef}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
           >
             <div 
               className="flex transition-transform duration-500 ease-in-out"
