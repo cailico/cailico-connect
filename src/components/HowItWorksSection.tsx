@@ -89,22 +89,24 @@ const HowItWorksSection = () => {
       if (!sectionRef.current) return;
 
       const sectionRect = sectionRef.current.getBoundingClientRect();
-      const sectionTop = sectionRect.top;
       const viewportHeight = window.innerHeight;
       const viewportMiddle = viewportHeight / 2;
 
-      // Calculate based on how far we've scrolled into the section
-      // Each step "triggers" at a fixed interval based on scroll position
-      const stepHeight = 120; // Fixed height per step trigger zone
-      const scrollIntoSection = viewportMiddle - sectionTop - 100; // Offset for title
-      
-      if (scrollIntoSection <= 0) {
-        setVisibleCount(1);
-        return;
-      }
+      // Get all step elements and check which ones have passed the middle of the viewport
+      const stepElements = sectionRef.current.querySelectorAll('[data-step]');
+      let count = 1; // Always show at least the first one
 
-      const calculatedCount = Math.floor(scrollIntoSection / stepHeight) + 1;
-      setVisibleCount(Math.max(1, Math.min(steps.length, calculatedCount)));
+      stepElements.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        const elementTop = rect.top;
+        
+        // If the top of the element is above the middle of the viewport, it should be visible
+        if (elementTop < viewportMiddle) {
+          count = index + 1;
+        }
+      });
+
+      setVisibleCount(Math.max(1, Math.min(steps.length, count)));
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -140,41 +142,41 @@ const HowItWorksSection = () => {
               <AnimatePresence mode="sync">
                 {index < visibleCount && (
                   <motion.div
-                    className="relative flex gap-4 md:gap-6 pb-10 md:pb-14 last:pb-0"
+                    className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
                     initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                     animate={{ opacity: 1, height: "auto", marginBottom: 0 }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
-                  >
-                    {/* Timeline line */}
-                    {index !== visibleCount - 1 && (
-                      <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-0 w-0.5 bg-secondary/30" />
-                    )}
+              >
+                {/* Timeline line */}
+                {index !== visibleCount - 1 && (
+                  <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-0 w-0.5 bg-secondary/30" />
+                )}
 
-                    {/* Icon */}
-                    <motion.div
-                      className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
-                      initial={{ scale: 0.8 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                    >
-                      <step.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary-foreground" />
-                    </motion.div>
+                {/* Icon */}
+                <motion.div
+                  className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                >
+                  <step.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary-foreground" />
+                </motion.div>
 
-                    {/* Content */}
-                    <div className="flex-1 pt-1">
-                      <div className="flex items-start gap-3 mb-3">
-                        <span className="text-xs font-bold text-secondary">
-                          {step.number}
-                        </span>
-                        <h3 className="text-base md:text-xl font-semibold text-white leading-tight">
-                          {step.title}
-                        </h3>
-                      </div>
-                      <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-9">
-                        {step.description}
-                      </p>
-                    </div>
+                {/* Content */}
+                <div className="flex-1 pt-1">
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-xs font-bold text-secondary">
+                      {step.number}
+                    </span>
+                    <h3 className="text-base md:text-xl font-semibold text-white leading-tight">
+                      {step.title}
+                    </h3>
+                  </div>
+                  <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-9">
+                    {step.description}
+                  </p>
+                </div>
                   </motion.div>
                 )}
               </AnimatePresence>
