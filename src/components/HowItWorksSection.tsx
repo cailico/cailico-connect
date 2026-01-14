@@ -123,7 +123,7 @@ const HowItWorksSection = () => {
 
       const viewportHeight = window.innerHeight;
       // Trigger when element enters the viewport (90% down) for appearing
-      const triggerPointDown = viewportHeight * 0.90;
+      const triggerPointDown = viewportHeight * 0.98;
       // Trigger for hiding when scrolling up (65% down)
       const triggerPointUp = viewportHeight * 0.65;
 
