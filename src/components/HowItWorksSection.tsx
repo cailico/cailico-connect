@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import { 
   MessageCircle, 
   Building2, 
@@ -16,6 +15,8 @@ import {
 const HowItWorksSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [openIndex, setOpenIndex] = useState(0);
+  const stepsRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const steps = [
     {
@@ -83,6 +84,35 @@ const HowItWorksSection = () => {
     },
   ];
 
+  // Track which step is in the center of the viewport
+  useEffect(() => {
+    const handleScroll = () => {
+      const viewportCenter = window.innerHeight / 2;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      stepsRefs.current.forEach((stepRef, index) => {
+        if (stepRef) {
+          const rect = stepRef.getBoundingClientRect();
+          const stepCenter = rect.top + rect.height / 2;
+          const distance = Math.abs(stepCenter - viewportCenter);
+          
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestIndex = index;
+          }
+        }
+      });
+
+      setOpenIndex(closestIndex);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <section id="how-it-works" className="py-20 md:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
@@ -95,7 +125,7 @@ const HowItWorksSection = () => {
           <h2 className="font-display font-medium text-3xl md:text-5xl text-foreground mb-4 uppercase tracking-tight">
             <span className="text-foreground">PROC</span><span className="text-secondary">ESO</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-white font-medium max-w-2xl mx-auto">
             Un proceso simple para resultados extraordinarios
           </p>
         </motion.div>
@@ -104,10 +134,11 @@ const HowItWorksSection = () => {
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
-              className="relative flex gap-4 md:gap-6 pb-10 last:pb-0"
+              ref={(el) => (stepsRefs.current[index] = el)}
+              className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
               initial={{ opacity: 0, x: -30 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
             >
               {/* Timeline line */}
               {index !== steps.length - 1 && (
@@ -123,18 +154,36 @@ const HowItWorksSection = () => {
               </motion.div>
 
               {/* Content */}
-              <div className="flex-1 pt-1 bg-card/50 rounded-xl p-4 md:p-5 border border-border/50">
-                <div className="flex items-start gap-3 mb-2">
-                  <span className="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded">
-                    {step.number}
-                  </span>
-                  <h3 className="text-base md:text-xl font-semibold text-foreground leading-tight">
-                    {step.title}
-                  </h3>
-                </div>
-                <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-11">
-                  {step.description}
-                </p>
+              <div className="flex-1 pt-1">
+                <button
+                  onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
+                  className="w-full text-left"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <span className="text-xs font-bold text-secondary">
+                      {step.number}
+                    </span>
+                    <h3 className="text-base md:text-xl font-semibold text-white leading-tight">
+                      {step.title}
+                    </h3>
+                  </div>
+                </button>
+                
+                <AnimatePresence>
+                  {openIndex === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-9 pb-4">
+                        {step.description}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           ))}

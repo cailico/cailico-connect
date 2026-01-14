@@ -39,7 +39,6 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
     { label: "¿QUIÉNES SOMOS?", href: "#quienes-somos" },
     { label: "SERVICIO", href: "#features" },
     { label: "PROCESO", href: "#how-it-works" },
-    { label: "CASOS DE USO", href: "#use-cases" },
     { label: "CONTACTO", href: "#contact" },
   ];
 
