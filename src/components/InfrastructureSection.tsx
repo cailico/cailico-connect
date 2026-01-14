@@ -255,9 +255,9 @@ const InfrastructureSection = () => {
                   key={feature.id}
                   className="w-full shrink-0"
                 >
-                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden h-[520px] md:h-[450px] flex flex-col">
-                    {/* Text Content - Top, full text visible */}
-                    <div className="p-5 md:p-8 lg:p-10 border-b border-gray-200">
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden h-[520px] md:h-[450px] flex flex-col md:flex-row">
+                    {/* Text Content - Top on mobile, Left on desktop */}
+                    <div className="p-5 md:p-8 lg:p-10 border-b md:border-b-0 md:border-r border-gray-200 md:w-1/2 md:flex md:flex-col md:justify-center">
                       <h3 className="font-display font-bold text-lg md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-3 leading-tight">
                         {feature.title}
                       </h3>
@@ -266,8 +266,8 @@ const InfrastructureSection = () => {
                       </p>
                     </div>
 
-                    {/* Image - Bottom, fills remaining space */}
-                    <div className="relative flex-1 min-h-0">
+                    {/* Image - Bottom on mobile, Right on desktop */}
+                    <div className="relative flex-1 min-h-0 md:w-1/2">
                       <img
                         src={feature.image}
                         alt={feature.title}
