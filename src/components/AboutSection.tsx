@@ -160,7 +160,7 @@ const AboutSection = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {cards.map((card, index) => (
+          {cards.map((card) => (
             <AccordionCard
               key={card.title}
               icon={card.icon}
@@ -169,7 +169,7 @@ const AboutSection = () => {
               description={card.description}
               color={card.color}
               bgImage={card.bgImage}
-              delay={0.2 + index * 0.1}
+              delay={0.2}
             />
           ))}
         </div>
