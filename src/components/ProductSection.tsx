@@ -27,7 +27,7 @@ const ProductSection = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-2">
-            <span className="text-secondary">PROD</span><span className="text-white">UCTO</span>
+            <span className="text-secondary">SERV</span><span className="text-white">ICIO</span>
           </h2>
           <h3 className="font-display font-medium text-xl md:text-3xl uppercase tracking-tight mt-6">
             <span className="text-white/90">Infraestructura AIECS</span>

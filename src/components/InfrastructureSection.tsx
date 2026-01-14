@@ -149,7 +149,7 @@ const InfrastructureSection = () => {
           transition={{ duration: 0.6 }}
         >
           <p className="text-base md:text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
-            Lleve la comunicación entre los miembros de su comunidad educativa al siguiente nivel con nuestro Sistema de Comunicación Educativa por Inteligencia Artificial, el cual integra un agente de WhatsApp disponible 24/7, el cual reconoce y recuerda a la persona, y una plataforma institucional que trabajan en conjunto.
+            Lleve la comunicación entre los miembros de su comunidad educativa al siguiente nivel con nuestro Sistema de Comunicación Educativa por Inteligencia Artificial. Integramos un agente de WhatsApp disponible 24/7, el cual reconoce a cada persona y su rol dentro de la institución, y una plataforma institucional que trabajan en conjunto.
           </p>
         </motion.div>
 
