@@ -19,12 +19,11 @@ const InfrastructureSection = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Touch/swipe handling for cards
+  // Touch/swipe handling for cards - immediate response
   const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
+  const isSwiping = useRef<boolean>(false);
 
-  // Tab width + gap for sliding calculation
-  const tabWidth = 140; // Fixed width for each tab
+  // Tab gap for sliding calculation
   const tabGap = 8;
 
   const features = [
@@ -106,26 +105,31 @@ const InfrastructureSection = () => {
     setActiveIndex((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   }, [stopAutoPlay, features.length]);
 
-  // Swipe handlers for cards
+  // Swipe handlers for cards - immediate response without delay
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
+    isSwiping.current = false;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    const diff = touchStartX.current - touchEndX.current;
-    const minSwipeDistance = 50;
+    if (isSwiping.current) return;
+    
+    const currentX = e.touches[0].clientX;
+    const diff = touchStartX.current - currentX;
+    const minSwipeDistance = 30;
 
     if (Math.abs(diff) > minSwipeDistance) {
+      isSwiping.current = true;
       if (diff > 0) {
         goToNextCard();
       } else {
         goToPrevCard();
       }
     }
+  };
+
+  const handleTouchEnd = () => {
+    isSwiping.current = false;
   };
 
   useEffect(() => {
@@ -164,8 +168,8 @@ const InfrastructureSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {/* Mobile Tabs - Sliding carousel of tabs */}
-          <div className="flex md:hidden items-center justify-center gap-2">
+          {/* Mobile Tabs - Sliding carousel of tabs, 2 visible, calc width to fit */}
+          <div className="flex md:hidden items-center justify-center gap-2 px-2">
             <button
               onClick={scrollTabsPrev}
               className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex disabled:opacity-30"
@@ -175,25 +179,23 @@ const InfrastructureSection = () => {
               <ChevronLeft className="h-6 w-6 stroke-[1.5]" />
             </button>
 
-            {/* Sliding tabs container */}
+            {/* Sliding tabs container - uses calc to fit 2 tabs properly */}
             <div 
-              className="overflow-hidden"
-              style={{ width: `${tabWidth * 2 + tabGap}px` }}
+              className="overflow-hidden flex-1 max-w-[calc(100vw-120px)]"
             >
               <div 
                 className="flex gap-2 transition-transform duration-300 ease-in-out"
-                style={{ transform: `translateX(-${tabOffset * (tabWidth + tabGap)}px)` }}
+                style={{ transform: `translateX(calc(-${tabOffset} * (50% + ${tabGap/2}px)))` }}
               >
                 {features.map((feature, index) => (
                   <button
                     key={feature.id}
                     onClick={() => selectTab(index)}
-                    className={`shrink-0 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
+                    className={`shrink-0 w-[calc(50%-4px)] py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
                       activeIndex === index
                         ? "bg-secondary border-secondary text-white shadow-md"
                         : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
                     }`}
-                    style={{ width: `${tabWidth}px` }}
                   >
                     {feature.tab}
                   </button>
@@ -262,27 +264,24 @@ const InfrastructureSection = () => {
                   key={feature.id}
                   className="w-full shrink-0"
                 >
-                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                    {/* Fixed height container - Text on top, Image on bottom */}
-                    <div className="flex flex-col h-[520px] md:h-[450px]">
-                      {/* Text Content - Top with scrollable area */}
-                      <div className="p-5 md:p-8 lg:p-10 border-b border-gray-200 h-[260px] md:h-[220px] overflow-y-auto">
-                        <h3 className="font-display font-bold text-lg md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-3 leading-tight">
-                          {feature.title}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                          {feature.description}
-                        </p>
-                      </div>
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden h-[520px] md:h-[450px] flex flex-col">
+                    {/* Text Content - Top, full text visible */}
+                    <div className="p-5 md:p-8 lg:p-10 border-b border-gray-200">
+                      <h3 className="font-display font-bold text-lg md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-3 leading-tight">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                        {feature.description}
+                      </p>
+                    </div>
 
-                      {/* Image - Bottom */}
-                      <div className="relative flex-1">
-                        <img
-                          src={feature.image}
-                          alt={feature.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                    {/* Image - Bottom, fills remaining space */}
+                    <div className="relative flex-1 min-h-0">
+                      <img
+                        src={feature.image}
+                        alt={feature.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
                 </div>
