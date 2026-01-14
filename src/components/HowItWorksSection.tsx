@@ -92,7 +92,8 @@ const HowItWorksSection = () => {
       const viewportHeight = window.innerHeight;
       const viewportMiddle = viewportHeight / 2;
 
-      // Get all step elements and check which ones have passed the middle of the viewport
+      // Get all step elements and check which ones have passed 70% of the viewport height
+      // This ensures the animation is visible when the step enters from below
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       let count = 1; // Always show at least the first one
 
@@ -100,8 +101,9 @@ const HowItWorksSection = () => {
         const rect = el.getBoundingClientRect();
         const elementTop = rect.top;
         
-        // If the top of the element is above the middle of the viewport, it should be visible
-        if (elementTop < viewportMiddle) {
+        // Trigger at 70% of viewport height so animation is visible
+        const triggerPoint = viewportHeight * 0.7;
+        if (elementTop < triggerPoint) {
           count = index + 1;
         }
       });
@@ -142,15 +144,15 @@ const HowItWorksSection = () => {
               <AnimatePresence mode="sync">
                 {index < visibleCount && (
                   <motion.div
-                    className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
+                    className="relative flex gap-4 md:gap-6 pb-12 md:pb-16 last:pb-0"
                     initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                     animate={{ opacity: 1, height: "auto", marginBottom: 0 }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 {/* Timeline line */}
                 {index !== visibleCount - 1 && (
-                  <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-0 w-0.5 bg-secondary/30" />
+                  <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-6 md:bottom-8 w-0.5 bg-secondary/30" />
                 )}
 
                 {/* Icon */}
