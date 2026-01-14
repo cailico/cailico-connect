@@ -15,12 +15,16 @@ const InfrastructureSection = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [activeIndex, setActiveIndex] = useState(0);
+  const [tabStartIndex, setTabStartIndex] = useState(0); // Controls which tabs are visible
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Touch/swipe handling
+  // Touch/swipe handling for cards
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+
+  // Number of visible tabs on mobile
+  const visibleTabsMobile = 2;
 
   const features = [
     {
@@ -75,22 +79,33 @@ const InfrastructureSection = () => {
     }
   }, []);
 
-  const goToSlide = useCallback((index: number) => {
+  // Select a tab (changes the card)
+  const selectTab = useCallback((index: number) => {
     stopAutoPlay();
     setActiveIndex(index);
   }, [stopAutoPlay]);
 
-  const goToPrev = useCallback(() => {
+  // Navigate tabs (only scrolls visible tabs, doesn't change card)
+  const scrollTabsPrev = useCallback(() => {
+    setTabStartIndex((prev) => (prev === 0 ? features.length - 1 : prev - 1));
+  }, [features.length]);
+
+  const scrollTabsNext = useCallback(() => {
+    setTabStartIndex((prev) => (prev >= features.length - 1 ? 0 : prev + 1));
+  }, [features.length]);
+
+  // Navigate cards
+  const goToPrevCard = useCallback(() => {
     stopAutoPlay();
     setActiveIndex((prev) => (prev === 0 ? features.length - 1 : prev - 1));
   }, [stopAutoPlay, features.length]);
 
-  const goToNext = useCallback(() => {
+  const goToNextCard = useCallback(() => {
     stopAutoPlay();
     setActiveIndex((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   }, [stopAutoPlay, features.length]);
 
-  // Swipe handlers
+  // Swipe handlers for cards
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -105,11 +120,21 @@ const InfrastructureSection = () => {
 
     if (Math.abs(diff) > minSwipeDistance) {
       if (diff > 0) {
-        goToNext();
+        goToNextCard();
       } else {
-        goToPrev();
+        goToPrevCard();
       }
     }
+  };
+
+  // Get visible tabs for mobile (wrapping around)
+  const getVisibleTabs = () => {
+    const tabs = [];
+    for (let i = 0; i < visibleTabsMobile; i++) {
+      const index = (tabStartIndex + i) % features.length;
+      tabs.push({ feature: features[index], index });
+    }
+    return tabs;
   };
 
   useEffect(() => {
@@ -141,47 +166,63 @@ const InfrastructureSection = () => {
           </p>
         </motion.div>
 
-        {/* Tabs Navigation with Arrows */}
+        {/* Tabs Navigation with Arrows - Mobile shows limited tabs with scroll */}
         <motion.div
           className="relative mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <div className="flex items-center justify-center gap-2">
-            {/* Left Tab Arrow */}
+          {/* Mobile Tabs - Shows 2 tabs with arrows to scroll */}
+          <div className="flex md:hidden items-center justify-center gap-2">
             <button
-              onClick={goToPrev}
+              onClick={scrollTabsPrev}
               className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex"
               aria-label="Anterior pestaña"
             >
               <ChevronLeft className="h-6 w-6 stroke-[1.5]" />
             </button>
 
-            <div className="flex gap-2 md:gap-2.5 overflow-hidden max-w-xs sm:max-w-md md:max-w-none">
-              {features.map((feature, index) => (
+            <div className="flex gap-2">
+              {getVisibleTabs().map(({ feature, index }) => (
                 <button
                   key={feature.id}
-                  onClick={() => goToSlide(index)}
-                  className={`px-4 md:px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 border ${
+                  onClick={() => selectTab(index)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 border ${
                     activeIndex === index
                       ? "bg-secondary border-secondary text-white shadow-md"
                       : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
-                  } ${index < 3 || window.innerWidth >= 768 ? 'flex' : 'hidden md:flex'}`}
+                  }`}
                 >
                   {feature.tab}
                 </button>
               ))}
             </div>
 
-            {/* Right Tab Arrow */}
             <button
-              onClick={goToNext}
+              onClick={scrollTabsNext}
               className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex"
               aria-label="Siguiente pestaña"
             >
               <ChevronRight className="h-6 w-6 stroke-[1.5]" />
             </button>
+          </div>
+
+          {/* Desktop Tabs - Shows all tabs */}
+          <div className="hidden md:flex items-center justify-center gap-2.5">
+            {features.map((feature, index) => (
+              <button
+                key={feature.id}
+                onClick={() => selectTab(index)}
+                className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 border ${
+                  activeIndex === index
+                    ? "bg-secondary border-secondary text-white shadow-md"
+                    : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
+                }`}
+              >
+                {feature.tab}
+              </button>
+            ))}
           </div>
         </motion.div>
 
@@ -194,7 +235,7 @@ const InfrastructureSection = () => {
         >
           {/* Left Arrow - Always visible, outside card */}
           <button
-            onClick={goToPrev}
+            onClick={goToPrevCard}
             className="shrink-0 flex items-center justify-center text-white hover:text-secondary transition-colors"
             aria-label="Anterior"
           >
@@ -219,20 +260,20 @@ const InfrastructureSection = () => {
                   className="w-full shrink-0"
                 >
                   <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                    {/* Fixed height container for consistent card sizes */}
-                    <div className="grid md:grid-cols-2 h-[480px] md:h-[420px]">
-                      {/* Text Content */}
-                      <div className="p-6 md:p-10 lg:p-12 flex flex-col justify-center order-2 md:order-1 border-t md:border-t-0 md:border-r border-gray-200 h-[240px] md:h-full overflow-hidden">
-                        <h3 className="font-display font-bold text-xl md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-4 leading-tight">
+                    {/* Fixed height container - Text on top, Image on bottom */}
+                    <div className="flex flex-col h-[480px] md:h-[420px]">
+                      {/* Text Content - Top */}
+                      <div className="p-6 md:p-8 lg:p-10 flex flex-col justify-center border-b border-gray-200 h-[220px] md:h-[200px]">
+                        <h3 className="font-display font-bold text-xl md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-3 leading-tight">
                           {feature.title}
                         </h3>
-                        <p className="text-gray-600 leading-relaxed text-sm md:text-base line-clamp-5 md:line-clamp-none">
+                        <p className="text-gray-600 leading-relaxed text-sm md:text-base line-clamp-4">
                           {feature.description}
                         </p>
                       </div>
 
-                      {/* Image */}
-                      <div className="relative h-[240px] md:h-full order-1 md:order-2">
+                      {/* Image - Bottom */}
+                      <div className="relative flex-1">
                         <img
                           src={feature.image}
                           alt={feature.title}
@@ -248,7 +289,7 @@ const InfrastructureSection = () => {
 
           {/* Right Arrow - Always visible, outside card */}
           <button
-            onClick={goToNext}
+            onClick={goToNextCard}
             className="shrink-0 flex items-center justify-center text-white hover:text-secondary transition-colors"
             aria-label="Siguiente"
           >
@@ -274,7 +315,7 @@ const InfrastructureSection = () => {
           {features.map((_, index) => (
             <button
               key={index}
-              onClick={() => goToSlide(index)}
+              onClick={() => selectTab(index)}
               className={`h-2 rounded-full transition-all duration-300 ${
                 activeIndex === index
                   ? "bg-secondary w-6"
