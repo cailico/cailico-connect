@@ -90,10 +90,9 @@ const HowItWorksSection = () => {
 
       const sectionRect = sectionRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      // Punto de activación al 70% del viewport (más abajo) para dar más tiempo a ver la animación
-      const activationPoint = viewportHeight * 0.7;
+      const viewportMiddle = viewportHeight / 2;
 
-      // Get all step elements and check which ones have passed the activation point
+      // Get all step elements and check which ones have passed the middle of the viewport
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       let count = 1; // Always show at least the first one
 
@@ -101,8 +100,8 @@ const HowItWorksSection = () => {
         const rect = el.getBoundingClientRect();
         const elementTop = rect.top;
         
-        // If the top of the element is above the activation point, it should be visible
-        if (elementTop < activationPoint) {
+        // If the top of the element is above the middle of the viewport, it should be visible
+        if (elementTop < viewportMiddle) {
           count = index + 1;
         }
       });
@@ -143,7 +142,7 @@ const HowItWorksSection = () => {
               <AnimatePresence mode="sync">
                 {index < visibleCount && (
                   <motion.div
-                    className="relative flex gap-4 md:gap-6 pb-12 md:pb-16 last:pb-0"
+                    className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
                     initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                     animate={{ opacity: 1, height: "auto", marginBottom: 0 }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0 }}
@@ -151,7 +150,7 @@ const HowItWorksSection = () => {
               >
                 {/* Timeline line */}
                 {index !== visibleCount - 1 && (
-                  <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-6 md:bottom-10 w-0.5 bg-secondary/30" />
+                  <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-0 w-0.5 bg-secondary/30" />
                 )}
 
                 {/* Icon */}
