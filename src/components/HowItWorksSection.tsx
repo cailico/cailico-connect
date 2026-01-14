@@ -122,8 +122,10 @@ const HowItWorksSection = () => {
       lastScrollY.current = currentScrollY;
 
       const viewportHeight = window.innerHeight;
-      // Same trigger point for both directions - mirror behavior
-      const triggerPoint = viewportHeight * 0.92;
+      // Trigger when element enters the viewport (92% down) for appearing
+      const triggerPointDown = viewportHeight * 0.92;
+      // Trigger for hiding earlier when scrolling up (70% down)
+      const triggerPointUp = viewportHeight * 0.70;
 
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       
@@ -134,7 +136,7 @@ const HowItWorksSection = () => {
           const nextEl = stepElements[nextIndex];
           if (nextEl) {
             const rect = nextEl.getBoundingClientRect();
-            if (rect.top < triggerPoint) {
+            if (rect.top < triggerPointDown) {
               setVisibleCount(prev => Math.min(prev + 1, steps.length));
             }
           }
@@ -146,8 +148,8 @@ const HowItWorksSection = () => {
           const lastEl = stepElements[lastVisibleIndex];
           if (lastEl) {
             const rect = lastEl.getBoundingClientRect();
-            // Hide at exact same point as it appeared - mirror behavior
-            if (rect.top > triggerPoint) {
+            // Hide earlier when scrolling up - before text reaches edge
+            if (rect.top > triggerPointUp) {
               setVisibleCount(prev => Math.max(prev - 1, 1));
             }
           }
