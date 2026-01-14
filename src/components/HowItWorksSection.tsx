@@ -122,10 +122,10 @@ const HowItWorksSection = () => {
       lastScrollY.current = currentScrollY;
 
       const viewportHeight = window.innerHeight;
-      // Trigger when element enters the viewport (92% down) for appearing
-      const triggerPointDown = viewportHeight * 0.92;
-      // Trigger for hiding much earlier when scrolling up (55% down) - before text reaches bottom edge
-      const triggerPointUp = viewportHeight * 0.55;
+      // Trigger when element enters the viewport (90% down) for appearing
+      const triggerPointDown = viewportHeight * 0.90;
+      // Trigger for hiding when scrolling up (65% down)
+      const triggerPointUp = viewportHeight * 0.65;
 
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       
