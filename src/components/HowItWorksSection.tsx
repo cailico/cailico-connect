@@ -1,7 +1,17 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Link2, Settings, Zap, TrendingUp } from "lucide-react";
+import { 
+  MessageCircle, 
+  Building2, 
+  ShoppingCart, 
+  ClipboardList, 
+  Wrench, 
+  Rocket, 
+  GraduationCap, 
+  Headphones, 
+  RefreshCw 
+} from "lucide-react";
 
 const HowItWorksSection = () => {
   const ref = useRef(null);
@@ -9,32 +19,67 @@ const HowItWorksSection = () => {
 
   const steps = [
     {
-      icon: Link2,
+      icon: MessageCircle,
       number: "01",
-      title: "Conectamos",
+      title: "Contáctanos",
       description:
-        "Integramos Cailico con tu sistema educativo existente de forma rápida y segura.",
+        "Escríbenos por WhatsApp, correo o déjanos tus datos en el formulario. Te respondemos rápido y te orientamos desde el primer mensaje.",
     },
     {
-      icon: Settings,
+      icon: Building2,
       number: "02",
-      title: "Configuramos",
+      title: "Cuéntanos quién eres y a qué institución educativa perteneces",
       description:
-        "Personalizamos los agentes según las necesidades específicas de tu institución.",
+        "Queremos conocerte a ti y a tu institución. Tendremos el tiempo necesario para entender sus necesidades reales, identificar los principales dolores y definir contigo la mejor forma de adaptar AIECS a tu contexto.",
     },
     {
-      icon: Zap,
+      icon: ShoppingCart,
       number: "03",
-      title: "Automatizamos",
+      title: "Adquisición del servicio",
       description:
-        "Los agentes inteligentes gestionan la comunicación 24/7 sin intervención manual.",
+        "Cuando hayas resuelto todas tus dudas, formalizamos la adquisición del servicio y damos inicio al proceso. A partir de ese momento, cuando necesitemos información específica, te la iremos solicitando para avanzar con total claridad.",
     },
     {
-      icon: TrendingUp,
+      icon: ClipboardList,
       number: "04",
-      title: "Mejoramos",
+      title: "Recopilación de información institucional",
       description:
-        "Análisis continuo y optimización basada en datos para mejores resultados.",
+        "Recolectamos lo necesario para adaptar AIECS a tu institución: estructura académica (grados, grupos, áreas), responsables, flujos de comunicación, formatos y necesidades particulares. Todo con orden, sin traumatismos.",
+    },
+    {
+      icon: Wrench,
+      number: "05",
+      title: "Desarrollo y configuración a la medida",
+      description:
+        "Construimos tu infraestructura AIECS con tu identidad y tus reglas de operación. Dejamos listo el Agente de WhatsApp 24/7 y la Plataforma Institucional, alineados a tus procesos reales. (Tiempo estimado: 2 a 3 semanas, según el alcance y la disponibilidad de la información.)",
+    },
+    {
+      icon: Rocket,
+      number: "06",
+      title: "Despliegue y activación",
+      description:
+        "Ponemos la infraestructura en marcha y verificamos que todo esté funcionando correctamente: notificaciones, comunicados, reportes, accesos y flujos.",
+    },
+    {
+      icon: GraduationCap,
+      number: "07",
+      title: "Pedagogía y capacitación por roles",
+      description:
+        "Entregamos guías prácticas y capacitamos por perfiles: directivos, docentes, administrativos, estudiantes y padres de familia. Si tu institución está en Colombia y lo deseas, un asociado puede desplazarse y capacitar presencialmente, dejando a cada grupo listo para usar AIECS con confianza.",
+    },
+    {
+      icon: Headphones,
+      number: "08",
+      title: "Acompañamiento y soporte continuo",
+      description:
+        "No te dejamos solo. Te acompañamos en el día a día para resolver dudas, ajustar detalles y garantizar que todo se mantenga estable y funcionando como debe ser.",
+    },
+    {
+      icon: RefreshCw,
+      number: "09",
+      title: "Mejora continua y actualización permanente",
+      description:
+        "AIECS evoluciona con la IA. Mejoramos funciones, optimizamos flujos y actualizamos la infraestructura para que tu institución siempre tenga lo más útil y vigente, sin quedarse atrás.",
     },
   ];
 
@@ -48,46 +93,46 @@ const HowItWorksSection = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="font-display font-medium text-3xl md:text-5xl text-foreground mb-4 uppercase tracking-tight">
-            Cómo <span className="text-secondary">Funciona</span>
+            <span className="text-foreground">PROC</span><span className="text-secondary">ESO</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Un proceso simple para resultados extraordinarios
           </p>
         </motion.div>
 
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
-              className="relative flex gap-6 pb-12 last:pb-0"
+              className="relative flex gap-4 md:gap-6 pb-10 last:pb-0"
               initial={{ opacity: 0, x: -30 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.15 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               {/* Timeline line */}
               {index !== steps.length - 1 && (
-                <div className="absolute left-6 top-14 bottom-0 w-0.5 bg-border" />
+                <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-0 w-0.5 bg-secondary/30" />
               )}
 
               {/* Icon */}
               <motion.div
-                className="relative z-10 w-12 h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0"
+                className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
                 whileHover={{ scale: 1.1 }}
               >
-                <step.icon className="w-5 h-5 text-secondary-foreground" />
+                <step.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary-foreground" />
               </motion.div>
 
               {/* Content */}
-              <div className="flex-1 pt-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-xs font-bold text-secondary">
+              <div className="flex-1 pt-1 bg-card/50 rounded-xl p-4 md:p-5 border border-border/50">
+                <div className="flex items-start gap-3 mb-2">
+                  <span className="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded">
                     {step.number}
                   </span>
-                  <h3 className="text-xl font-semibold text-foreground">
+                  <h3 className="text-base md:text-xl font-semibold text-foreground leading-tight">
                     {step.title}
                   </h3>
                 </div>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-11">
                   {step.description}
                 </p>
               </div>
