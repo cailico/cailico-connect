@@ -92,16 +92,20 @@ const HowItWorksSection = () => {
       const sectionTop = sectionRect.top;
       const sectionHeight = sectionRect.height;
       const viewportHeight = window.innerHeight;
+      const viewportMiddle = viewportHeight / 2;
 
-      // Calculate how far we've scrolled through the section
-      // When section top is at viewport bottom, progress = 0
-      // When section bottom is at viewport top, progress = 1
-      const scrollProgress = (viewportHeight - sectionTop) / (sectionHeight + viewportHeight);
+      // Calculate progress based on where the section is relative to viewport middle
+      // When section top reaches viewport middle, we start showing steps
+      // Each step gets revealed as we scroll further down
+      const distanceFromMiddle = viewportMiddle - sectionTop;
       
-      // Map progress to number of visible steps (1 to 9)
-      // We want all steps visible by the time we're ~80% through the section
-      const normalizedProgress = Math.max(0, Math.min(1, scrollProgress / 0.8));
-      const newVisibleCount = Math.max(1, Math.min(steps.length, Math.ceil(normalizedProgress * steps.length)));
+      // Each step reveals when we've scrolled ~80px more (adjust for smooth experience)
+      const pixelsPerStep = sectionHeight / (steps.length + 1);
+      
+      // Calculate how many steps should be visible
+      // Always show at least 1 (Contáctanos)
+      const stepsToShow = Math.floor(distanceFromMiddle / pixelsPerStep) + 1;
+      const newVisibleCount = Math.max(1, Math.min(steps.length, stepsToShow));
       
       setVisibleCount(newVisibleCount);
     };
