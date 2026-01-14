@@ -19,10 +19,6 @@ const InfrastructureSection = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Touch/swipe handling for cards - immediate response
-  const touchStartX = useRef<number>(0);
-  const isSwiping = useRef<boolean>(false);
-
   // Tab gap for sliding calculation
   const tabGap = 8;
 
@@ -105,32 +101,6 @@ const InfrastructureSection = () => {
     setActiveIndex((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   }, [stopAutoPlay, features.length]);
 
-  // Swipe handlers for cards - immediate response without delay
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    isSwiping.current = false;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isSwiping.current) return;
-    
-    const currentX = e.touches[0].clientX;
-    const diff = touchStartX.current - currentX;
-    const minSwipeDistance = 30;
-
-    if (Math.abs(diff) > minSwipeDistance) {
-      isSwiping.current = true;
-      if (diff > 0) {
-        goToNextCard();
-      } else {
-        goToPrevCard();
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    isSwiping.current = false;
-  };
 
   useEffect(() => {
     if (isAutoPlaying && isInView) {
@@ -251,9 +221,6 @@ const InfrastructureSection = () => {
           <div 
             className="flex-1 overflow-hidden" 
             ref={carouselRef}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
           >
             <div 
               className="flex transition-transform duration-500 ease-in-out"
