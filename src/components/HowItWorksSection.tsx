@@ -16,7 +16,9 @@ const HowItWorksSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [visibleCount, setVisibleCount] = useState(1);
+  const [lineHeight, setLineHeight] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stepsContainerRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
 
   const steps = [
@@ -85,6 +87,32 @@ const HowItWorksSection = () => {
     },
   ];
 
+  // Calculate timeline height based on visible icons
+  useEffect(() => {
+    if (!stepsContainerRef.current || visibleCount <= 1) {
+      setLineHeight(0);
+      return;
+    }
+
+    const icons = stepsContainerRef.current.querySelectorAll('[data-icon]');
+    if (icons.length >= visibleCount) {
+      const firstIcon = icons[0] as HTMLElement;
+      const lastVisibleIcon = icons[visibleCount - 1] as HTMLElement;
+      
+      if (firstIcon && lastVisibleIcon) {
+        const containerRect = stepsContainerRef.current.getBoundingClientRect();
+        const firstIconRect = firstIcon.getBoundingClientRect();
+        const lastIconRect = lastVisibleIcon.getBoundingClientRect();
+        
+        // Calculate from center of first icon to center of last visible icon
+        const startY = firstIconRect.top - containerRect.top + firstIconRect.height / 2;
+        const endY = lastIconRect.top - containerRect.top + lastIconRect.height / 2;
+        
+        setLineHeight(endY - startY);
+      }
+    }
+  }, [visibleCount]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (!sectionRef.current) return;
@@ -94,8 +122,10 @@ const HowItWorksSection = () => {
       lastScrollY.current = currentScrollY;
 
       const viewportHeight = window.innerHeight;
-      // Trigger much earlier - when element enters the viewport (90% down)
-      const triggerPoint = viewportHeight * 0.92;
+      // Trigger when element enters the viewport (92% down)
+      const triggerPointDown = viewportHeight * 0.92;
+      // Trigger for hiding when scrolling up (85% down)
+      const triggerPointUp = viewportHeight * 0.85;
 
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       
@@ -106,7 +136,7 @@ const HowItWorksSection = () => {
           const nextEl = stepElements[nextIndex];
           if (nextEl) {
             const rect = nextEl.getBoundingClientRect();
-            if (rect.top < triggerPoint) {
+            if (rect.top < triggerPointDown) {
               setVisibleCount(prev => Math.min(prev + 1, steps.length));
             }
           }
@@ -118,8 +148,8 @@ const HowItWorksSection = () => {
           const lastEl = stepElements[lastVisibleIndex];
           if (lastEl) {
             const rect = lastEl.getBoundingClientRect();
-            // Hide when the element goes below the viewport
-            if (rect.top > viewportHeight * 0.95) {
+            // Hide when the element goes below the trigger point
+            if (rect.top > triggerPointUp) {
               setVisibleCount(prev => Math.max(prev - 1, 1));
             }
           }
@@ -150,14 +180,14 @@ const HowItWorksSection = () => {
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto relative" id="steps-container">
+        <div className="max-w-4xl mx-auto relative" ref={stepsContainerRef}>
           {/* Timeline line - connects from first to last visible step icon */}
           {visibleCount > 1 && (
             <div 
-              className="absolute left-5 md:left-6 w-0.5 bg-secondary/30 transition-all duration-500"
+              className="absolute left-5 md:left-6 w-0.5 bg-secondary/30 transition-all duration-300"
               style={{ 
                 top: '20px',
-                height: `calc(${(visibleCount - 1) * 100 / steps.length}% + ${(visibleCount - 1) * 20}px)`
+                height: `${lineHeight}px`
               }} 
             />
           )}
@@ -180,6 +210,7 @@ const HowItWorksSection = () => {
                   >
                     {/* Icon */}
                     <motion.div
+                      data-icon={index}
                       className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
                       initial={{ scale: 0.5, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
