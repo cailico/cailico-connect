@@ -159,7 +159,12 @@ const AboutSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <motion.div 
+          className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           {cards.map((card) => (
             <AccordionCard
               key={card.title}
@@ -169,10 +174,10 @@ const AboutSection = () => {
               description={card.description}
               color={card.color}
               bgImage={card.bgImage}
-              delay={0.2}
+              delay={0}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
