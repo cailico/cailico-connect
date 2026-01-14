@@ -89,21 +89,24 @@ const HowItWorksSection = () => {
       if (!sectionRef.current) return;
 
       const sectionRect = sectionRef.current.getBoundingClientRect();
-      const sectionTop = sectionRect.top;
-      const sectionHeight = sectionRect.height;
       const viewportHeight = window.innerHeight;
+      const viewportMiddle = viewportHeight / 2;
 
-      // Calculate how far we've scrolled through the section
-      // When section top is at viewport bottom, progress = 0
-      // When section bottom is at viewport top, progress = 1
-      const scrollProgress = (viewportHeight - sectionTop) / (sectionHeight + viewportHeight);
-      
-      // Map progress to number of visible steps (1 to 9)
-      // We want all steps visible by the time we're ~80% through the section
-      const normalizedProgress = Math.max(0, Math.min(1, scrollProgress / 0.8));
-      const newVisibleCount = Math.max(1, Math.min(steps.length, Math.ceil(normalizedProgress * steps.length)));
-      
-      setVisibleCount(newVisibleCount);
+      // Get all step elements and check which ones have passed the middle of the viewport
+      const stepElements = sectionRef.current.querySelectorAll('[data-step]');
+      let count = 1; // Always show at least the first one
+
+      stepElements.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        const elementTop = rect.top;
+        
+        // If the top of the element is above the middle of the viewport, it should be visible
+        if (elementTop < viewportMiddle) {
+          count = index + 1;
+        }
+      });
+
+      setVisibleCount(Math.max(1, Math.min(steps.length, count)));
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -130,15 +133,20 @@ const HowItWorksSection = () => {
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
-          <AnimatePresence mode="sync">
-            {steps.slice(0, visibleCount).map((step, index) => (
-              <motion.div
-                key={step.number}
-                className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
+          {steps.map((step, index) => (
+            <div
+              key={step.number}
+              data-step={index}
+              className="relative"
+            >
+              <AnimatePresence mode="sync">
+                {index < visibleCount && (
+                  <motion.div
+                    className="relative flex gap-4 md:gap-6 pb-6 last:pb-0"
+                    initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    animate={{ opacity: 1, height: "auto", marginBottom: 0 }}
+                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
               >
                 {/* Timeline line */}
                 {index !== visibleCount - 1 && (
@@ -169,9 +177,11 @@ const HowItWorksSection = () => {
                     {step.description}
                   </p>
                 </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
         </div>
       </div>
     </section>
