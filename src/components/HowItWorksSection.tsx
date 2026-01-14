@@ -87,7 +87,7 @@ const HowItWorksSection = () => {
     },
   ];
 
-  // Calculate timeline height based on visible icons - line must never exceed icon center
+  // Calculate timeline height based on visible icons - updates immediately
   useEffect(() => {
     const updateLineHeight = () => {
       if (!stepsContainerRef.current || visibleCount <= 1) {
@@ -95,30 +95,31 @@ const HowItWorksSection = () => {
         return;
       }
 
-      const icons = stepsContainerRef.current.querySelectorAll('[data-icon]');
-      if (icons.length >= visibleCount) {
-        const firstIcon = icons[0] as HTMLElement;
-        const lastVisibleIcon = icons[visibleCount - 1] as HTMLElement;
+      // Use requestAnimationFrame to ensure DOM is updated
+      requestAnimationFrame(() => {
+        if (!stepsContainerRef.current) return;
         
-        if (firstIcon && lastVisibleIcon) {
-          const containerRect = stepsContainerRef.current.getBoundingClientRect();
-          const firstIconRect = firstIcon.getBoundingClientRect();
-          const lastIconRect = lastVisibleIcon.getBoundingClientRect();
+        const icons = stepsContainerRef.current.querySelectorAll('[data-icon]');
+        if (icons.length >= visibleCount) {
+          const firstIcon = icons[0] as HTMLElement;
+          const lastVisibleIcon = icons[visibleCount - 1] as HTMLElement;
           
-          // Calculate from center of first icon to center of last visible icon exactly
-          const startY = firstIconRect.top - containerRect.top + firstIconRect.height / 2;
-          const endY = lastIconRect.top - containerRect.top + lastIconRect.height / 2;
-          
-          // Ensure line never exceeds the last icon center
-          const calculatedHeight = Math.max(0, endY - startY);
-          setLineHeight(calculatedHeight);
+          if (firstIcon && lastVisibleIcon) {
+            const containerRect = stepsContainerRef.current.getBoundingClientRect();
+            const firstIconRect = firstIcon.getBoundingClientRect();
+            const lastIconRect = lastVisibleIcon.getBoundingClientRect();
+            
+            const startY = firstIconRect.top - containerRect.top + firstIconRect.height / 2;
+            const endY = lastIconRect.top - containerRect.top + lastIconRect.height / 2;
+            
+            setLineHeight(Math.max(0, endY - startY));
+          }
         }
-      }
+      });
     };
 
     updateLineHeight();
     
-    // Recalculate on resize to stay responsive
     window.addEventListener('resize', updateLineHeight);
     return () => window.removeEventListener('resize', updateLineHeight);
   }, [visibleCount]);
@@ -191,14 +192,14 @@ const HowItWorksSection = () => {
         </motion.div>
 
         <div className="max-w-4xl mx-auto relative" ref={stepsContainerRef}>
-          {/* Timeline line - connects exactly from first to last visible icon center */}
+          {/* Timeline line - instant connection, no delay */}
           {visibleCount > 1 && lineHeight > 0 && (
             <div 
-              className="absolute left-5 md:left-6 w-0.5 bg-secondary/30 transition-all duration-200"
+              className="absolute left-5 md:left-6 w-0.5 bg-secondary/30"
               style={{ 
                 top: '20px',
                 height: `${lineHeight}px`,
-                maxHeight: `${lineHeight}px`
+                transition: 'height 0.1s ease-out'
               }} 
             />
           )}
