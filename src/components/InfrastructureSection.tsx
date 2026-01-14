@@ -18,6 +18,8 @@ const InfrastructureSection = () => {
   const [tabOffset, setTabOffset] = useState(0); // Offset for tab sliding
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartX = useRef(0);
+  const hasSwiped = useRef(false);
   
   // Tab gap for sliding calculation
   const tabGap = 8;
@@ -101,6 +103,26 @@ const InfrastructureSection = () => {
     setActiveIndex((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   }, [stopAutoPlay, features.length]);
 
+  // Swipe handlers - immediate response
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    hasSwiped.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (hasSwiped.current) return;
+    
+    const diff = touchStartX.current - e.touches[0].clientX;
+    
+    if (Math.abs(diff) > 30) {
+      hasSwiped.current = true;
+      if (diff > 0) {
+        goToNextCard();
+      } else {
+        goToPrevCard();
+      }
+    }
+  };
 
   useEffect(() => {
     if (isAutoPlaying && isInView) {
@@ -219,8 +241,10 @@ const InfrastructureSection = () => {
 
           {/* Cards Carousel */}
           <div 
-            className="flex-1 overflow-hidden" 
+            className="flex-1 overflow-hidden touch-pan-y" 
             ref={carouselRef}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
           >
             <div 
               className="flex transition-transform duration-500 ease-in-out"
