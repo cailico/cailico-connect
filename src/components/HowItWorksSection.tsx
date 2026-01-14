@@ -17,6 +17,7 @@ const HowItWorksSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [visibleCount, setVisibleCount] = useState(1);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
 
   const steps = [
     {
@@ -88,40 +89,55 @@ const HowItWorksSection = () => {
     const handleScroll = () => {
       if (!sectionRef.current) return;
 
-      const sectionRect = sectionRef.current.getBoundingClientRect();
+      const currentScrollY = window.scrollY;
+      const isScrollingDown = currentScrollY > lastScrollY.current;
+      lastScrollY.current = currentScrollY;
+
       const viewportHeight = window.innerHeight;
-      const viewportMiddle = viewportHeight / 2;
+      // Trigger point at 65% of viewport for better visibility
+      const triggerPoint = viewportHeight * 0.65;
 
-      // Get all step elements and check which ones have passed 70% of the viewport height
-      // This ensures the animation is visible when the step enters from below
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
-      let count = 1; // Always show at least the first one
-
-      stepElements.forEach((el, index) => {
-        const rect = el.getBoundingClientRect();
-        const elementTop = rect.top;
-        
-        // Trigger at 70% of viewport height so animation is visible
-        const triggerPoint = viewportHeight * 0.7;
-        if (elementTop < triggerPoint) {
-          count = index + 1;
+      
+      if (isScrollingDown) {
+        // When scrolling down, check if the NEXT step should appear
+        const nextIndex = visibleCount;
+        if (nextIndex < steps.length) {
+          const nextEl = stepElements[nextIndex];
+          if (nextEl) {
+            const rect = nextEl.getBoundingClientRect();
+            if (rect.top < triggerPoint) {
+              setVisibleCount(prev => Math.min(prev + 1, steps.length));
+            }
+          }
         }
-      });
-
-      setVisibleCount(Math.max(1, Math.min(steps.length, count)));
+      } else {
+        // When scrolling up, check if the LAST visible step should hide
+        const lastVisibleIndex = visibleCount - 1;
+        if (lastVisibleIndex > 0) {
+          const lastEl = stepElements[lastVisibleIndex];
+          if (lastEl) {
+            const rect = lastEl.getBoundingClientRect();
+            // Hide when the element goes below 75% of viewport
+            if (rect.top > viewportHeight * 0.75) {
+              setVisibleCount(prev => Math.max(prev - 1, 1));
+            }
+          }
+        }
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [steps.length]);
+  }, [steps.length, visibleCount]);
 
   return (
     <section id="how-it-works" className="py-20 md:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-4" ref={sectionRef}>
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-20"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
@@ -134,51 +150,56 @@ const HowItWorksSection = () => {
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto relative">
+          {/* Timeline line - always visible connecting all steps */}
+          <div className="absolute left-5 md:left-6 top-0 w-0.5 bg-secondary/30 transition-all duration-500" 
+               style={{ height: visibleCount > 1 ? `calc(100% - 3rem)` : '0' }} />
+
           {steps.map((step, index) => (
             <div
               key={step.number}
               data-step={index}
               className="relative"
+              style={{ minHeight: index < visibleCount ? 'auto' : '120px' }}
             >
-              <AnimatePresence mode="sync">
+              <AnimatePresence mode="wait">
                 {index < visibleCount && (
                   <motion.div
-                    className="relative flex gap-4 md:gap-6 pb-12 md:pb-16 last:pb-0"
-                    initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    animate={{ opacity: 1, height: "auto", marginBottom: 0 }}
-                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    className="relative flex gap-6 md:gap-8 mb-16 md:mb-20"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
-              >
-                {/* Timeline line */}
-                {index !== visibleCount - 1 && (
-                  <div className="absolute left-5 md:left-6 top-12 md:top-14 bottom-6 md:bottom-8 w-0.5 bg-secondary/30" />
-                )}
+                  >
+                    {/* Icon */}
+                    <motion.div
+                      className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.4, delay: 0.1 }}
+                    >
+                      <step.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary-foreground" />
+                    </motion.div>
 
-                {/* Icon */}
-                <motion.div
-                  className="relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 shadow-lg"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                >
-                  <step.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary-foreground" />
-                </motion.div>
-
-                {/* Content */}
-                <div className="flex-1 pt-1">
-                  <div className="flex items-start gap-3 mb-2">
-                    <span className="text-xs font-bold text-secondary">
-                      {step.number}
-                    </span>
-                    <h3 className="text-base md:text-xl font-semibold text-white leading-tight">
-                      {step.title}
-                    </h3>
-                  </div>
-                  <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-9">
-                    {step.description}
-                  </p>
-                </div>
+                    {/* Content */}
+                    <motion.div 
+                      className="flex-1 pt-1"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.15 }}
+                    >
+                      <div className="flex items-start gap-3 mb-3">
+                        <span className="text-xs font-bold text-secondary">
+                          {step.number}
+                        </span>
+                        <h3 className="text-lg md:text-xl font-semibold text-white leading-tight">
+                          {step.title}
+                        </h3>
+                      </div>
+                      <p className="text-sm md:text-base text-foreground/80 leading-relaxed pl-0 md:pl-9">
+                        {step.description}
+                      </p>
+                    </motion.div>
                   </motion.div>
                 )}
               </AnimatePresence>
