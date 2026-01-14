@@ -94,8 +94,8 @@ const HowItWorksSection = () => {
       lastScrollY.current = currentScrollY;
 
       const viewportHeight = window.innerHeight;
-      // Trigger point at 65% of viewport for better visibility
-      const triggerPoint = viewportHeight * 0.65;
+      // Trigger much earlier - when element enters the viewport (90% down)
+      const triggerPoint = viewportHeight * 0.92;
 
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
       
@@ -118,8 +118,8 @@ const HowItWorksSection = () => {
           const lastEl = stepElements[lastVisibleIndex];
           if (lastEl) {
             const rect = lastEl.getBoundingClientRect();
-            // Hide when the element goes below 75% of viewport
-            if (rect.top > viewportHeight * 0.75) {
+            // Hide when the element goes below the viewport
+            if (rect.top > viewportHeight * 0.95) {
               setVisibleCount(prev => Math.max(prev - 1, 1));
             }
           }
@@ -150,22 +150,29 @@ const HowItWorksSection = () => {
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto relative">
-          {/* Timeline line - always visible connecting all steps */}
-          <div className="absolute left-5 md:left-6 top-0 w-0.5 bg-secondary/30 transition-all duration-500" 
-               style={{ height: visibleCount > 1 ? `calc(100% - 3rem)` : '0' }} />
+        <div className="max-w-4xl mx-auto relative" id="steps-container">
+          {/* Timeline line - connects from first to last visible step icon */}
+          {visibleCount > 1 && (
+            <div 
+              className="absolute left-5 md:left-6 w-0.5 bg-secondary/30 transition-all duration-500"
+              style={{ 
+                top: '20px',
+                height: `calc(${(visibleCount - 1) * 100 / steps.length}% + ${(visibleCount - 1) * 20}px)`
+              }} 
+            />
+          )}
 
           {steps.map((step, index) => (
             <div
               key={step.number}
               data-step={index}
               className="relative"
-              style={{ minHeight: index < visibleCount ? 'auto' : '120px' }}
+              style={{ minHeight: index < visibleCount ? 'auto' : '80px' }}
             >
               <AnimatePresence mode="wait">
                 {index < visibleCount && (
                   <motion.div
-                    className="relative flex gap-6 md:gap-8 mb-16 md:mb-20"
+                    className="relative flex gap-6 md:gap-8 pb-12 md:pb-16"
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
