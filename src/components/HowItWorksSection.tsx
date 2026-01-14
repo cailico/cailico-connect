@@ -122,9 +122,9 @@ const HowItWorksSection = () => {
       lastScrollY.current = currentScrollY;
 
       const viewportHeight = window.innerHeight;
-      // Trigger point for showing steps (when scrolling down)
+      // Trigger when element enters the viewport (92% down) for appearing
       const triggerPointDown = viewportHeight * 0.92;
-      // Trigger point for hiding steps (when scrolling up) - hide earlier before text reaches edge
+      // Trigger for hiding earlier when scrolling up (70% down)
       const triggerPointUp = viewportHeight * 0.70;
 
       const stepElements = sectionRef.current.querySelectorAll('[data-step]');
@@ -148,7 +148,7 @@ const HowItWorksSection = () => {
           const lastEl = stepElements[lastVisibleIndex];
           if (lastEl) {
             const rect = lastEl.getBoundingClientRect();
-            // Hide earlier before text gets too close to the edge
+            // Hide earlier when scrolling up - before text reaches edge
             if (rect.top > triggerPointUp) {
               setVisibleCount(prev => Math.max(prev - 1, 1));
             }
