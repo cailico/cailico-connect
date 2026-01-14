@@ -15,7 +15,7 @@ const InfrastructureSection = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [activeIndex, setActiveIndex] = useState(0);
-  const [tabStartIndex, setTabStartIndex] = useState(0); // Controls which tabs are visible
+  const [tabOffset, setTabOffset] = useState(0); // Offset for tab sliding
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   
@@ -23,8 +23,9 @@ const InfrastructureSection = () => {
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
 
-  // Number of visible tabs on mobile
-  const visibleTabsMobile = 2;
+  // Tab width + gap for sliding calculation
+  const tabWidth = 140; // Fixed width for each tab
+  const tabGap = 8;
 
   const features = [
     {
@@ -85,13 +86,13 @@ const InfrastructureSection = () => {
     setActiveIndex(index);
   }, [stopAutoPlay]);
 
-  // Navigate tabs (only scrolls visible tabs, doesn't change card)
+  // Navigate tabs (slides the visible tabs with animation)
   const scrollTabsPrev = useCallback(() => {
-    setTabStartIndex((prev) => (prev === 0 ? features.length - 1 : prev - 1));
-  }, [features.length]);
+    setTabOffset((prev) => Math.max(0, prev - 1));
+  }, []);
 
   const scrollTabsNext = useCallback(() => {
-    setTabStartIndex((prev) => (prev >= features.length - 1 ? 0 : prev + 1));
+    setTabOffset((prev) => Math.min(features.length - 2, prev + 1));
   }, [features.length]);
 
   // Navigate cards
@@ -127,16 +128,6 @@ const InfrastructureSection = () => {
     }
   };
 
-  // Get visible tabs for mobile (wrapping around)
-  const getVisibleTabs = () => {
-    const tabs = [];
-    for (let i = 0; i < visibleTabsMobile; i++) {
-      const index = (tabStartIndex + i) % features.length;
-      tabs.push({ feature: features[index], index });
-    }
-    return tabs;
-  };
-
   useEffect(() => {
     if (isAutoPlaying && isInView) {
       autoPlayRef.current = setInterval(() => {
@@ -166,55 +157,67 @@ const InfrastructureSection = () => {
           </p>
         </motion.div>
 
-        {/* Tabs Navigation with Arrows - Mobile shows limited tabs with scroll */}
+        {/* Tabs Navigation with Arrows - Mobile shows sliding tabs */}
         <motion.div
           className="relative mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {/* Mobile Tabs - Shows 2 tabs with arrows to scroll */}
+          {/* Mobile Tabs - Sliding carousel of tabs */}
           <div className="flex md:hidden items-center justify-center gap-2">
             <button
               onClick={scrollTabsPrev}
-              className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex"
+              className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex disabled:opacity-30"
               aria-label="Anterior pestaña"
+              disabled={tabOffset === 0}
             >
               <ChevronLeft className="h-6 w-6 stroke-[1.5]" />
             </button>
 
-            <div className="flex gap-2">
-              {getVisibleTabs().map(({ feature, index }) => (
-                <button
-                  key={feature.id}
-                  onClick={() => selectTab(index)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 border ${
-                    activeIndex === index
-                      ? "bg-secondary border-secondary text-white shadow-md"
-                      : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
-                  }`}
-                >
-                  {feature.tab}
-                </button>
-              ))}
+            {/* Sliding tabs container */}
+            <div 
+              className="overflow-hidden"
+              style={{ width: `${tabWidth * 2 + tabGap}px` }}
+            >
+              <div 
+                className="flex gap-2 transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(-${tabOffset * (tabWidth + tabGap)}px)` }}
+              >
+                {features.map((feature, index) => (
+                  <button
+                    key={feature.id}
+                    onClick={() => selectTab(index)}
+                    className={`shrink-0 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
+                      activeIndex === index
+                        ? "bg-secondary border-secondary text-white shadow-md"
+                        : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
+                    }`}
+                    style={{ width: `${tabWidth}px` }}
+                  >
+                    {feature.tab}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <button
               onClick={scrollTabsNext}
-              className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex"
+              className="shrink-0 items-center justify-center text-white hover:text-secondary transition-colors flex disabled:opacity-30"
               aria-label="Siguiente pestaña"
+              disabled={tabOffset >= features.length - 2}
             >
               <ChevronRight className="h-6 w-6 stroke-[1.5]" />
             </button>
           </div>
 
-          {/* Desktop Tabs - Shows all tabs */}
+          {/* Desktop Tabs - Shows all tabs with uniform size */}
           <div className="hidden md:flex items-center justify-center gap-2.5">
             {features.map((feature, index) => (
               <button
                 key={feature.id}
                 onClick={() => selectTab(index)}
-                className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 border ${
+                className={`w-32 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
                   activeIndex === index
                     ? "bg-secondary border-secondary text-white shadow-md"
                     : "bg-white border-gray-300 text-gray-600 hover:border-secondary/50 hover:text-secondary"
@@ -261,13 +264,13 @@ const InfrastructureSection = () => {
                 >
                   <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
                     {/* Fixed height container - Text on top, Image on bottom */}
-                    <div className="flex flex-col h-[480px] md:h-[420px]">
-                      {/* Text Content - Top */}
-                      <div className="p-6 md:p-8 lg:p-10 flex flex-col justify-center border-b border-gray-200 h-[220px] md:h-[200px]">
-                        <h3 className="font-display font-bold text-xl md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-3 leading-tight">
+                    <div className="flex flex-col h-[520px] md:h-[450px]">
+                      {/* Text Content - Top with scrollable area */}
+                      <div className="p-5 md:p-8 lg:p-10 border-b border-gray-200 h-[260px] md:h-[220px] overflow-y-auto">
+                        <h3 className="font-display font-bold text-lg md:text-2xl lg:text-3xl text-[hsl(209,52%,22%)] mb-3 leading-tight">
                           {feature.title}
                         </h3>
-                        <p className="text-gray-600 leading-relaxed text-sm md:text-base line-clamp-4">
+                        <p className="text-gray-600 leading-relaxed text-sm md:text-base">
                           {feature.description}
                         </p>
                       </div>
