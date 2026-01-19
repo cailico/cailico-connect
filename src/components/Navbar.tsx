@@ -40,8 +40,9 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
     { label: "SERVICIO", href: "#features" },
     { label: "PROCESO", href: "#how-it-works" },
     { label: "COSTO", href: "#costo" },
-    { label: "CONTACTO", href: "#contact" },
   ];
+  
+  const whatsappLink = "https://wa.me/573001234567";
 
   return (
     <>
@@ -81,7 +82,7 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
               ))}
               {/* CTA Button inline with nav */}
               <Button variant="hero" size="sm" asChild>
-                <a href="#contact">AGENDAR REUNIÓN</a>
+                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">CONTACTO</a>
               </Button>
             </div>
 
@@ -154,8 +155,8 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
                   className="mt-6"
                 >
                   <Button variant="hero" size="default" className="w-full" asChild>
-                    <a href="#contact" onClick={() => setIsOpen(false)}>
-                      AGENDAR REUNIÓN
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>
+                      CONTACTO
                     </a>
                   </Button>
                 </motion.div>

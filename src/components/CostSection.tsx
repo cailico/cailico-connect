@@ -251,38 +251,9 @@ const CostSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
-          <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4">
-            <span className="text-white">COS</span>
-            <span className="text-[#1e293b]">TO</span>
+          <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4 text-white">
+            COSTO
           </h2>
-          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
-            Nuestro modelo de pagos se divide en un pago inicial por desarrollo seguido de pagos mensuales de acuerdo a la capacidad de la institución educativa:
-          </p>
-        </motion.div>
-
-        {/* Tarjetas de precios lado a lado */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="grid md:grid-cols-2 gap-6 mb-12"
-        >
-          {pricingFeatures.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-              className="bg-white/15 backdrop-blur-sm rounded-xl p-6 border border-white/30"
-            >
-              <h3 className="font-display font-medium text-xl text-[#1e293b] mb-3 uppercase tracking-tight">
-                {feature.title}
-              </h3>
-              <p className="text-white/90 text-base leading-relaxed">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
         </motion.div>
 
         {/* Tarjeta blanca contenedora con CTA y Formulario */}
@@ -296,7 +267,7 @@ const CostSection = () => {
             {/* Columna izquierda: CTA centrado */}
             <div className="flex flex-col justify-center h-full">
               <h3 className="font-display font-medium text-2xl md:text-3xl text-[#1e293b] mb-4 uppercase tracking-tight">
-                ¿Quieres una cotización?
+                Cotiza con Nosotros
               </h3>
               <p className="text-[#475569] text-lg leading-relaxed">
                 Para una cotización y más detalles sobre nuestros costos, contáctanos a través de nuestro WhatsApp o deja tus datos en el formulario a continuación y nos pondremos en contacto contigo lo antes posible.
