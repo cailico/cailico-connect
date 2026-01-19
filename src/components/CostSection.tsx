@@ -142,9 +142,9 @@ const CostSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="font-oswald font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4">
-            <span className="text-[#F7941D]">COS</span>
-            <span className="text-white">TO</span>
+          <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4">
+            <span className="text-secondary">COS</span>
+            <span className="text-foreground">TO</span>
           </h2>
           <p className="text-xl md:text-2xl text-white font-medium max-w-3xl mx-auto">
             En Cailico, nuestro modelo de precios está diseñado para adaptarse a las capacidades de las instituciones educativas
