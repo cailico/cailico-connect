@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Check, CreditCard, Users } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -80,12 +80,10 @@ const CostSection = () => {
 
   const pricingFeatures = [
     {
-      icon: CreditCard,
       title: "Pago Inicial por Desarrollo",
       description: "Incluye el desarrollo, adaptación de la infraestructura AIECS y el primer mes de despliegue. Este pago es el mismo para todas las instituciones."
     },
     {
-      icon: Users,
       title: "Pagos Mensuales",
       description: "Basados en el número de estudiantes de la institución. Para instituciones con menos de 1.000 estudiantes, se aplica un pago fijo mensual. Para aquellas con más de 1.000 estudiantes, el pago es variable según el número exacto de estudiantes."
     }
@@ -135,13 +133,7 @@ const CostSection = () => {
   ];
 
   return (
-    <section id="costo" className="py-20 md:py-32 bg-[#0f172a] relative overflow-hidden">
-      {/* Decoración de fondo */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#F7941D]/20 rounded-full blur-3xl" />
-      </div>
-
+    <section id="costo" className="py-20 md:py-32 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10" ref={ref}>
         {/* Título */}
         <motion.div
@@ -150,11 +142,11 @@ const CostSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="font-oswald font-medium text-4xl md:text-5xl uppercase tracking-tight mb-4">
-            <span className="text-[#F7941D]">COS</span>
-            <span className="text-white">TO</span>
+          <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4">
+            <span className="text-secondary">COS</span>
+            <span className="text-foreground">TO</span>
           </h2>
-          <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white font-medium max-w-3xl mx-auto">
             En CaIlico, nuestro modelo de precios está diseñado para adaptarse a las capacidades de las instituciones educativas
           </p>
         </motion.div>
@@ -166,7 +158,7 @@ const CostSection = () => {
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-6"
+            className="space-y-8"
           >
             {pricingFeatures.map((feature, index) => (
               <motion.div
@@ -174,31 +166,15 @@ const CostSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-[#F7941D]/50 transition-all duration-300"
               >
-                <div className="w-12 h-12 bg-[#F7941D]/20 rounded-xl flex items-center justify-center mb-4">
-                  <feature.icon className="w-6 h-6 text-[#F7941D]" />
-                </div>
-                <h3 className="font-oswald font-medium text-xl text-white mb-3">
+                <h3 className="font-semibold text-xl text-white mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
+                <p className="text-foreground/80 text-base leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
             ))}
-
-            {/* Llamado a la acción */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="pt-4"
-            >
-              <p className="text-gray-300 text-base leading-relaxed">
-                Para una cotización y más detalles sobre nuestros costos, contáctanos a través de nuestro WhatsApp o deja tus datos en el formulario a continuación y nos pondremos en contacto contigo lo antes posible.
-              </p>
-            </motion.div>
           </motion.div>
 
           {/* Columna derecha: Formulario */}
@@ -207,6 +183,11 @@ const CostSection = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
+            {/* CTA texto arriba del formulario */}
+            <p className="text-foreground/80 text-base leading-relaxed mb-6">
+              Para una cotización y más detalles sobre nuestros costos, contáctanos a través de nuestro WhatsApp o deja tus datos en el formulario a continuación y nos pondremos en contacto contigo lo antes posible.
+            </p>
+
             <div className="bg-white rounded-2xl p-8 md:p-10 shadow-2xl">
               {submitted ? (
                 <motion.div
@@ -217,7 +198,7 @@ const CostSection = () => {
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-green-600" />
                   </div>
-                  <h3 className="font-oswald font-medium text-2xl text-gray-800 mb-2">
+                  <h3 className="font-display font-medium text-2xl text-gray-800 mb-2">
                     ¡Gracias!
                   </h3>
                   <p className="text-gray-600">
@@ -371,8 +352,8 @@ const CostSection = () => {
                       </Label>
                       <Select value={formData.productoInteres} onValueChange={(value) => handleChange("productoInteres", value)}>
                         <SelectTrigger className="border-gray-300 bg-white text-gray-900">
-                          <SelectValue>
-                            {formData.productoInteres}
+                          <SelectValue placeholder="Selecciona">
+                            {formData.productoInteres || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="bg-white z-50 border border-gray-200 shadow-lg">
