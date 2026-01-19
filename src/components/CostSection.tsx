@@ -133,62 +133,58 @@ const CostSection = () => {
   ];
 
   return (
-    <section id="costo" className="py-20 md:py-32 bg-background relative overflow-hidden">
-      <div className="container mx-auto px-4 relative z-10" ref={ref}>
+    <section id="costo" className="py-20 md:py-32 bg-[#0f172a] relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10 max-w-6xl" ref={ref}>
         {/* Título */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4">
-            <span className="text-secondary">COS</span>
-            <span className="text-foreground">TO</span>
+          <h2 className="font-oswald font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4">
+            <span className="text-[#F7941D]">COS</span>
+            <span className="text-white">TO</span>
           </h2>
           <p className="text-xl md:text-2xl text-white font-medium max-w-3xl mx-auto">
-            En CaIlico, nuestro modelo de precios está diseñado para adaptarse a las capacidades de las instituciones educativas
+            En Cailico, nuestro modelo de precios está diseñado para adaptarse a las capacidades de las instituciones educativas
           </p>
         </motion.div>
 
-        {/* Layout de dos columnas: Descripción + Formulario */}
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Columna izquierda: Modelo de precios */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-8"
-          >
-            {pricingFeatures.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-              >
-                <h3 className="font-semibold text-xl text-white mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-foreground/80 text-base leading-relaxed">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
+        {/* Tarjeta blanca contenedora - estilo Truora */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="bg-white rounded-2xl p-8 md:p-12 shadow-xl"
+        >
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Columna izquierda: Modelo de precios */}
+            <div className="space-y-8">
+              {pricingFeatures.map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                >
+                  <h3 className="font-semibold text-xl text-[#1e293b] mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-[#475569] text-base leading-relaxed">
+                    {feature.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
 
-          {/* Columna derecha: Formulario */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            {/* CTA texto arriba del formulario */}
-            <p className="text-foreground/80 text-base leading-relaxed mb-6">
-              Para una cotización y más detalles sobre nuestros costos, contáctanos a través de nuestro WhatsApp o deja tus datos en el formulario a continuación y nos pondremos en contacto contigo lo antes posible.
-            </p>
+            {/* Columna derecha: Formulario */}
+            <div>
+              {/* CTA texto arriba del formulario */}
+              <p className="text-[#475569] text-base leading-relaxed mb-6">
+                Para una cotización y más detalles sobre nuestros costos, contáctanos a través de nuestro WhatsApp o deja tus datos en el formulario a continuación y nos pondremos en contacto contigo lo antes posible.
+              </p>
 
-            <div className="bg-white rounded-2xl p-8 md:p-10 shadow-2xl">
               {submitted ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -210,30 +206,28 @@ const CostSection = () => {
                   {/* Nombre y Apellido */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="nombre" className="text-gray-700">
+                      <Label htmlFor="nombre" className="text-[#1e293b] font-medium">
                         Nombre<span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="nombre"
                         value={formData.nombre}
                         onChange={(e) => handleChange("nombre", e.target.value)}
-                        className={`border-gray-300 focus:border-primary ${errors.nombre ? "border-red-500" : ""}`}
-                        placeholder="Tu nombre"
+                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.nombre ? "border-red-500" : ""}`}
                       />
                       {errors.nombre && (
                         <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="apellido" className="text-gray-700">
+                      <Label htmlFor="apellido" className="text-[#1e293b] font-medium">
                         Apellido<span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="apellido"
                         value={formData.apellido}
                         onChange={(e) => handleChange("apellido", e.target.value)}
-                        className={`border-gray-300 focus:border-primary ${errors.apellido ? "border-red-500" : ""}`}
-                        placeholder="Tu apellido"
+                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.apellido ? "border-red-500" : ""}`}
                       />
                       {errors.apellido && (
                         <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
@@ -244,18 +238,18 @@ const CostSection = () => {
                   {/* Cargo y Correo */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-gray-700">
+                      <Label className="text-[#1e293b] font-medium">
                         Cargo<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.cargo} onValueChange={(value) => handleChange("cargo", value)}>
-                        <SelectTrigger className={`border-gray-300 bg-white text-gray-900 ${errors.cargo ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.cargo ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.cargo || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-gray-200 shadow-lg">
+                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
                           {cargoOptions.map((option) => (
-                            <SelectItem key={option} value={option} className="text-gray-900 hover:bg-gray-100">
+                            <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
                             </SelectItem>
                           ))}
@@ -266,7 +260,7 @@ const CostSection = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="correo" className="text-gray-700">
+                      <Label htmlFor="correo" className="text-[#1e293b] font-medium">
                         Correo<span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -274,8 +268,7 @@ const CostSection = () => {
                         type="email"
                         value={formData.correo}
                         onChange={(e) => handleChange("correo", e.target.value)}
-                        className={`border-gray-300 focus:border-primary ${errors.correo ? "border-red-500" : ""}`}
-                        placeholder="correo@ejemplo.com"
+                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.correo ? "border-red-500" : ""}`}
                       />
                       {errors.correo && (
                         <p className="text-red-500 text-sm">Ingresa un correo válido.</p>
@@ -286,19 +279,18 @@ const CostSection = () => {
                   {/* Teléfono e Institución */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="telefono" className="text-gray-700">
+                      <Label htmlFor="telefono" className="text-[#1e293b] font-medium">
                         Teléfono<span className="text-red-500">*</span>
                       </Label>
                       <div className="flex">
-                        <span className="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-gray-600 text-sm">
+                        <span className="inline-flex items-center px-3 bg-[#f1f5f9] border border-r-0 border-[#e2e8f0] rounded-l-md text-[#64748b] text-sm">
                           +57
                         </span>
                         <Input
                           id="telefono"
                           value={formData.telefono}
                           onChange={(e) => handleChange("telefono", e.target.value)}
-                          className={`rounded-l-none border-gray-300 focus:border-primary ${errors.telefono ? "border-red-500" : ""}`}
-                          placeholder="300 123 4567"
+                          className={`rounded-l-none bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] focus:border-[#F7941D] ${errors.telefono ? "border-red-500" : ""}`}
                         />
                       </div>
                       {errors.telefono && (
@@ -306,15 +298,14 @@ const CostSection = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="institucion" className="text-gray-700">
+                      <Label htmlFor="institucion" className="text-[#1e293b] font-medium">
                         Institución<span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="institucion"
                         value={formData.institucion}
                         onChange={(e) => handleChange("institucion", e.target.value)}
-                        className={`border-gray-300 focus:border-primary ${errors.institucion ? "border-red-500" : ""}`}
-                        placeholder="Nombre de tu institución"
+                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.institucion ? "border-red-500" : ""}`}
                       />
                       {errors.institucion && (
                         <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
@@ -325,18 +316,18 @@ const CostSection = () => {
                   {/* Naturaleza y Producto */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-gray-700">
+                      <Label className="text-[#1e293b] font-medium">
                         Naturaleza Jurídica<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.naturalezaJuridica} onValueChange={(value) => handleChange("naturalezaJuridica", value)}>
-                        <SelectTrigger className={`border-gray-300 bg-white text-gray-900 ${errors.naturalezaJuridica ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.naturalezaJuridica ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.naturalezaJuridica || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-gray-200 shadow-lg">
+                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
                           {naturalezaOptions.map((option) => (
-                            <SelectItem key={option} value={option} className="text-gray-900 hover:bg-gray-100">
+                            <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
                             </SelectItem>
                           ))}
@@ -347,17 +338,17 @@ const CostSection = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-gray-700">
+                      <Label className="text-[#1e293b] font-medium">
                         Producto de Interés<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.productoInteres} onValueChange={(value) => handleChange("productoInteres", value)}>
-                        <SelectTrigger className="border-gray-300 bg-white text-gray-900">
+                        <SelectTrigger className="bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b]">
                           <SelectValue placeholder="Selecciona">
                             {formData.productoInteres || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-gray-200 shadow-lg">
-                          <SelectItem value="Infraestructura AIECS" className="text-gray-900 hover:bg-gray-100">
+                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
+                          <SelectItem value="Infraestructura AIECS" className="text-[#1e293b] hover:bg-[#f1f5f9]">
                             Infraestructura AIECS
                           </SelectItem>
                         </SelectContent>
@@ -368,18 +359,18 @@ const CostSection = () => {
                   {/* País y Estudiantes */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-gray-700">
+                      <Label className="text-[#1e293b] font-medium">
                         País<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.pais} onValueChange={(value) => handleChange("pais", value)}>
-                        <SelectTrigger className={`border-gray-300 bg-white text-gray-900 ${errors.pais ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.pais ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.pais || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 max-h-60 border border-gray-200 shadow-lg">
+                        <SelectContent className="bg-white z-50 max-h-60 border border-[#e2e8f0] shadow-lg">
                           {paisesOptions.map((option) => (
-                            <SelectItem key={option} value={option} className="text-gray-900 hover:bg-gray-100">
+                            <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
                             </SelectItem>
                           ))}
@@ -390,18 +381,18 @@ const CostSection = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-gray-700">
+                      <Label className="text-[#1e293b] font-medium">
                         Nº de estudiantes<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.numeroEstudiantes} onValueChange={(value) => handleChange("numeroEstudiantes", value)}>
-                        <SelectTrigger className={`border-gray-300 bg-white text-gray-900 ${errors.numeroEstudiantes ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.numeroEstudiantes ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.numeroEstudiantes || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-gray-200 shadow-lg">
+                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
                           {estudiantesOptions.map((option) => (
-                            <SelectItem key={option} value={option} className="text-gray-900 hover:bg-gray-100">
+                            <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
                             </SelectItem>
                           ))}
@@ -415,15 +406,15 @@ const CostSection = () => {
 
                   <Button 
                     type="submit" 
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
+                    className="w-full bg-[#0066CC] hover:bg-[#0052A3] text-white font-medium py-3"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "Enviando..." : "Enviar"}
                   </Button>
 
-                  <p className="text-center text-gray-500 text-sm">
+                  <p className="text-center text-[#64748b] text-sm">
                     Al enviar este formulario, aceptas nuestra{" "}
-                    <a href="#" className="text-primary hover:underline">
+                    <a href="#" className="text-[#0066CC] hover:underline">
                       Política de Privacidad
                     </a>
                     .
@@ -431,8 +422,8 @@ const CostSection = () => {
                 </form>
               )}
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
