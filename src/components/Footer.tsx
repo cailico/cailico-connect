@@ -5,12 +5,15 @@ import logo from "@/assets/cailico-logo.png";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
+  const whatsappLink = "https://wa.me/573001234567";
+  
   const links = [
     { label: "Inicio", href: "#hero" },
-    { label: "Producto", href: "#features" },
-    { label: "Cómo Funciona", href: "#how-it-works" },
-    { label: "Casos de Uso", href: "#use-cases" },
-    { label: "Contacto", href: "#contact" },
+    { label: "¿Quiénes Somos?", href: "#quienes-somos" },
+    { label: "Servicio", href: "#features" },
+    { label: "Proceso", href: "#how-it-works" },
+    { label: "Costo", href: "#costo" },
+    { label: "Contacto", href: whatsappLink, external: true },
   ];
 
   const socialLinks = [
@@ -47,6 +50,7 @@ const Footer = () => {
                   <a
                     href={link.href}
                     className="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm"
+                    {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   >
                     {link.label}
                   </a>
