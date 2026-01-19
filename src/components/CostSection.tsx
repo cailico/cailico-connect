@@ -22,9 +22,10 @@ const CostSection = () => {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
-    codigoPais: "",
+    codigoPais: "+57",
     telefono: "",
     correo: "",
+    cargo: "",
     institucion: "",
     naturalezaJuridica: "",
     numeroEstudiantes: "",
@@ -44,6 +45,7 @@ const CostSection = () => {
     if (!formData.codigoPais) newErrors.codigoPais = true;
     if (!formData.telefono.trim()) newErrors.telefono = true;
     if (!formData.correo.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) newErrors.correo = true;
+    if (!formData.cargo) newErrors.cargo = true;
     if (!formData.institucion.trim()) newErrors.institucion = true;
     if (!formData.naturalezaJuridica) newErrors.naturalezaJuridica = true;
     if (!formData.numeroEstudiantes) newErrors.numeroEstudiantes = true;
@@ -87,6 +89,13 @@ const CostSection = () => {
       title: "Pagos Mensuales",
       description: "Basados en el número de estudiantes de la institución. Para instituciones con menos de 1.000 estudiantes, se aplica un pago fijo mensual. Para aquellas con más de 1.000 estudiantes, el pago es variable según el número exacto de estudiantes."
     }
+  ];
+
+  const cargoOptions = [
+    "Rector(a)",
+    "Coordinador(a)",
+    "Profesor(a)",
+    "Administrativo(a)"
   ];
 
   const codigosPaises = [
@@ -346,70 +355,93 @@ const CostSection = () => {
                     </div>
                   </div>
 
-                  {/* Teléfono (con selector de código de país) */}
-                  <div className="space-y-2">
-                    <Label className="text-[#1e293b] font-medium">
-                      Teléfono<span className="text-red-500">*</span>
-                    </Label>
-                    <div className="flex gap-2">
-                      <Select value={formData.codigoPais} onValueChange={(value) => handleChange("codigoPais", value)}>
-                        <SelectTrigger className={`w-32 bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.codigoPais ? "border-red-500" : ""}`}>
-                          <SelectValue placeholder="Código">
-                            {formData.codigoPais || "Código"}
+                  {/* Teléfono y Correo */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-[#1e293b] font-medium">
+                        Teléfono<span className="text-red-500">*</span>
+                      </Label>
+                      <div className="flex">
+                        <Select value={formData.codigoPais} onValueChange={(value) => handleChange("codigoPais", value)}>
+                          <SelectTrigger className={`w-20 rounded-r-none bg-[#f1f5f9] border-[#e2e8f0] text-[#1e293b] ${errors.codigoPais ? "border-red-500" : ""}`}>
+                            <SelectValue placeholder="+57">
+                              {formData.codigoPais || "+57"}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent className="bg-white z-50 max-h-60 border border-[#e2e8f0] shadow-lg">
+                            {codigosPaises.map((item) => (
+                              <SelectItem key={item.codigo} value={item.codigo} className="text-[#1e293b] hover:bg-[#f1f5f9]">
+                                {item.codigo} {item.pais}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id="telefono"
+                          value={formData.telefono}
+                          onChange={(e) => handleChange("telefono", e.target.value)}
+                          className={`rounded-l-none border-l-0 bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.telefono ? "border-red-500" : ""}`}
+                        />
+                      </div>
+                      {(errors.codigoPais || errors.telefono) && (
+                        <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="correo" className="text-[#1e293b] font-medium">
+                        Correo<span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="correo"
+                        type="email"
+                        value={formData.correo}
+                        onChange={(e) => handleChange("correo", e.target.value)}
+                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.correo ? "border-red-500" : ""}`}
+                      />
+                      {errors.correo && (
+                        <p className="text-red-500 text-sm">Ingresa un correo válido.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Cargo y Nombre de la institución */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-[#1e293b] font-medium">
+                        Cargo<span className="text-red-500">*</span>
+                      </Label>
+                      <Select value={formData.cargo} onValueChange={(value) => handleChange("cargo", value)}>
+                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.cargo ? "border-red-500" : ""}`}>
+                          <SelectValue placeholder="Selecciona">
+                            {formData.cargo || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 max-h-60 border border-[#e2e8f0] shadow-lg">
-                          {codigosPaises.map((item) => (
-                            <SelectItem key={item.codigo} value={item.codigo} className="text-[#1e293b] hover:bg-[#f1f5f9]">
-                              {item.codigo} {item.pais}
+                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
+                          {cargoOptions.map((option) => (
+                            <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
+                              {option}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <Input
-                        id="telefono"
-                        value={formData.telefono}
-                        onChange={(e) => handleChange("telefono", e.target.value)}
-                        placeholder="Número de teléfono"
-                        className={`flex-1 bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.telefono ? "border-red-500" : ""}`}
-                      />
+                      {errors.cargo && (
+                        <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
+                      )}
                     </div>
-                    {(errors.codigoPais || errors.telefono) && (
-                      <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
-                    )}
-                  </div>
-
-                  {/* Correo */}
-                  <div className="space-y-2">
-                    <Label htmlFor="correo" className="text-[#1e293b] font-medium">
-                      Correo<span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="correo"
-                      type="email"
-                      value={formData.correo}
-                      onChange={(e) => handleChange("correo", e.target.value)}
-                      className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.correo ? "border-red-500" : ""}`}
-                    />
-                    {errors.correo && (
-                      <p className="text-red-500 text-sm">Ingresa un correo válido.</p>
-                    )}
-                  </div>
-
-                  {/* Nombre de la institución */}
-                  <div className="space-y-2">
-                    <Label htmlFor="institucion" className="text-[#1e293b] font-medium">
-                      Nombre de la institución<span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="institucion"
-                      value={formData.institucion}
-                      onChange={(e) => handleChange("institucion", e.target.value)}
-                      className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.institucion ? "border-red-500" : ""}`}
-                    />
-                    {errors.institucion && (
-                      <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
-                    )}
+                    <div className="space-y-2">
+                      <Label htmlFor="institucion" className="text-[#1e293b] font-medium">
+                        Institución<span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="institucion"
+                        value={formData.institucion}
+                        onChange={(e) => handleChange("institucion", e.target.value)}
+                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.institucion ? "border-red-500" : ""}`}
+                      />
+                      {errors.institucion && (
+                        <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Naturaleza Jurídica y Número de estudiantes */}
