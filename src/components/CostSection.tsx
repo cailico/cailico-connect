@@ -133,7 +133,7 @@ const CostSection = () => {
   ];
 
   return (
-    <section id="costo" className="py-20 md:py-32 bg-[#0f172a] relative overflow-hidden">
+    <section id="costo" className="py-20 md:py-32 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10 max-w-6xl" ref={ref}>
         {/* Título */}
         <motion.div
