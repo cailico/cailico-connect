@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import costoBg from "@/assets/costo-bg.png";
 
 const CostSection = () => {
   const ref = useRef(null);
@@ -242,7 +243,15 @@ const CostSection = () => {
   ];
 
   return (
-    <section id="costo" className="py-20 md:py-32 bg-background relative overflow-hidden">
+    <section id="costo" className="py-20 md:py-32 relative overflow-hidden">
+      {/* Background image with dark overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${costoBg})` }}
+      >
+        <div className="absolute inset-0 bg-black/70" />
+      </div>
+      
       <div className="container mx-auto px-4 relative z-10 max-w-6xl" ref={ref}>
         {/* Título */}
         <motion.div
