@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import costoBg from "@/assets/costo-bg.png";
 
 const CostSection = () => {
   const ref = useRef(null);
@@ -83,7 +82,7 @@ const CostSection = () => {
 
   const pricingFeatures = [
     {
-      title: "Pago Inicial por Desarrollo",
+      title: "Pago Inicial",
       description: "Incluye el desarrollo, adaptación de la infraestructura AIECS y el primer mes de despliegue. Este pago es el mismo para todas las instituciones."
     },
     {
@@ -243,15 +242,7 @@ const CostSection = () => {
   ];
 
   return (
-    <section id="costo" className="py-20 md:py-32 relative overflow-hidden">
-      {/* Background image with dark overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${costoBg})` }}
-      >
-        <div className="absolute inset-0 bg-black/70" />
-      </div>
-      
+    <section id="costo" className="py-12 md:py-20 bg-secondary relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10 max-w-6xl" ref={ref}>
         {/* Título */}
         <motion.div
@@ -261,10 +252,10 @@ const CostSection = () => {
           className="text-center mb-8"
         >
           <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4">
-            <span className="text-secondary">COS</span>
-            <span className="text-foreground">TO</span>
+            <span className="text-white">COS</span>
+            <span className="text-[#1e293b]">TO</span>
           </h2>
-          <p className="text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
             Nuestro modelo de pagos se divide en un pago inicial por desarrollo seguido de pagos mensuales de acuerdo a la capacidad de la institución educativa:
           </p>
         </motion.div>
@@ -282,12 +273,12 @@ const CostSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
+              className="bg-white/15 backdrop-blur-sm rounded-xl p-6 border border-white/30"
             >
-              <h3 className="font-display font-medium text-xl text-secondary mb-3 uppercase tracking-tight">
+              <h3 className="font-display font-medium text-xl text-[#1e293b] mb-3 uppercase tracking-tight">
                 {feature.title}
               </h3>
-              <p className="text-foreground/80 text-base leading-relaxed">
+              <p className="text-white/90 text-base leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>
@@ -342,7 +333,7 @@ const CostSection = () => {
                         id="nombre"
                         value={formData.nombre}
                         onChange={(e) => handleChange("nombre", e.target.value)}
-                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.nombre ? "border-red-500" : ""}`}
+                        className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.nombre ? "border-red-500" : ""}`}
                       />
                       {errors.nombre && (
                         <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
@@ -356,7 +347,7 @@ const CostSection = () => {
                         id="apellido"
                         value={formData.apellido}
                         onChange={(e) => handleChange("apellido", e.target.value)}
-                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.apellido ? "border-red-500" : ""}`}
+                        className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.apellido ? "border-red-500" : ""}`}
                       />
                       {errors.apellido && (
                         <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
@@ -372,12 +363,12 @@ const CostSection = () => {
                       </Label>
                       <div className="flex">
                         <Select value={formData.codigoPais} onValueChange={(value) => handleChange("codigoPais", value)}>
-                          <SelectTrigger className={`w-20 rounded-r-none bg-[#f1f5f9] border-[#e2e8f0] text-[#1e293b] ${errors.codigoPais ? "border-red-500" : ""}`}>
+                          <SelectTrigger className={`w-20 rounded-r-none bg-white border-[#cbd5e1] border-2 border-r-0 text-[#1e293b] ${errors.codigoPais ? "border-red-500" : ""}`}>
                             <SelectValue placeholder="+57">
                               {formData.codigoPais || "+57"}
                             </SelectValue>
                           </SelectTrigger>
-                          <SelectContent className="bg-white z-50 max-h-60 border border-[#e2e8f0] shadow-lg">
+                          <SelectContent className="bg-white z-50 max-h-60 border-2 border-[#cbd5e1] shadow-lg">
                             {codigosPaises.map((item) => (
                               <SelectItem key={item.codigo} value={item.codigo} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                                 {item.codigo} {item.pais}
@@ -389,7 +380,7 @@ const CostSection = () => {
                           id="telefono"
                           value={formData.telefono}
                           onChange={(e) => handleChange("telefono", e.target.value)}
-                          className={`rounded-l-none border-l-0 bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.telefono ? "border-red-500" : ""}`}
+                          className={`rounded-l-none border-l-0 bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.telefono ? "border-red-500" : ""}`}
                         />
                       </div>
                       {(errors.codigoPais || errors.telefono) && (
@@ -405,7 +396,7 @@ const CostSection = () => {
                         type="email"
                         value={formData.correo}
                         onChange={(e) => handleChange("correo", e.target.value)}
-                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.correo ? "border-red-500" : ""}`}
+                        className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.correo ? "border-red-500" : ""}`}
                       />
                       {errors.correo && (
                         <p className="text-red-500 text-sm">Ingresa un correo válido.</p>
@@ -420,12 +411,12 @@ const CostSection = () => {
                         Cargo<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.cargo} onValueChange={(value) => handleChange("cargo", value)}>
-                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.cargo ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] ${errors.cargo ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.cargo || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
+                        <SelectContent className="bg-white z-50 border-2 border-[#cbd5e1] shadow-lg">
                           {cargoOptions.map((option) => (
                             <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
@@ -445,7 +436,7 @@ const CostSection = () => {
                         id="institucion"
                         value={formData.institucion}
                         onChange={(e) => handleChange("institucion", e.target.value)}
-                        className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.institucion ? "border-red-500" : ""}`}
+                        className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.institucion ? "border-red-500" : ""}`}
                       />
                       {errors.institucion && (
                         <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
@@ -460,12 +451,12 @@ const CostSection = () => {
                         Naturaleza Jurídica<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.naturalezaJuridica} onValueChange={(value) => handleChange("naturalezaJuridica", value)}>
-                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.naturalezaJuridica ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] ${errors.naturalezaJuridica ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.naturalezaJuridica || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
+                        <SelectContent className="bg-white z-50 border-2 border-[#cbd5e1] shadow-lg">
                           {naturalezaOptions.map((option) => (
                             <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
@@ -482,12 +473,12 @@ const CostSection = () => {
                         Nº de estudiantes<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.numeroEstudiantes} onValueChange={(value) => handleChange("numeroEstudiantes", value)}>
-                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.numeroEstudiantes ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] ${errors.numeroEstudiantes ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.numeroEstudiantes || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
+                        <SelectContent className="bg-white z-50 border-2 border-[#cbd5e1] shadow-lg">
                           {estudiantesOptions.map((option) => (
                             <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
@@ -508,12 +499,12 @@ const CostSection = () => {
                         País<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.pais} onValueChange={(value) => handleChange("pais", value)}>
-                        <SelectTrigger className={`bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] ${errors.pais ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] ${errors.pais ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecciona">
                             {formData.pais || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 max-h-60 border border-[#e2e8f0] shadow-lg">
+                        <SelectContent className="bg-white z-50 max-h-60 border-2 border-[#cbd5e1] shadow-lg">
                           {paisesOptions.map((option) => (
                             <SelectItem key={option} value={option} className="text-[#1e293b] hover:bg-[#f1f5f9]">
                               {option}
@@ -530,12 +521,12 @@ const CostSection = () => {
                         Producto de Interés<span className="text-red-500">*</span>
                       </Label>
                       <Select value={formData.productoInteres} onValueChange={(value) => handleChange("productoInteres", value)}>
-                        <SelectTrigger className="bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b]">
+                        <SelectTrigger className="bg-white border-[#cbd5e1] border-2 text-[#1e293b]">
                           <SelectValue placeholder="Selecciona">
                             {formData.productoInteres || "Selecciona"}
                           </SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="bg-white z-50 border border-[#e2e8f0] shadow-lg">
+                        <SelectContent className="bg-white z-50 border-2 border-[#cbd5e1] shadow-lg">
                           <SelectItem value="Infraestructura AIECS" className="text-[#1e293b] hover:bg-[#f1f5f9]">
                             Infraestructura AIECS
                           </SelectItem>
