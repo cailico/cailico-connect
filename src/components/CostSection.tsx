@@ -206,7 +206,7 @@ const CostSection = () => {
   ];
 
   const naturalezaOptions = [
-    "Oficial (Público)",
+    "Oficial (Pública)",
     "Privado"
   ];
 
@@ -430,7 +430,7 @@ const CostSection = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="institucion" className="text-[#1e293b] font-medium">
-                        Institución<span className="text-red-500">*</span>
+                        Nombre de la Institución<span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="institucion"
