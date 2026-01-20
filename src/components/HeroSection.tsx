@@ -6,9 +6,10 @@ import heroImage from "@/assets/hero-classroom.png";
 
 interface HeroSectionProps {
   loadingPhase?: 'image' | 'text' | 'ui' | 'complete';
+  onOpenChat?: () => void;
 }
 
-const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
+const HeroSection = ({ loadingPhase = 'complete', onOpenChat }: HeroSectionProps) => {
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [startTyping, setStartTyping] = useState(false);
@@ -219,12 +220,10 @@ const HeroSection = ({ loadingPhase = 'complete' }: HeroSectionProps) => {
             <Button 
               size="lg" 
               className="bg-secondary hover:bg-orange-dark text-white font-semibold rounded-full px-8"
-              asChild
+              onClick={onOpenChat}
             >
-              <a href="#contact" className="flex items-center gap-2">
-                <Bot className="w-5 h-5" />
-                Chatea con la IA
-              </a>
+              <Bot className="w-5 h-5 mr-2" />
+              Chatea con la IA
             </Button>
           </motion.div>
         </div>
