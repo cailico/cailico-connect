@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Bot } from "lucide-react";
@@ -7,9 +7,11 @@ import heroImage from "@/assets/hero-classroom.png";
 interface HeroSectionProps {
   loadingPhase?: 'image' | 'text' | 'ui' | 'complete';
   onOpenChat?: () => void;
+  onChatButtonVisibilityChange?: (isVisible: boolean) => void;
 }
 
-const HeroSection = ({ loadingPhase = 'complete', onOpenChat }: HeroSectionProps) => {
+const HeroSection = ({ loadingPhase = 'complete', onOpenChat, onChatButtonVisibilityChange }: HeroSectionProps) => {
+  const chatButtonRef = useRef<HTMLButtonElement>(null);
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [startTyping, setStartTyping] = useState(false);
@@ -35,6 +37,29 @@ const HeroSection = ({ loadingPhase = 'complete', onOpenChat }: HeroSectionProps
     }, 530);
     return () => clearInterval(cursorInterval);
   }, []);
+
+  // Intersection Observer para detectar visibilidad del botón de chat
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        onChatButtonVisibilityChange?.(entry.isIntersecting);
+      },
+      {
+        threshold: 0,
+        rootMargin: '0px'
+      }
+    );
+
+    if (chatButtonRef.current) {
+      observer.observe(chatButtonRef.current);
+    }
+
+    return () => {
+      if (chatButtonRef.current) {
+        observer.unobserve(chatButtonRef.current);
+      }
+    };
+  }, [onChatButtonVisibilityChange]);
 
   // Start typing only after UI is loaded
   useEffect(() => {
@@ -218,6 +243,7 @@ const HeroSection = ({ loadingPhase = 'complete', onOpenChat }: HeroSectionProps
               </a>
             </Button>
             <Button 
+              ref={chatButtonRef}
               size="lg" 
               className="bg-secondary hover:bg-orange-dark text-white font-semibold rounded-full px-8"
               onClick={onOpenChat}

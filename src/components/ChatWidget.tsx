@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, MessageCircle, Trash2 } from 'lucide-react';
+import { X, Send, Bot, Trash2 } from 'lucide-react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -11,6 +11,7 @@ interface Message {
 interface ChatWidgetProps {
   externalOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  showFloatingButton?: boolean;
 }
 
 const WEBHOOK_URL = "https://n8n.srv966880.hstgr.cloud/webhook-test/059400c4-6479-4f61-8a55-aa71ac2c5882";
@@ -22,9 +23,8 @@ const initialMessage: Message = {
   timestamp: new Date()
 };
 
-const ChatWidget = ({ externalOpen, onOpenChange }: ChatWidgetProps) => {
+const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: ChatWidgetProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   
   // Use external control if provided, otherwise internal
   const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
@@ -35,16 +35,6 @@ const ChatWidget = ({ externalOpen, onOpenChange }: ChatWidgetProps) => {
       setInternalOpen(open);
     }
   };
-
-  // Scroll detection for floating button
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 300);
-    };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial position
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
   const [messages, setMessages] = useState<Message[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -157,9 +147,9 @@ const ChatWidget = ({ externalOpen, onOpenChange }: ChatWidgetProps) => {
 
   return (
     <>
-      {/* Botón flotante - solo visible cuando hay scroll */}
+      {/* Botón flotante - solo visible cuando el botón del centro NO es visible */}
       <AnimatePresence>
-        {scrolled && (
+        {showFloatingButton && (
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -167,8 +157,9 @@ const ChatWidget = ({ externalOpen, onOpenChange }: ChatWidgetProps) => {
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ 
               type: 'spring',
-              stiffness: 100,
-              damping: 20
+              stiffness: 200,
+              damping: 20,
+              duration: 0.3
             }}
             className="fixed bottom-6 right-6 bg-orange hover:bg-orange/90 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-colors z-50 flex items-center gap-2 font-medium"
             whileHover={{ scale: 1.05 }}
@@ -181,7 +172,7 @@ const ChatWidget = ({ externalOpen, onOpenChange }: ChatWidgetProps) => {
               </>
             ) : (
               <>
-                <MessageCircle className="w-5 h-5" />
+                <Bot className="w-5 h-5" />
                 <span className="hidden sm:inline">Chatea con la IA</span>
               </>
             )}
