@@ -1,0 +1,255 @@
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Send, MessageCircle, Trash2 } from 'lucide-react';
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
+const WEBHOOK_URL = "https://n8n.srv966880.hstgr.cloud/webhook-test/059400c4-6479-4f61-8a55-aa71ac2c5882";
+const STORAGE_KEY = 'cailico-chat-messages';
+
+const initialMessage: Message = {
+  role: 'assistant',
+  content: '¡Hola! 👋 Soy el asistente virtual de Cailico.\n\nEstoy aquí para resolver todas tus dudas sobre nuestros agentes de IA para instituciones educativas.\n\n¿En qué puedo ayudarte?',
+  timestamp: new Date()
+};
+
+const ChatWidget = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+      } catch {
+        return [initialMessage];
+      }
+    }
+    return [initialMessage];
+  });
+  const [inputValue, setInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Persist messages to localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
+
+  const sendMessage = async () => {
+    if (!inputValue.trim() || isTyping) return;
+
+    const userMessage: Message = {
+      role: 'user',
+      content: inputValue.trim(),
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    const messageToSend = inputValue.trim();
+    setInputValue('');
+    setIsTyping(true);
+
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: messageToSend,
+          timestamp: new Date().toISOString()
+        })
+      });
+
+      const data = await response.json();
+      
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: data.response || data.message || data.output || 'Lo siento, no pude procesar tu mensaje.',
+        timestamp: new Date()
+      }]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Error al conectar con el servidor. Por favor intenta de nuevo.',
+        timestamp: new Date()
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const clearConversation = () => {
+    setMessages([initialMessage]);
+  };
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  return (
+    <>
+      {/* Botón flotante */}
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 bg-orange hover:bg-orange/90 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all z-50 flex items-center gap-2 font-medium"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {isOpen ? (
+          <>
+            <X className="w-5 h-5" />
+            <span className="hidden sm:inline">Cerrar Chat</span>
+          </>
+        ) : (
+          <>
+            <MessageCircle className="w-5 h-5" />
+            <span className="hidden sm:inline">Chatea con la IA</span>
+          </>
+        )}
+      </motion.button>
+
+      {/* Widget de chat */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed z-50 bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden
+              bottom-24 right-6 w-[400px] h-[600px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)]
+              sm:bottom-24 sm:right-6
+              max-sm:inset-4 max-sm:w-auto max-sm:h-auto max-sm:max-w-none max-sm:max-h-none"
+          >
+            {/* Header */}
+            <div className="bg-navy text-white p-4 flex justify-between items-center shrink-0">
+              <h3 className="font-display font-medium text-lg uppercase tracking-wide">Chatea con Cailico</h3>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={clearConversation}
+                  className="text-white/70 hover:text-white transition-colors p-1"
+                  title="Limpiar conversación"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={() => setIsOpen(false)} 
+                  className="text-white/70 hover:text-white transition-colors p-1"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Mensajes */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+              {messages.map((msg, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-[85%] flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                    <div className={`p-3 rounded-2xl whitespace-pre-wrap ${
+                      msg.role === 'user' 
+                        ? 'bg-orange text-white rounded-br-md' 
+                        : 'bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100'
+                    }`}>
+                      {msg.content}
+                    </div>
+                    <span className="text-xs text-gray-400 mt-1 px-1">
+                      {formatTime(msg.timestamp)}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+              
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-white p-4 rounded-2xl rounded-bl-md shadow-sm border border-gray-100">
+                    <div className="flex space-x-2">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className="p-4 border-t border-gray-200 bg-white shrink-0">
+              <div className="flex gap-2 items-end">
+                <textarea
+                  ref={inputRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Escribe tu mensaje..."
+                  rows={1}
+                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-orange resize-none max-h-32 min-h-[48px]"
+                  style={{ height: 'auto' }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 128) + 'px';
+                  }}
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={!inputValue.trim() || isTyping}
+                  className="bg-orange hover:bg-orange/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors shrink-0"
+                >
+                  <Send className="w-5 h-5" />
+                </button>
+              </div>
+              <p className="text-xs text-gray-400 text-center mt-2">
+                Powered by Cailico AI
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+export default ChatWidget;
