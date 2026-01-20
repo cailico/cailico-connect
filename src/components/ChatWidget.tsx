@@ -225,7 +225,7 @@ const ChatWidget = () => {
                   onKeyDown={handleKeyDown}
                   placeholder="Escribe tu mensaje..."
                   rows={1}
-                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-orange resize-none max-h-32 min-h-[48px]"
+                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-orange resize-none max-h-32 min-h-[48px] text-gray-900 bg-white appearance-none"
                   style={{ height: 'auto' }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
