@@ -180,18 +180,32 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
         )}
       </AnimatePresence>
 
-      {/* Widget de chat */}
+      {/* Widget de chat - posición dinámica según botón flotante */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            animate={{ 
+              opacity: 1, 
+              y: 0, 
+              scale: 1,
+              bottom: showFloatingButton ? 100 : 24
+            }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="fixed z-50 bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden
-              bottom-24 right-6 w-[400px] h-[600px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)]
-              sm:bottom-24 sm:right-6
-              max-sm:inset-4 max-sm:w-auto max-sm:h-auto max-sm:max-w-none max-sm:max-h-none"
+            transition={{ 
+              type: 'spring',
+              stiffness: 200,
+              damping: 25,
+              duration: 0.4
+            }}
+            style={{
+              position: 'fixed',
+              right: 24,
+              bottom: showFloatingButton ? 100 : 24
+            }}
+            className="z-50 bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden
+              w-[400px] h-[600px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)]
+              max-sm:inset-4 max-sm:w-auto max-sm:h-auto max-sm:max-w-none max-sm:max-h-none max-sm:right-auto max-sm:bottom-auto"
           >
             {/* Header */}
             <div className="bg-navy text-white p-4 flex justify-between items-center shrink-0">
