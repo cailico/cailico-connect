@@ -8,6 +8,11 @@ interface Message {
   timestamp: Date;
 }
 
+interface ChatWidgetProps {
+  externalOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
 const WEBHOOK_URL = "https://n8n.srv966880.hstgr.cloud/webhook-test/059400c4-6479-4f61-8a55-aa71ac2c5882";
 const STORAGE_KEY = 'cailico-chat-messages';
 
@@ -17,8 +22,29 @@ const initialMessage: Message = {
   timestamp: new Date()
 };
 
-const ChatWidget = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const ChatWidget = ({ externalOpen, onOpenChange }: ChatWidgetProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  
+  // Use external control if provided, otherwise internal
+  const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setIsOpen = (open: boolean) => {
+    if (onOpenChange) {
+      onOpenChange(open);
+    } else {
+      setInternalOpen(open);
+    }
+  };
+
+  // Scroll detection for floating button
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial position
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const [messages, setMessages] = useState<Message[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -131,25 +157,37 @@ const ChatWidget = () => {
 
   return (
     <>
-      {/* Botón flotante */}
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 bg-orange hover:bg-orange/90 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all z-50 flex items-center gap-2 font-medium"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {isOpen ? (
-          <>
-            <X className="w-5 h-5" />
-            <span className="hidden sm:inline">Cerrar Chat</span>
-          </>
-        ) : (
-          <>
-            <MessageCircle className="w-5 h-5" />
-            <span className="hidden sm:inline">Chatea con la IA</span>
-          </>
+      {/* Botón flotante - solo visible cuando hay scroll */}
+      <AnimatePresence>
+        {scrolled && (
+          <motion.button
+            onClick={() => setIsOpen(!isOpen)}
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ 
+              type: 'spring',
+              stiffness: 100,
+              damping: 20
+            }}
+            className="fixed bottom-6 right-6 bg-orange hover:bg-orange/90 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-colors z-50 flex items-center gap-2 font-medium"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isOpen ? (
+              <>
+                <X className="w-5 h-5" />
+                <span className="hidden sm:inline">Cerrar Chat</span>
+              </>
+            ) : (
+              <>
+                <MessageCircle className="w-5 h-5" />
+                <span className="hidden sm:inline">Chatea con la IA</span>
+              </>
+            )}
+          </motion.button>
         )}
-      </motion.button>
+      </AnimatePresence>
 
       {/* Widget de chat */}
       <AnimatePresence>
@@ -194,12 +232,19 @@ const ChatWidget = () => {
                   transition={{ duration: 0.2 }}
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[85%] flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                    <div className={`p-3 rounded-2xl whitespace-pre-wrap ${
-                      msg.role === 'user' 
-                        ? 'bg-white text-gray-800 rounded-br-md shadow-sm border border-gray-100' 
-                        : 'bg-orange text-white rounded-bl-md'
-                    }`}>
+                  <div className={`max-w-[80%] flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                    <div 
+                      className={`p-3 rounded-2xl break-words ${
+                        msg.role === 'user' 
+                          ? 'bg-white text-gray-800 rounded-br-md shadow-sm border border-gray-100' 
+                          : 'bg-orange text-white rounded-bl-md'
+                      }`}
+                      style={{ 
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word'
+                      }}
+                    >
                       {msg.content}
                     </div>
                     <span className="text-xs text-gray-400 mt-1 px-1">

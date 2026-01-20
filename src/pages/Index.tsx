@@ -11,6 +11,7 @@ import heroImage from "@/assets/hero-classroom.png";
 
 const Index = () => {
   const [loadingPhase, setLoadingPhase] = useState<'image' | 'text' | 'ui' | 'complete'>('image');
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     // Precargar la imagen de fondo
@@ -31,16 +32,20 @@ const Index = () => {
     }
   }, []);
 
+  const handleOpenChat = () => {
+    setIsChatOpen(true);
+  };
+
   return (
     <main className="overflow-x-hidden">
       <Navbar loadingPhase={loadingPhase} />
-      <HeroSection loadingPhase={loadingPhase} />
+      <HeroSection loadingPhase={loadingPhase} onOpenChat={handleOpenChat} />
       <AboutSection />
       <ProductSection />
       <HowItWorksSection />
       <CostSection />
       <Footer />
-      <ChatWidget />
+      <ChatWidget externalOpen={isChatOpen} onOpenChange={setIsChatOpen} />
     </main>
   );
 };
