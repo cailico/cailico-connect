@@ -37,20 +37,7 @@ const ChatWidget = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Auto-resize del textarea
-  const adjustTextareaHeight = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-    }
-  };
-
-  useEffect(() => {
-    adjustTextareaHeight();
-  }, [inputValue]);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Persist messages to localStorage
   useEffect(() => {
@@ -66,8 +53,8 @@ const ChatWidget = () => {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    if (isOpen && textareaRef.current) {
-      textareaRef.current.focus();
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
     }
   }, [isOpen]);
 
@@ -232,22 +219,24 @@ const ChatWidget = () => {
             <div className="p-4 border-t border-gray-200 bg-white shrink-0">
               <div className="flex gap-2 items-end">
                 <textarea
-                  ref={textareaRef}
+                  ref={inputRef}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Escribe tu mensaje..."
                   rows={1}
-                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-orange resize-none overflow-hidden text-gray-900 bg-white"
-                  style={{ 
-                    minHeight: '48px',
-                    maxHeight: '120px'
+                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-orange resize-none max-h-32 min-h-[48px] text-gray-900 bg-white appearance-none"
+                  style={{ height: 'auto' }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 128) + 'px';
                   }}
                 />
                 <button
                   onClick={sendMessage}
                   disabled={!inputValue.trim() || isTyping}
-                  className="bg-orange hover:bg-orange/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors shrink-0 h-[48px]"
+                  className="bg-orange hover:bg-orange/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors shrink-0"
                 >
                   <Send className="w-5 h-5" />
                 </button>
