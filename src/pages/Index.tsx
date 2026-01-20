@@ -6,7 +6,6 @@ import ProductSection from "@/components/ProductSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import CostSection from "@/components/CostSection";
 import Footer from "@/components/Footer";
-import ChatWidget from "@/components/ChatWidget";
 import heroImage from "@/assets/hero-classroom.png";
 
 const Index = () => {
@@ -40,7 +39,6 @@ const Index = () => {
       <HowItWorksSection />
       <CostSection />
       <Footer />
-      <ChatWidget />
     </main>
   );
 };
