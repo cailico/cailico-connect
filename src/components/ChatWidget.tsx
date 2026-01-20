@@ -24,6 +24,10 @@ const initialMessage: Message = {
 };
 
 const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: ChatWidgetProps) => {
+  // Session ID se regenera en cada recarga de página (en memoria, no persistido)
+  const [sessionId] = useState(() => 
+    `web_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  );
   const [internalOpen, setInternalOpen] = useState(false);
   
   // Use external control if provided, otherwise internal
@@ -107,15 +111,22 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message: messageToSend,
-          timestamp: new Date().toISOString()
+          contact_id: sessionId,
+          timestamp: new Date().toISOString(),
+          source: 'web'
         })
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+
+      // Obtener respuesta como texto plano (exactamente lo que n8n responde)
+      const responseText = await response.text();
       
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: data.response || data.message || data.output || 'Lo siento, no pude procesar tu mensaje.',
+        content: responseText,
         timestamp: new Date()
       }]);
     } catch (error) {
