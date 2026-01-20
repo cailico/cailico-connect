@@ -506,13 +506,13 @@ const CostSection = () => {
                     </div>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-[#0066CC] hover:bg-[#0052A3] text-white font-medium py-3"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Enviando..." : "Enviar"}
-                  </Button>
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Enviando..." : "Enviar"}
+                </Button>
 
                   <p className="text-center text-[#64748b] text-sm">
                     Al enviar este formulario, aceptas nuestra{" "}
