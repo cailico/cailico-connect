@@ -146,53 +146,60 @@ const ChatWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed z-50 bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden
+            className="fixed z-50 bg-[#f5f0e8] rounded-xl shadow-2xl flex flex-col overflow-hidden
               bottom-24 right-6 w-[400px] h-[600px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)]
               sm:bottom-24 sm:right-6
               max-sm:inset-4 max-sm:w-auto max-sm:h-auto max-sm:max-w-none max-sm:max-h-none"
           >
             {/* Header */}
-            <div className="bg-navy text-white p-4 flex justify-between items-center shrink-0">
-              <h3 className="font-display font-medium text-lg uppercase tracking-wide">Chatea con Cailico</h3>
-              <div className="flex items-center gap-2">
+            <div className="bg-navy text-white p-4 flex items-center gap-3 shrink-0">
+              {/* Icon */}
+              <div className="w-10 h-10 bg-orange rounded-full flex items-center justify-center shrink-0">
+                <MessageCircle className="w-5 h-5 text-white" />
+              </div>
+              {/* Title */}
+              <div className="flex-1">
+                <h3 className="font-display font-medium text-base uppercase tracking-wide">Chatea con Cailico</h3>
+                <p className="text-white/70 text-sm">Asistente virtual</p>
+              </div>
+              {/* Actions */}
+              <div className="flex items-center gap-1">
                 <button 
                   onClick={clearConversation}
-                  className="text-white/70 hover:text-white transition-colors p-1"
+                  className="text-white/70 hover:text-white transition-colors p-2"
                   title="Limpiar conversación"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={() => setIsOpen(false)} 
-                  className="text-white/70 hover:text-white transition-colors p-1"
+                  className="text-white/70 hover:text-white transition-colors p-2"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
             {/* Mensajes */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#f5f0e8]">
               {messages.map((msg, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2 }}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                 >
-                  <div className={`max-w-[85%] flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                    <div className={`p-3 rounded-2xl whitespace-pre-wrap ${
-                      msg.role === 'user' 
-                        ? 'bg-orange text-white rounded-br-md' 
-                        : 'bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100'
-                    }`}>
-                      {msg.content}
-                    </div>
-                    <span className="text-xs text-gray-400 mt-1 px-1">
-                      {formatTime(msg.timestamp)}
-                    </span>
+                  <div className={`max-w-[85%] p-4 rounded-2xl whitespace-pre-wrap shadow-sm ${
+                    msg.role === 'user' 
+                      ? 'bg-orange text-white rounded-br-md' 
+                      : 'bg-white text-[#1e293b] rounded-bl-md'
+                  }`}>
+                    {msg.content}
                   </div>
+                  <span className="text-xs text-orange mt-1 px-1">
+                    {formatTime(msg.timestamp)}
+                  </span>
                 </motion.div>
               ))}
               
@@ -202,11 +209,11 @@ const ChatWidget = () => {
                   animate={{ opacity: 1 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-white p-4 rounded-2xl rounded-bl-md shadow-sm border border-gray-100">
+                  <div className="bg-white p-4 rounded-2xl rounded-bl-md shadow-sm">
                     <div className="flex space-x-2">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                      <div className="w-2 h-2 bg-orange/60 rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-orange/60 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                      <div className="w-2 h-2 bg-orange/60 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
                     </div>
                   </div>
                 </motion.div>
@@ -216,8 +223,8 @@ const ChatWidget = () => {
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-gray-200 bg-white shrink-0">
-              <div className="flex gap-2 items-end">
+            <div className="p-4 bg-[#f5f0e8] shrink-0">
+              <div className="flex gap-3 items-end">
                 <textarea
                   ref={inputRef}
                   value={inputValue}
@@ -225,7 +232,7 @@ const ChatWidget = () => {
                   onKeyDown={handleKeyDown}
                   placeholder="Escribe tu mensaje..."
                   rows={1}
-                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-orange resize-none max-h-32 min-h-[48px]"
+                  className="flex-1 bg-[#e8e3db] border-0 rounded-full px-5 py-3 focus:outline-none placeholder:text-[#9ca3af] text-[#1e293b] resize-none max-h-32 min-h-[48px]"
                   style={{ height: 'auto' }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
@@ -236,12 +243,12 @@ const ChatWidget = () => {
                 <button
                   onClick={sendMessage}
                   disabled={!inputValue.trim() || isTyping}
-                  className="bg-orange hover:bg-orange/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors shrink-0"
+                  className="bg-orange hover:bg-orange/90 disabled:bg-[#d4a574] disabled:cursor-not-allowed text-white p-3 rounded-full transition-colors shrink-0"
                 >
                   <Send className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-xs text-gray-400 text-center mt-2">
+              <p className="text-xs text-[#9ca3af] text-center mt-3">
                 Powered by Cailico AI
               </p>
             </div>
