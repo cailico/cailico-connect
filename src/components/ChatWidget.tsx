@@ -184,8 +184,8 @@ const ChatWidget = () => {
                   <div className={`max-w-[85%] flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                     <div className={`p-3 rounded-2xl whitespace-pre-wrap ${
                       msg.role === 'user' 
-                        ? 'bg-orange text-white rounded-br-md' 
-                        : 'bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100'
+                        ? 'bg-white text-gray-800 rounded-br-md shadow-sm border border-gray-100' 
+                        : 'bg-orange text-white rounded-bl-md'
                     }`}>
                       {msg.content}
                     </div>
