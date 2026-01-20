@@ -221,22 +221,29 @@ const ChatWidget = () => {
                 <textarea
                   ref={inputRef}
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                    // Auto-resize
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = '48px';
+                    target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                  }}
                   onKeyDown={handleKeyDown}
                   placeholder="Escribe tu mensaje..."
                   rows={1}
-                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-orange resize-none max-h-32 min-h-[48px] text-gray-900 bg-white appearance-none"
-                  style={{ height: 'auto' }}
-                  onInput={(e) => {
-                    const target = e.target as HTMLTextAreaElement;
-                    target.style.height = 'auto';
-                    target.style.height = Math.min(target.scrollHeight, 128) + 'px';
+                  className="flex-1 border-2 border-[#cbd5e1] rounded-xl px-4 py-3 resize-none text-gray-900 bg-white"
+                  style={{ 
+                    minHeight: '48px', 
+                    maxHeight: '120px',
+                    height: '48px',
+                    outline: 'none',
+                    boxShadow: 'none'
                   }}
                 />
                 <button
                   onClick={sendMessage}
                   disabled={!inputValue.trim() || isTyping}
-                  className="bg-orange hover:bg-orange/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors shrink-0"
+                  className="bg-orange hover:bg-orange/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors shrink-0 h-[48px]"
                 >
                   <Send className="w-5 h-5" />
                 </button>
