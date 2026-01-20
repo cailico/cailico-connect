@@ -12,6 +12,7 @@ import heroImage from "@/assets/hero-classroom.png";
 const Index = () => {
   const [loadingPhase, setLoadingPhase] = useState<'image' | 'text' | 'ui' | 'complete'>('image');
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isCenterButtonVisible, setIsCenterButtonVisible] = useState(true);
 
   useEffect(() => {
     // Precargar la imagen de fondo
@@ -36,16 +37,28 @@ const Index = () => {
     setIsChatOpen(true);
   };
 
+  const handleChatButtonVisibilityChange = (isVisible: boolean) => {
+    setIsCenterButtonVisible(isVisible);
+  };
+
   return (
     <main className="overflow-x-hidden">
       <Navbar loadingPhase={loadingPhase} />
-      <HeroSection loadingPhase={loadingPhase} onOpenChat={handleOpenChat} />
+      <HeroSection 
+        loadingPhase={loadingPhase} 
+        onOpenChat={handleOpenChat}
+        onChatButtonVisibilityChange={handleChatButtonVisibilityChange}
+      />
       <AboutSection />
       <ProductSection />
       <HowItWorksSection />
       <CostSection />
       <Footer />
-      <ChatWidget externalOpen={isChatOpen} onOpenChange={setIsChatOpen} />
+      <ChatWidget 
+        externalOpen={isChatOpen} 
+        onOpenChange={setIsChatOpen}
+        showFloatingButton={!isCenterButtonVisible}
+      />
     </main>
   );
 };
