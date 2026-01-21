@@ -14,7 +14,7 @@ interface ChatWidgetProps {
   showFloatingButton?: boolean;
 }
 
-const WEBHOOK_URL = "https://n8n.srv966880.hstgr.cloud/webhook-test/059400c4-6479-4f61-8a55-aa71ac2c5882";
+const WEBHOOK_URL = "https://n8n.srv966880.hstgr.cloud/webhook/059400c4-6479-4f61-8a55-aa71ac2c5882";
 const STORAGE_KEY = 'cailico-chat-messages';
 
 const initialMessage: Message = {
