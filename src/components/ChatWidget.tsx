@@ -19,7 +19,7 @@ const STORAGE_KEY = 'cailico-chat-messages';
 
 const initialMessage: Message = {
   role: 'assistant',
-  content: '¡Hola! 👋 Soy Cecil, la asistente virtual de Cailico.\n\nEstoy aquí para resolver todas tus dudas sobre nuestros servicios de IA para instituciones educativas.\n\n¿En qué puedo ayudarte?',
+  content: '¡Hola! 👋 Soy el asistente virtual de Cailico.\n\nEstoy aquí para resolver todas tus dudas sobre nuestros agentes de IA para instituciones educativas.\n\n¿En qué puedo ayudarte?',
   timestamp: new Date()
 };
 
@@ -121,28 +121,12 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
         throw new Error(`Error HTTP: ${response.status}`);
       }
 
-      // Obtener respuesta y extraer el texto del campo "response"
+      // Obtener respuesta como texto plano (exactamente lo que n8n responde)
       const responseText = await response.text();
-      let messageContent = responseText;
-      
-      // Intentar parsear como JSON y extraer el campo "response"
-      try {
-        const jsonData = JSON.parse(responseText);
-        if (jsonData.response) {
-          messageContent = jsonData.response;
-        } else if (jsonData.message) {
-          messageContent = jsonData.message;
-        } else if (jsonData.chunks) {
-          messageContent = jsonData.chunks;
-        }
-      } catch {
-        // Si no es JSON válido, usar el texto tal cual
-        messageContent = responseText;
-      }
       
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: messageContent,
+        content: responseText,
         timestamp: new Date()
       }]);
     } catch (error) {
@@ -236,7 +220,7 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
           >
             {/* Header */}
             <div className="bg-navy text-white p-4 flex justify-between items-center shrink-0">
-              <h3 className="font-display font-medium text-lg uppercase tracking-wide">Chatea con Cecil</h3>
+              <h3 className="font-display font-medium text-lg uppercase tracking-wide">Chatea con Cailico</h3>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={clearConversation}
