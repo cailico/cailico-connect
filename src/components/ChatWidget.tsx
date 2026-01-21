@@ -152,14 +152,17 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
         // Si no es JSON válido, usar el texto tal cual
       }
       
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: messageContent,
-        timestamp: new Date()
-      }]);
-      
-      // Reproducir sonido de notificación
-      playNotificationSound();
+      // Solo agregar al chat si tiene contenido real
+      if (messageContent && messageContent.trim().length > 0) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: messageContent,
+          timestamp: new Date()
+        }]);
+        
+        // Reproducir sonido de notificación
+        playNotificationSound();
+      }
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
