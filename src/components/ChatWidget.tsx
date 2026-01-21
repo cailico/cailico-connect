@@ -19,8 +19,35 @@ const STORAGE_KEY = 'cailico-chat-messages';
 
 const initialMessage: Message = {
   role: 'assistant',
-  content: '¡Hola! 👋 Soy el asistente virtual de Cailico.\n\nEstoy aquí para resolver todas tus dudas sobre nuestros agentes de IA para instituciones educativas.\n\n¿En qué puedo ayudarte?',
+  content: '¡Hola! 👋 Soy Cecil, la asistente virtual de Cailico.\n\nEstoy aquí para resolver todas tus dudas sobre nuestros servicios de IA para instituciones educativas.\n\n¿En qué puedo ayudarte?',
   timestamp: new Date()
+};
+
+// Función para reproducir sonido de notificación
+const playNotificationSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    
+    const now = audioContext.currentTime;
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+    
+    oscillator.start(now);
+    oscillator.stop(now + 0.15);
+    
+  } catch (error) {
+    console.error('Error al reproducir sonido:', error);
+  }
 };
 
 const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: ChatWidgetProps) => {
@@ -121,14 +148,27 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
         throw new Error(`Error HTTP: ${response.status}`);
       }
 
-      // Obtener respuesta como texto plano (exactamente lo que n8n responde)
+      // Obtener respuesta y extraer el texto del campo "response"
       const responseText = await response.text();
+      let messageContent = responseText;
+      
+      try {
+        const parsed = JSON.parse(responseText);
+        if (parsed.response) {
+          messageContent = parsed.response;
+        }
+      } catch {
+        // Si no es JSON válido, usar el texto tal cual
+      }
       
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: responseText,
+        content: messageContent,
         timestamp: new Date()
       }]);
+      
+      // Reproducir sonido de notificación
+      playNotificationSound();
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
@@ -220,7 +260,7 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
           >
             {/* Header */}
             <div className="bg-navy text-white p-4 flex justify-between items-center shrink-0">
-              <h3 className="font-display font-medium text-lg uppercase tracking-wide">Chatea con Cailico</h3>
+              <h3 className="font-display font-medium text-lg uppercase tracking-wide">Chatea con Cecil</h3>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={clearConversation}
