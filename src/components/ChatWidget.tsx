@@ -28,22 +28,31 @@ const playNotificationSound = () => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = 800;
-    oscillator.type = 'sine';
+    const playTone = (frequency: number, startTime: number, duration: number) => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+      
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration);
+    };
     
     const now = audioContext.currentTime;
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
     
-    oscillator.start(now);
-    oscillator.stop(now + 0.15);
+    // Primer tono (Do - 523 Hz)
+    playTone(523.25, now, 0.1);
+    
+    // Segundo tono (Mi - 659 Hz)
+    playTone(659.25, now + 0.08, 0.15);
     
   } catch (error) {
     console.error('Error al reproducir sonido:', error);
@@ -66,21 +75,7 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
       setInternalOpen(open);
     }
   };
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        }));
-      } catch {
-        return [initialMessage];
-      }
-    }
-    return [initialMessage];
-  });
+  const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -99,10 +94,6 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
     adjustTextareaHeight();
   }, [inputValue]);
 
-  // Persist messages to localStorage
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -119,7 +110,7 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
   }, [isOpen]);
 
   const sendMessage = async () => {
-    if (!inputValue.trim() || isTyping) return;
+    if (!inputValue.trim()) return;
 
     const userMessage: Message = {
       role: 'user',
@@ -347,7 +338,7 @@ const ChatWidget = ({ externalOpen, onOpenChange, showFloatingButton = false }: 
                 />
                 <button
                   onClick={sendMessage}
-                  disabled={!inputValue.trim() || isTyping}
+                  disabled={!inputValue.trim()}
                   className="bg-orange hover:bg-orange/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors shrink-0 h-[48px]"
                 >
                   <Send className="w-5 h-5" />
