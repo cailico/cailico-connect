@@ -24,9 +24,9 @@ const Footer = () => {
   ];
 
   const legalLinks = [
-    { label: "Política de privacidad", to: "/privacidad" },
     { label: "Términos de uso", to: "/terminos" },
-    { label: "Seguridad", to: "/seguridad" },
+    { label: "Política de privacidad", to: "/privacidad" },
+    { label: "Política de seguridad", to: "/seguridad" },
   ];
 
   return (
@@ -88,9 +88,14 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-primary-foreground/60">
-          {/* Legal links on the left */}
-          <div className="flex flex-wrap gap-4 md:gap-6 order-2 md:order-1">
+        <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-start gap-4 text-sm text-primary-foreground/60">
+          {/* Copyright on the left */}
+          <p className="text-center md:text-left shrink-0">
+            © {currentYear} Cailico - Agencia de Inteligencia Artificial | Colombia
+          </p>
+          
+          {/* Legal links after copyright */}
+          <div className="flex flex-wrap gap-4 md:gap-6">
             {legalLinks.map((link) => (
               <Link
                 key={link.label}
@@ -101,12 +106,6 @@ const Footer = () => {
               </Link>
             ))}
           </div>
-          
-          {/* Copyright on the right */}
-          <p className="order-1 md:order-2 text-center md:text-right">
-            © {currentYear} Cailico - Agencia de Inteligencia Artificial |
-            Colombia
-          </p>
         </div>
       </div>
     </footer>
