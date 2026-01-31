@@ -6,13 +6,15 @@ import logo from "@/assets/cailico-logo-white-border.png";
 
 interface NavbarProps {
   loadingPhase?: 'image' | 'text' | 'ui' | 'complete';
+  forceBackground?: boolean;
 }
 
-const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
+const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const showNavbar = loadingPhase === 'ui' || loadingPhase === 'complete';
+  const showBackground = forceBackground || isScrolled;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,11 +37,11 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
   }, [isOpen]);
 
   const navItems = [
-    { label: "INICIO", href: "#hero" },
-    { label: "¿QUIÉNES SOMOS?", href: "#quienes-somos" },
-    { label: "SERVICIO", href: "#features" },
-    { label: "PROCESO", href: "#how-it-works" },
-    { label: "COSTO", href: "#costo" },
+    { label: "INICIO", href: "/#hero" },
+    { label: "¿QUIÉNES SOMOS?", href: "/#quienes-somos" },
+    { label: "SERVICIO", href: "/#features" },
+    { label: "PROCESO", href: "/#how-it-works" },
+    { label: "COSTO", href: "/#costo" },
   ];
   
   const whatsappLink = "https://wa.me/573001234567";
@@ -48,7 +50,7 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
     <>
       <motion.nav
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled ? "bg-black/95 backdrop-blur-lg" : "bg-transparent"
+          showBackground ? "bg-black/95 backdrop-blur-lg" : "bg-transparent"
         }`}
         initial={{ y: "-100%" }}
         animate={{ y: showNavbar ? 0 : "-100%" }}
@@ -56,7 +58,7 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
       >
         <div className="container mx-auto px-4">
           <div className={`flex items-center justify-between transition-all duration-300 ${
-            isScrolled ? "h-12 md:h-14" : "h-14 md:h-20"
+            showBackground ? "h-12 md:h-14" : "h-14 md:h-20"
           }`}>
             {/* Logo */}
             <a href="#hero" className="flex items-center">
@@ -64,7 +66,7 @@ const Navbar = ({ loadingPhase = 'complete' }: NavbarProps) => {
                 src={logo} 
                 alt="Cailico" 
                 className={`transition-all duration-300 ${
-                  isScrolled ? "h-8 md:h-10" : "h-9 md:h-12"
+                  showBackground ? "h-8 md:h-10" : "h-9 md:h-12"
                 }`} 
               />
             </a>

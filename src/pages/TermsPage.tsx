@@ -3,8 +3,8 @@ import Footer from "@/components/Footer";
 
 const TermsPage = () => {
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar loadingPhase="complete" />
+    <div className="min-h-screen bg-white text-foreground">
+      <Navbar loadingPhase="complete" forceBackground />
       
       {/* Content */}
       <main className="pt-24 md:pt-32 pb-16">
