@@ -88,24 +88,26 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-start gap-4 text-sm text-primary-foreground/60">
-          {/* Copyright on the left */}
-          <p className="text-center md:text-left shrink-0">
-            © {currentYear} Cailico - Agencia de Inteligencia Artificial | Colombia
-          </p>
-          
-          {/* Legal links after copyright */}
-          <div className="flex flex-wrap gap-4 md:gap-6">
-            {legalLinks.map((link) => (
-              <Link
-                key={link.label}
-                to={link.to}
-                className="hover:text-primary-foreground transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+        <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 text-sm text-primary-foreground/60">
+          {/* Left side: Copyright + Legal links */}
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+            <p className="shrink-0">
+              © {currentYear} Cailico - Agencia de Inteligencia Artificial | Colombia
+            </p>
+            <div className="flex flex-wrap gap-4 md:gap-6">
+              {legalLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="hover:text-primary-foreground transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
+          {/* Spacer for chat button */}
+          <div className="hidden md:block w-48" />
         </div>
       </div>
     </footer>
