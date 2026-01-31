@@ -158,7 +158,7 @@ const HeroSection = ({ loadingPhase = 'complete', onOpenChat, onChatButtonVisibi
 
   return (
     <section
-      id="hero"
+      id="inicio"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-20"
     >
       {/* Background Image with Overlay - sin fade */}

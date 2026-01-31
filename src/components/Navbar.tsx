@@ -37,10 +37,10 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
   }, [isOpen]);
 
   const navItems = [
-    { label: "INICIO", href: "/#hero" },
+    { label: "INICIO", href: "/#inicio" },
     { label: "¿QUIÉNES SOMOS?", href: "/#quienes-somos" },
-    { label: "SERVICIO", href: "/#features" },
-    { label: "PROCESO", href: "/#how-it-works" },
+    { label: "SERVICIO", href: "/#servicio" },
+    { label: "PROCESO", href: "/#proceso" },
     { label: "COSTO", href: "/#costo" },
   ];
   
@@ -61,7 +61,7 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
             showBackground ? "h-12 md:h-14" : "h-14 md:h-20"
           }`}>
             {/* Logo */}
-            <a href="#hero" className="flex items-center">
+            <a href="/#inicio" className="flex items-center">
               <img 
                 src={logo} 
                 alt="Cailico" 
