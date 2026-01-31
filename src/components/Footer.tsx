@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Linkedin, Instagram, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/cailico-logo.png";
 
 const Footer = () => {
@@ -20,6 +21,12 @@ const Footer = () => {
     { icon: Linkedin, href: "#", label: "LinkedIn" },
     { icon: Instagram, href: "#", label: "Instagram" },
     { icon: Mail, href: "mailto:contacto@cailico.co", label: "Email" },
+  ];
+
+  const legalLinks = [
+    { label: "Política de privacidad", to: "/privacidad" },
+    { label: "Términos de uso", to: "/terminos" },
+    { label: "Seguridad", to: "/seguridad" },
   ];
 
   return (
@@ -82,18 +89,24 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-primary-foreground/60">
-          <p>
+          {/* Legal links on the left */}
+          <div className="flex flex-wrap gap-4 md:gap-6 order-2 md:order-1">
+            {legalLinks.map((link) => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="hover:text-primary-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          
+          {/* Copyright on the right */}
+          <p className="order-1 md:order-2 text-center md:text-right">
             © {currentYear} Cailico - Agencia de Inteligencia Artificial |
             Colombia
           </p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-primary-foreground transition-colors">
-              Política de privacidad
-            </a>
-            <a href="#" className="hover:text-primary-foreground transition-colors">
-              Términos de uso
-            </a>
-          </div>
         </div>
       </div>
     </footer>
