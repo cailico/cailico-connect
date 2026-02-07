@@ -162,7 +162,7 @@ const HowItWorksSection = () => {
   }, [steps.length, visibleCount]);
 
   return (
-    <section id="how-it-works" className="py-20 md:py-32 bg-background" ref={ref}>
+    <section id="proceso" className="py-20 md:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-4" ref={sectionRef}>
         <motion.div
           className="text-center mb-20"
