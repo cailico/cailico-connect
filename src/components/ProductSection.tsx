@@ -30,7 +30,7 @@ const ProductSection = () => {
             <span className="text-secondary">SERV</span><span className="text-white">ICIO</span>
           </h2>
           <h3 className="font-display font-medium text-xl md:text-3xl uppercase tracking-tight mt-6">
-            <span className="text-white/90">Infraestructura AIECS</span>
+            <span className="text-white/90">Infraestructura AIPEC</span>
           </h3>
         </motion.div>
       </div>
