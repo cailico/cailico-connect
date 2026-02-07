@@ -48,14 +48,14 @@ const HowItWorksSection = () => {
       number: "04",
       title: "Recopilación de información institucional",
       description:
-        "Recolectamos lo necesario para adaptar AIECS a tu institución: estructura académica (grados, grupos, áreas), responsables, flujos de comunicación, formatos y necesidades particulares. Todo con orden, sin traumatismos.",
+        "Recolectamos lo necesario para adaptar AIPEC a tu institución: estructura académica (grados, grupos, áreas), responsables, flujos de comunicación, formatos y necesidades particulares. Todo con orden, sin traumatismos.",
     },
     {
       icon: Wrench,
       number: "05",
       title: "Desarrollo y configuración a la medida",
       description:
-        "Construimos tu infraestructura AIECS con tu identidad y tus reglas de operación. Dejamos listo el Agente de WhatsApp 24/7 y la Plataforma Institucional, alineados a tus procesos reales. (Tiempo estimado: 2 a 3 semanas, según el alcance y la disponibilidad de la información.)",
+        "Construimos tu infraestructura AIPEC con tu identidad y tus reglas de operación. Dejamos listo el Agente de WhatsApp 24/7 y la Plataforma Institucional, alineados a tus procesos reales. (Tiempo estimado: 2 a 3 semanas, según el alcance y la disponibilidad de la información.)",
     },
     {
       icon: Rocket,
@@ -69,7 +69,7 @@ const HowItWorksSection = () => {
       number: "07",
       title: "Pedagogía y capacitación por roles",
       description:
-        "Entregamos guías prácticas y capacitamos por perfiles: directivos, docentes, administrativos, estudiantes y padres de familia. Si tu institución está en Colombia y lo deseas, un asociado puede desplazarse y capacitar presencialmente, dejando a cada grupo listo para usar AIECS con confianza.",
+        "Entregamos guías prácticas y capacitamos por perfiles: directivos, docentes, administrativos, estudiantes y padres de familia. Si tu institución está en Colombia y lo deseas, un asociado puede desplazarse y capacitar presencialmente, dejando a cada grupo listo para usar AIPEC con confianza.",
     },
     {
       icon: Headphones,
@@ -83,7 +83,7 @@ const HowItWorksSection = () => {
       number: "09",
       title: "Mejora continua y actualización permanente",
       description:
-        "AIECS evoluciona con la IA. Mejoramos funciones, optimizamos flujos y actualizamos la infraestructura para que tu institución siempre tenga lo más útil y vigente, sin quedarse atrás.",
+        "AIPEC evoluciona con la IA. Mejoramos funciones, optimizamos flujos y actualizamos la infraestructura para que tu institución siempre tenga lo más útil y vigente, sin quedarse atrás.",
     },
   ];
 
@@ -162,7 +162,7 @@ const HowItWorksSection = () => {
   }, [steps.length, visibleCount]);
 
   return (
-    <section id="how-it-works" className="py-20 md:py-32 bg-background" ref={ref}>
+    <section id="proceso" className="py-20 md:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-4" ref={sectionRef}>
         <motion.div
           className="text-center mb-20"
