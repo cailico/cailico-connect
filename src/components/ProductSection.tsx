@@ -9,7 +9,7 @@ const ProductSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="servicio" className="relative" ref={ref}>
+    <section id="features" className="relative" ref={ref}>
       {/* Background image with dark overlay - covers entire product section */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
