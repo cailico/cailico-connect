@@ -30,7 +30,7 @@ const CostSection = () => {
     naturalezaJuridica: "",
     numeroEstudiantes: "",
     pais: "Colombia",
-    productoInteres: "Infraestructura AIPEC",
+    productoInteres: "Infraestructura AIECS",
   });
 
   const [errors, setErrors] = useState<Record<string, boolean>>({});
@@ -83,7 +83,7 @@ const CostSection = () => {
   const pricingFeatures = [
     {
       title: "Pago Inicial",
-      description: "Incluye el desarrollo, adaptación de la infraestructura AIPEC y el primer mes de despliegue. Este pago es el mismo para todas las instituciones."
+      description: "Incluye el desarrollo, adaptación de la infraestructura AIECS y el primer mes de despliegue. Este pago es el mismo para todas las instituciones."
     },
     {
       title: "Pagos Mensuales",
@@ -498,8 +498,8 @@ const CostSection = () => {
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="bg-white z-50 border-2 border-[#cbd5e1] shadow-lg">
-                          <SelectItem value="Infraestructura AIPEC" className="text-[#1e293b] hover:bg-[#f1f5f9]">
-                            Infraestructura AIPEC
+                          <SelectItem value="Infraestructura AIECS" className="text-[#1e293b] hover:bg-[#f1f5f9]">
+                            Infraestructura AIECS
                           </SelectItem>
                         </SelectContent>
                       </Select>
