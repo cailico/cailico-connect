@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/cailico-logo-white-border.png";
@@ -37,14 +38,52 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
   }, [isOpen]);
 
   const navItems = [
-    { label: "INICIO", href: "/#inicio" },
-    { label: "¿QUIÉNES SOMOS?", href: "/#quienes-somos" },
-    { label: "SERVICIO", href: "/#servicio" },
-    { label: "PROCESO", href: "/#proceso" },
-    { label: "COSTO", href: "/#costo" },
+    { label: "INICIO", sectionId: "inicio" },
+    { label: "¿QUIÉNES SOMOS?", sectionId: "quienes-somos" },
+    { label: "SERVICIO", sectionId: "servicio" },
+    { label: "PROCESO", sectionId: "proceso" },
   ];
-  
-  const whatsappLink = "https://wa.me/573001234567";
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const scrollToSection = (e: React.MouseEvent, sectionId: string) => {
+    e.preventDefault();
+    if (location.pathname !== "/") {
+      // Estamos en otra página, navegar al inicio con el hash como señal
+      navigate("/?section=" + sectionId);
+      return;
+    }
+    if (sectionId === "contacto") {
+      window.dispatchEvent(new Event("reveal-all-steps"));
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+  };
+
+  // Handle scroll after navigating from another page
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    if (section && location.pathname === "/") {
+      if (section === "contacto") {
+        window.dispatchEvent(new Event("reveal-all-steps"));
+      }
+      setTimeout(() => {
+        const el = document.getElementById(section);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          history.replaceState(null, "", "/");
+        }
+      }, 300);
+    }
+  }, [location]);
 
   return (
     <>
@@ -61,7 +100,7 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
             showBackground ? "h-12 md:h-14" : "h-14 md:h-20"
           }`}>
             {/* Logo */}
-            <a href="/#inicio" className="flex items-center">
+            <a href="/" onClick={(e) => scrollToSection(e, "inicio")} className="flex items-center">
               <img 
                 src={logo} 
                 alt="Cailico" 
@@ -76,15 +115,15 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
               {navItems.map((item) => (
                 <a
                   key={item.label}
-                  href={item.href}
+                  href="/"
+                  onClick={(e) => scrollToSection(e, item.sectionId)}
                   className="text-xs lg:text-sm font-semibold text-white hover:text-secondary transition-colors tracking-wide"
                 >
                   {item.label}
                 </a>
               ))}
-              {/* CTA Button inline with nav */}
               <Button variant="hero" size="sm" asChild>
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">CONTACTO</a>
+                <a href="/" onClick={(e) => scrollToSection(e, "contacto")}>CONTACTO</a>
               </Button>
             </div>
 
@@ -138,9 +177,9 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
                 {navItems.map((item, index) => (
                   <motion.a
                     key={item.label}
-                    href={item.href}
+                    href="/"
                     className="block py-4 text-base font-semibold text-foreground hover:text-secondary transition-colors tracking-wide"
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => { setIsOpen(false); scrollToSection(e, item.sectionId); }}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 + 0.1 }}
@@ -148,8 +187,7 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
                     {item.label}
                   </motion.a>
                 ))}
-                
-                {/* CTA Button */}
+
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -157,7 +195,7 @@ const Navbar = ({ loadingPhase = 'complete', forceBackground = false }: NavbarPr
                   className="mt-6"
                 >
                   <Button variant="hero" size="default" className="w-full" asChild>
-                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>
+                    <a href="/" onClick={(e) => { setIsOpen(false); scrollToSection(e, "contacto"); }}>
                       CONTACTO
                     </a>
                   </Button>

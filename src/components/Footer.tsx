@@ -1,21 +1,39 @@
 import { motion } from "framer-motion";
 import { Linkedin, Instagram, Mail, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/cailico-logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const whatsappLink = "https://wa.me/573001234567";
-  
   const links = [
-    { label: "Inicio", href: "#inicio" },
-    { label: "¿Quiénes Somos?", href: "#quienes-somos" },
-    { label: "Servicio", href: "#servicio" },
-    { label: "Proceso", href: "#proceso" },
-    { label: "Costo", href: "#costo" },
-    { label: "Contacto", href: whatsappLink, external: true },
+    { label: "Inicio", sectionId: "inicio" },
+    { label: "¿Quiénes Somos?", sectionId: "quienes-somos" },
+    { label: "Servicio", sectionId: "servicio" },
+    { label: "Proceso", sectionId: "proceso" },
+    { label: "Contacto", sectionId: "contacto" },
   ];
+
+  const scrollToSection = (e: React.MouseEvent, sectionId: string) => {
+    e.preventDefault();
+    if (location.pathname !== "/") {
+      navigate("/?section=" + sectionId);
+      return;
+    }
+    if (sectionId === "contacto") {
+      window.dispatchEvent(new Event("reveal-all-steps"));
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+  };
 
   const socialLinks = [
     { icon: Linkedin, href: "#", label: "LinkedIn" },
@@ -55,9 +73,9 @@ const Footer = () => {
               {links.map((link) => (
                 <li key={link.label}>
                   <a
-                    href={link.href}
-                    className="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm"
-                    {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    href="/"
+                    onClick={(e) => scrollToSection(e, link.sectionId)}
+                    className="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm cursor-pointer"
                   >
                     {link.label}
                   </a>

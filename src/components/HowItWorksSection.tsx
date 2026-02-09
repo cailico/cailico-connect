@@ -34,7 +34,7 @@ const HowItWorksSection = () => {
       number: "02",
       title: "Cuéntanos quién eres y a qué institución educativa perteneces",
       description:
-        "Queremos conocerte a ti y a tu institución. Tendremos el tiempo necesario para entender sus necesidades reales, identificar los principales dolores y definir contigo la mejor forma de adaptar AIECS a tu contexto.",
+        "Queremos conocerte a ti y a tu institución. Tendremos el tiempo necesario para entender tus necesidades reales, identificar los principales dolores y definir contigo la mejor forma de adaptar AIPEC a tu contexto.",
     },
     {
       icon: ShoppingCart,
@@ -112,6 +112,13 @@ const HowItWorksSection = () => {
       }
     }
   }, [visibleCount]);
+
+  // Listen for event to reveal all steps (used by navbar contacto link)
+  useEffect(() => {
+    const revealAll = () => setVisibleCount(steps.length);
+    window.addEventListener("reveal-all-steps", revealAll);
+    return () => window.removeEventListener("reveal-all-steps", revealAll);
+  }, [steps.length]);
 
   useEffect(() => {
     const handleScroll = () => {

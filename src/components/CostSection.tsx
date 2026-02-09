@@ -4,6 +4,8 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import whatsappLogo from "@/assets/logo-whatsapp.png";
+import rectoresImg from "@/assets/rectores.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -42,9 +44,16 @@ const CostSection = () => {
     
     if (!formData.nombre.trim()) newErrors.nombre = true;
     if (!formData.apellido.trim()) newErrors.apellido = true;
-    if (!formData.codigoPais) newErrors.codigoPais = true;
-    if (!formData.telefono.trim()) newErrors.telefono = true;
-    if (!formData.correo.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) newErrors.correo = true;
+
+    const tieneTelefono = formData.telefono.trim().length > 0;
+    const tieneCorreo = formData.correo.trim().length > 0;
+
+    if (!tieneTelefono && !tieneCorreo) {
+      newErrors.contacto = true;
+    } else if (tieneCorreo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
+      newErrors.correo = true;
+    }
+
     if (!formData.cargo) newErrors.cargo = true;
     if (!formData.institucion.trim()) newErrors.institucion = true;
     if (!formData.naturalezaJuridica) newErrors.naturalezaJuridica = true;
@@ -64,12 +73,31 @@ const CostSection = () => {
     }
 
     setIsSubmitting(true);
-    
-    // Simular envío
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setSubmitted(true);
-    toast.success("¡Gracias! Nos pondremos en contacto pronto.");
+
+    try {
+      await fetch("https://n8n.srv966880.hstgr.cloud/webhook-test/db14fb02-d1f9-447f-8ef1-04b3e4951c93", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      toast.success("¡Información enviada con éxito! Pronto nos pondremos en contacto contigo.");
+      setFormData({
+        nombre: "",
+        apellido: "",
+        codigoPais: "+57",
+        telefono: "",
+        correo: "",
+        cargo: "",
+        institucion: "",
+        naturalezaJuridica: "",
+        numeroEstudiantes: "",
+        pais: "Colombia",
+        productoInteres: "Infraestructura AIPEC",
+      });
+    } catch {
+      toast.error("Hubo un error al enviar. Por favor, intenta de nuevo.");
+    }
+
     setIsSubmitting(false);
   };
 
@@ -207,7 +235,7 @@ const CostSection = () => {
 
   const naturalezaOptions = [
     "Oficial (Pública)",
-    "Privado"
+    "Privada"
   ];
 
   const paisesOptions = [
@@ -242,7 +270,7 @@ const CostSection = () => {
   ];
 
   return (
-    <section id="costo" className="py-12 md:py-20 bg-secondary relative overflow-hidden">
+    <section id="contacto" className="py-12 md:py-20 bg-secondary relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10 max-w-6xl" ref={ref}>
         {/* Título */}
         <motion.div
@@ -252,7 +280,7 @@ const CostSection = () => {
           className="text-center mb-8"
         >
           <h2 className="font-display font-medium text-3xl md:text-5xl uppercase tracking-tight mb-4 text-white">
-            COSTO
+            CONTACTO
           </h2>
         </motion.div>
 
@@ -263,19 +291,36 @@ const CostSection = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="bg-white rounded-2xl p-8 md:p-12 shadow-xl"
         >
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Columna izquierda: CTA centrado */}
-            <div className="flex flex-col justify-center h-full">
-              <h3 className="font-display font-medium text-2xl md:text-3xl text-[#1e293b] mb-4 uppercase tracking-tight">
-                Cotiza con Nosotros
-              </h3>
-              <p className="text-[#475569] text-lg leading-relaxed">
-                Para una cotización y más detalles sobre nuestros costos, contáctanos a través de nuestro WhatsApp o deja tus datos en el formulario a continuación y nos pondremos en contacto contigo lo antes posible.
-              </p>
+          <div className="grid lg:grid-cols-[1fr_1.5fr] gap-12 items-start">
+            {/* Columna izquierda: Solo info de contacto + imagen */}
+            <div className="flex flex-col h-full">
+              <div className="space-y-5 mb-8">
+                <div className="flex items-center gap-3">
+                  <img src={whatsappLogo} alt="WhatsApp" className="w-8 h-8" />
+                  <div>
+                    <p className="text-sm font-semibold text-[#475569]">WhatsApp</p>
+                    <p className="text-[#1e293b] text-xl font-medium">(+57) 301 624 1863</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">✉️</span>
+                  <div>
+                    <p className="text-sm font-semibold text-[#475569]">Correo electrónico</p>
+                    <p className="text-[#1e293b] text-xl font-medium">contacto@cailico.com</p>
+                  </div>
+                </div>
+              </div>
+              <img src={rectoresImg} alt="Rectores" className="hidden lg:block w-full rounded-2xl object-cover" />
             </div>
 
-            {/* Columna derecha: Formulario */}
+            {/* Columna derecha: Título + texto + Formulario */}
             <div>
+              <h3 className="font-display font-medium text-2xl md:text-3xl text-[#1e293b] mb-3 uppercase tracking-tight">
+                Cotiza con Nosotros
+              </h3>
+              <p className="text-[#475569] text-base leading-relaxed mb-6">
+                Para una cotización y más detalles sobre nuestros costos, contáctanos a través de nuestro WhatsApp o deja tus datos en el formulario a continuación y nos pondremos en contacto contigo lo antes posible.
+              </p>
               {submitted ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -286,10 +331,10 @@ const CostSection = () => {
                     <Check className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="font-display font-medium text-2xl text-gray-800 mb-2">
-                    ¡Gracias!
+                    ¡Información enviada con éxito!
                   </h3>
                   <p className="text-gray-600">
-                    Nos pondremos en contacto pronto.
+                    Pronto nos pondremos en contacto contigo.
                   </p>
                 </motion.div>
               ) : (
@@ -330,11 +375,11 @@ const CostSection = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label className="text-[#1e293b] font-medium">
-                        Teléfono<span className="text-red-500">*</span>
+                        Teléfono
                       </Label>
                       <div className="flex">
                         <Select value={formData.codigoPais} onValueChange={(value) => handleChange("codigoPais", value)}>
-                          <SelectTrigger className={`w-20 rounded-r-none bg-white border-[#cbd5e1] border-2 border-r-0 text-[#1e293b] ${errors.codigoPais ? "border-red-500" : ""}`}>
+                          <SelectTrigger className={`w-20 rounded-r-none bg-white border-[#cbd5e1] border-2 border-r-0 text-[#1e293b] ${errors.contacto ? "border-red-500" : ""}`}>
                             <SelectValue placeholder="+57">
                               {formData.codigoPais || "+57"}
                             </SelectValue>
@@ -350,29 +395,29 @@ const CostSection = () => {
                         <Input
                           id="telefono"
                           value={formData.telefono}
-                          onChange={(e) => handleChange("telefono", e.target.value)}
-                          className={`rounded-l-none border-l-0 bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.telefono ? "border-red-500" : ""}`}
+                          onChange={(e) => { handleChange("telefono", e.target.value); if (errors.contacto) setErrors(prev => ({ ...prev, contacto: false })); }}
+                          className={`rounded-l-none border-l-0 bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.contacto ? "border-red-500" : ""}`}
                         />
                       </div>
-                      {(errors.codigoPais || errors.telefono) && (
-                        <p className="text-red-500 text-sm">Rellena este campo obligatorio.</p>
-                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="correo" className="text-[#1e293b] font-medium">
-                        Correo<span className="text-red-500">*</span>
+                        Correo
                       </Label>
                       <Input
                         id="correo"
                         type="email"
                         value={formData.correo}
-                        onChange={(e) => handleChange("correo", e.target.value)}
-                        className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.correo ? "border-red-500" : ""}`}
+                        onChange={(e) => { handleChange("correo", e.target.value); if (errors.contacto) setErrors(prev => ({ ...prev, contacto: false })); }}
+                        className={`bg-white border-[#cbd5e1] border-2 text-[#1e293b] placeholder:text-[#94a3b8] focus:border-[#F7941D] ${errors.contacto || errors.correo ? "border-red-500" : ""}`}
                       />
                       {errors.correo && (
                         <p className="text-red-500 text-sm">Ingresa un correo válido.</p>
                       )}
                     </div>
+                    {errors.contacto && (
+                      <p className="text-red-500 text-sm md:col-span-2">Ingresa al menos un teléfono o un correo.</p>
+                    )}
                   </div>
 
                   {/* Cargo y Nombre de la institución */}
@@ -516,7 +561,7 @@ const CostSection = () => {
 
                   <p className="text-center text-[#64748b] text-sm">
                     Al enviar este formulario, aceptas nuestra{" "}
-                    <a href="#" className="text-[#0066CC] hover:underline">
+                    <a href="/privacidad" className="text-[#0066CC] hover:underline">
                       Política de Privacidad
                     </a>
                     .

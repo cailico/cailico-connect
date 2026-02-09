@@ -222,3 +222,12 @@
     box-shadow: 0 0 40px hsl(var(--secondary) / 0.5);
   }
 }
+
+/* Prevent Radix Select from hiding scrollbar and shifting layout */
+html body[data-scroll-locked] {
+  overflow-y: auto !important;
+  padding-right: 0px !important;
+  margin-right: 0px !important;
+  position: static !important;
+}
+

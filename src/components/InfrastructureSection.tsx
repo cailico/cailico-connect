@@ -50,7 +50,7 @@ const InfrastructureSection = () => {
       id: 4,
       tab: "Notas",
       title: "Notificación de notas por estudiante o grupo",
-      description: "Comunique en tiempo real las notas a estudiantes y padres de familia. El Agente IA se encargará de comunicar las notas a las personas correspondientes. Ahora los padres de familia podrán saber en tiempo real cómo van sus estudiantes.",
+      description: "Comunica en tiempo real las notas a estudiantes y padres de familia. El Agente IA se encargará de comunicar las notas a las personas correspondientes. Ahora los padres de familia podrán saber en tiempo real cómo van sus estudiantes.",
       image: featureNotas,
     },
     {
@@ -64,7 +64,7 @@ const InfrastructureSection = () => {
       id: 6,
       tab: "Estadísticas",
       title: "Plataforma de estadísticas académicas",
-      description: "Especial para directivos. Visualice la situación académica de la institución en tiempo real con gráficos y tablas intuitivas, desde indicadores generales hasta el detalle por grado, salón, materia o estudiante.",
+      description: "Especial para directivos. Visualiza la situación académica de la institución en tiempo real con gráficos y tablas intuitivas, desde indicadores generales hasta el detalle por grado, salón, materia o estudiante.",
       image: featureEstadisticas,
     },
   ];
@@ -149,7 +149,7 @@ const InfrastructureSection = () => {
           transition={{ duration: 0.6 }}
         >
           <p className="text-base md:text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
-            Lleve la comunicación entre los miembros de su comunidad educativa al siguiente nivel con nuestro Sistema de Comunicación Educativa por Inteligencia Artificial. Integramos un agente de WhatsApp disponible 24/7, el cual reconoce a cada persona y su rol dentro de la institución, y una plataforma institucional que trabajan en conjunto.
+            Lleva la comunicación entre los miembros de tu comunidad educativa al siguiente nivel con nuestro Sistema de Comunicación Educativa por Inteligencia Artificial. Integramos un agente de WhatsApp disponible 24/7, el cual reconoce a cada persona y su rol dentro de la institución, y una plataforma institucional que trabajan en conjunto.
           </p>
         </motion.div>
 
