@@ -1,6 +1,6 @@
 import { MapPin } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from "@/assets/cailico-logo.png";
+import logo from "@/assets/cailico-logo.webp";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

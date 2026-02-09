@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import productoBg from "@/assets/producto-bg.png";
+import productoBg from "@/assets/producto-bg.webp";
 import InfrastructureSection from "./InfrastructureSection";
 
 const ProductSection = () => {

@@ -7,7 +7,7 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import CostSection from "@/components/CostSection";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
-import heroImage from "@/assets/hero-classroom.png";
+import heroImage from "@/assets/hero-classroom.webp";
 
 const Index = () => {
   const [loadingPhase, setLoadingPhase] = useState<'image' | 'text' | 'ui' | 'complete'>('image');

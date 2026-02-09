@@ -1,8 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Target, Eye, ChevronDown } from "lucide-react";
-import misionBg from "@/assets/mision-bg.png";
-import visionBg from "@/assets/vision-bg.png";
+import misionBg from "@/assets/mision-bg.webp";
+import visionBg from "@/assets/vision-bg.webp";
 
 interface AccordionCardProps {
   icon: React.ElementType;

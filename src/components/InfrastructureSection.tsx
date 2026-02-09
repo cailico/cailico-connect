@@ -3,12 +3,12 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import featureProgramacion from "@/assets/feature-programacion.png";
-import featureComunicados from "@/assets/feature-comunicados.png";
-import featureReporte from "@/assets/feature-reporte.png";
-import featureNotas from "@/assets/feature-notas.png";
-import featureEvaluaciones from "@/assets/feature-evaluaciones.png";
-import featureEstadisticas from "@/assets/feature-estadisticas.png";
+import featureProgramacion from "@/assets/feature-programacion.webp";
+import featureComunicados from "@/assets/feature-comunicados.webp";
+import featureReporte from "@/assets/feature-reporte.webp";
+import featureNotas from "@/assets/feature-notas.webp";
+import featureEvaluaciones from "@/assets/feature-evaluaciones.webp";
+import featureEstadisticas from "@/assets/feature-estadisticas.webp";
 
 const InfrastructureSection = () => {
   const ref = useRef(null);

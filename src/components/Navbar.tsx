@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/cailico-logo-white-border.png";
+import logo from "@/assets/cailico-logo-white-border.webp";
 
 interface NavbarProps {
   loadingPhase?: 'image' | 'text' | 'ui' | 'complete';

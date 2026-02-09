@@ -4,8 +4,8 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import whatsappLogo from "@/assets/logo-whatsapp.png";
-import rectoresImg from "@/assets/rectores.png";
+import whatsappLogo from "@/assets/logo-whatsapp.webp";
+import rectoresImg from "@/assets/rectores.webp";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {

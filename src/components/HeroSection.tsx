@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Bot } from "lucide-react";
-import heroImage from "@/assets/hero-classroom.png";
+import heroImage from "@/assets/hero-classroom.webp";
 
 interface HeroSectionProps {
   loadingPhase?: 'image' | 'text' | 'ui' | 'complete';
