@@ -124,6 +124,15 @@ const InfrastructureSection = () => {
     }
   };
 
+  // Sync tab offset with active index so active tab is always visible on mobile
+  useEffect(() => {
+    if (activeIndex < tabOffset) {
+      setTabOffset(activeIndex);
+    } else if (activeIndex >= tabOffset + 2) {
+      setTabOffset(activeIndex - 1);
+    }
+  }, [activeIndex, tabOffset]);
+
   useEffect(() => {
     if (isAutoPlaying && isInView) {
       autoPlayRef.current = setInterval(() => {

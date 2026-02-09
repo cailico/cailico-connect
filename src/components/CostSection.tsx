@@ -123,7 +123,8 @@ const CostSection = () => {
     "Rector(a)",
     "Coordinador(a)",
     "Profesor(a)",
-    "Administrativo(a)"
+    "Administrativo(a)",
+    "Padre de familia"
   ];
 
   const codigosPaises = [
