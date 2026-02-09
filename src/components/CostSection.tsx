@@ -75,7 +75,7 @@ const CostSection = () => {
     setIsSubmitting(true);
 
     try {
-      await fetch("https://n8n.srv966880.hstgr.cloud/webhook-test/db14fb02-d1f9-447f-8ef1-04b3e4951c93", {
+      await fetch("https://n8n.srv966880.hstgr.cloud/webhook/db14fb02-d1f9-447f-8ef1-04b3e4951c93", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
