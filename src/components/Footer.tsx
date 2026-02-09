@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { Linkedin, Instagram, Mail, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/cailico-logo.png";
 
@@ -35,12 +34,6 @@ const Footer = () => {
     });
   };
 
-  const socialLinks = [
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Mail, href: "mailto:contacto@cailico.co", label: "Email" },
-  ];
-
   const legalLinks = [
     { label: "Términos de uso", to: "/terminos" },
     { label: "Política de privacidad", to: "/privacidad" },
@@ -50,7 +43,7 @@ const Footer = () => {
   return (
     <footer className="bg-primary py-12 md:py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-10 mb-10">
+        <div className="grid md:grid-cols-3 gap-10 mb-10">
           {/* Brand */}
           <div className="md:col-span-2">
             <img src={logo} alt="Cailico" className="h-10 mb-4 brightness-0 invert" />
@@ -82,26 +75,6 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Social */}
-          <div>
-            <h4 className="font-semibold text-primary-foreground mb-4">
-              Síguenos
-            </h4>
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  className="w-10 h-10 rounded-lg bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/70 hover:bg-primary-foreground/20 hover:text-primary-foreground transition-all"
-                  whileHover={{ scale: 1.1 }}
-                  aria-label={social.label}
-                >
-                  <social.icon className="w-5 h-5" />
-                </motion.a>
-              ))}
-            </div>
           </div>
         </div>
 
